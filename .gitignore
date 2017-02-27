@@ -12,4 +12,5 @@
 hs_err_pid*
 
 # Client
-node_modules
+client/node_modules
+client/dist
