@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "fs-extra": "^2.0.0"
+  }
+}

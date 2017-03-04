@@ -1,4 +1,5 @@
 {
-    "supportsES6": false,
-    "modelPropertyNaming":  "original"
+    "supportsES6": true,
+    "modelPropertyNaming":  "original",
+    "useNativeFetch": true
 }

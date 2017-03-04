@@ -9,8 +9,10 @@
     "typescript": "^2.2.1"
   },
   "dependencies": {
+    "querystring": "^0.2.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
+    "url": "^0.11.0",
     "webpack": "1.13"
   }
 }
