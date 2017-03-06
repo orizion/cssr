@@ -32,3 +32,4 @@ nbdist/
 *.swp
 *~.nib
 .factorypath
+.recommenders
