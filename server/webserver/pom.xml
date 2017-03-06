@@ -58,6 +58,11 @@
 			<version>2.6.1</version>
 		</dependency>
 
+		<dependency>
+			<groupId>ch.fhnw.cssr</groupId>
+			<artifactId>domain</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>
