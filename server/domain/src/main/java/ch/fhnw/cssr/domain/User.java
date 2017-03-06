@@ -8,30 +8,29 @@ import javax.persistence.*;
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 10023987L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "userId")
 	private Long userId;
-	
+
 	@Column(name = "userName")
 	private String userName;
-	
+
 	@Column(name = "passwordEnc")
 	private String passwordEnc;
-	
+
 	@Column(name = "salt")
 	private String salt;
-	
+
 	@Column(name = "email")
 	private String email;
-	
+
 	@Column(name = "tempToken")
 	private String tempToken;
-	
+
 	@Column(name = "tempTokenExpiresAt")
 	private java.sql.Date tempTokenExpiresAt;
-	
 
 	public Long getUserId() {
 		return userId;
@@ -73,5 +72,18 @@ public class User implements Serializable {
 	public java.sql.Date getTempTokenExpiresAt() {
 		return tempTokenExpiresAt;
 	}
+
+	public User() {
+		
+	}
 	
+	public User(String email, String userName, String passwordEnc, String salt, String tempToken,
+			java.sql.Date tempTokenExpiresAt) {
+		this.userName = userName;
+		this.passwordEnc = passwordEnc;
+		this.salt = salt;
+		this.tempToken = tempToken;
+		this.tempTokenExpiresAt = tempTokenExpiresAt;
+	}
+
 }
