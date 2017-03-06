@@ -1,3 +1,5 @@
+webserver_o
+
 target/
 !.mvn/wrapper/maven-wrapper.jar
 
@@ -22,3 +24,11 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+### Eclipse ###
+.metadata
+*.tmp
+*.bak
+*.swp
+*~.nib
+.factorypath

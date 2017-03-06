@@ -1,4 +1,4 @@
-package ch.fhnw.cssr;
+package ch.fhnw.cssr.webserver;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
