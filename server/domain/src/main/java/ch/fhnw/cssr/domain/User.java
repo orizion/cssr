@@ -85,5 +85,15 @@ public class User implements Serializable {
 		this.tempToken = tempToken;
 		this.tempTokenExpiresAt = tempTokenExpiresAt;
 	}
+	
+	protected User(User copyUser){
+		this.userId = copyUser.userId;
+		this.email = copyUser.email;
+		this.passwordEnc = copyUser.passwordEnc;
+		this.salt = copyUser.salt;
+		this.tempToken = copyUser.tempToken;
+		this.tempTokenExpiresAt = copyUser.tempTokenExpiresAt;
+		this.userName = copyUser.userName;
+	}
 
 }
