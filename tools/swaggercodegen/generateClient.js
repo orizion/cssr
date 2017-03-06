@@ -8,9 +8,16 @@ const spawn = require( 'child_process' ).spawn;
 
 // This is just a small utility that uses swager-codegen to generate typescript code
 // the swagger-codegen-cli-custom.jar is generated from https://github.com/aersamkull/swagger-codegen
-// TODO: Use real swagger.json
 
-generateCode(copyFile);
+downloadFile("http://localhost:8090/v2/api-docs", "swagger.json", function(err) {
+	if(err) {
+		console.error(err);
+	}
+	else {
+		generateCode(copyFile);
+	}
+});
+
 
 function generateCode(cb) {
 	var codegen = spawn( 'java', [ '-jar', 'swagger-codegen-cli-custom.jar',
@@ -38,4 +45,18 @@ function generateCode(cb) {
 function copyFile() {
 	fs_extra.copySync('temp/api.ts', '../../client/src/services/api.ts');
 
+}
+
+function downloadFile(url, dest, cb) {
+	
+	  var file = fs.createWriteStream(dest);
+	  var request = http.get(url, function(response) {
+		response.pipe(file);
+		file.on('finish', function() {
+		  file.close(cb);  // close() is async, call cb after close completes.
+		});
+	  }).on('error', function(err) { // Handle errors
+		fs.unlink(dest); // Delete the file async. (But we don't check the result)
+		if (cb) cb(err.message);
+	  });
 }
