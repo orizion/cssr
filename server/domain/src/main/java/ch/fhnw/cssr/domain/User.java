@@ -9,6 +9,9 @@ public class User implements Serializable {
 
 	private static final long serialVersionUID = 10023987L;
 
+	public static final String StudentsEmailPostfix = "@students.fhnw.ch";
+	public static final String AdmEmailPostfix = "@fhnw.ch";
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "userId")
@@ -74,9 +77,18 @@ public class User implements Serializable {
 	}
 
 	public User() {
-		
+
 	}
-	
+
+	/**
+	 * This is a constructor for students or other AD Users only
+	 */
+	protected User(long userId, String email, String userName) {
+		if (!email.endsWith(StudentsEmailPostfix) && !email.endsWith(AdmEmailPostfix)) {
+			throw new IllegalArgumentException("email");
+		}
+	}
+
 	public User(String email, String userName, String passwordEnc, String salt, String tempToken,
 			java.sql.Date tempTokenExpiresAt) {
 		this.userName = userName;
@@ -84,6 +96,16 @@ public class User implements Serializable {
 		this.salt = salt;
 		this.tempToken = tempToken;
 		this.tempTokenExpiresAt = tempTokenExpiresAt;
+	}
+
+	protected User(User copyUser) {
+		this.userId = copyUser.userId;
+		this.email = copyUser.email;
+		this.passwordEnc = copyUser.passwordEnc;
+		this.salt = copyUser.salt;
+		this.tempToken = copyUser.tempToken;
+		this.tempTokenExpiresAt = copyUser.tempTokenExpiresAt;
+		this.userName = copyUser.userName;
 	}
 
 }
