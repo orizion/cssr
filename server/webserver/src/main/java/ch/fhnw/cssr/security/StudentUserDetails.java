@@ -6,32 +6,26 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 import ch.fhnw.cssr.domain.User;
+import ch.fhnw.cssr.domain.UserRole;
 
-public class CustomUserDetails extends ch.fhnw.cssr.domain.User implements UserDetails {
+public class StudentUserDetails extends ch.fhnw.cssr.domain.User implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
-	private List<Integer> userRoles;
-
-	public CustomUserDetails(User user, List<Integer> userRoles) {
-		super(user);
-		this.userRoles = userRoles;
+	
+	public StudentUserDetails(long id, String email) {
+		super(id, email, email);
+		// TODO: Get UserName from AD
 	}
 
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		String roles = "";
-		boolean first = true;
-		for (int roleId : this.userRoles) {
-			if (first) {
-				first = false;
-			} else {
-				roles += ",";
-			}
-			roles += ch.fhnw.cssr.domain.UserRole.getRoleName(roleId);
-		}
+		
+		String roles = UserRole.getRoleName(UserRole.ROLEID_STUDENT);
 		return AuthorityUtils.commaSeparatedStringToAuthorityList(roles);
 	}
 
+	
 	public boolean isAccountNonExpired() {
 		return true;
 	}

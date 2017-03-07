@@ -9,6 +9,9 @@ public class UserRole implements Serializable {
 
 	private static final long serialVersionUID = 10023988L;
 
+	public static final int ROLEID_ADMIN = 1;
+	public static final int ROLEID_STUDENT = 2;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "userRoleId")
@@ -35,5 +38,15 @@ public class UserRole implements Serializable {
 
 	public int getRoleId() {
 		return roleId;
+	}
+
+	public static String getRoleName(int roleId) {
+		if (roleId == ROLEID_ADMIN) {
+			return "admin";
+		}
+		if (roleId == ROLEID_STUDENT) {
+			return "stud";
+		}
+		return "role" + roleId;
 	}
 }

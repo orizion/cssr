@@ -22,18 +22,21 @@ public class CustomUserDetailsService implements UserDetailsService {
 		this.userRolesRepository = userRolesRepository;
 	}
 
-	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		User user = userRepository.findByEmail(email);
 		if (null == user) {
-			if(email.toLowerCase().endsWith("@students.fhnw.ch")){
+			if (email.toLowerCase().endsWith(User.StudentsEmailPostfix)) {
 				// TODO: Implement AD Lookup (Domain EDU)
+				return new StudentUserDetails(0, email);
 			}
-			if(email.toLowerCase().endsWith("@fhnw.ch")){
+			if (email.toLowerCase().endsWith(User.AdmEmailPostfix)) {
 				// TODO: Implement AD Lookup (Domain ADM)
 			}
 			throw new UsernameNotFoundException("No user present with email: " + email);
 		} else {
+			if(email.toLowerCase().endsWith(User.StudentsEmailPostfix)){
+				return new StudentUserDetails(user.getUserId(), email);
+			}
 			List<Integer> userRoles = userRolesRepository.findRoleByEmail(email);
 			return new CustomUserDetails(user, userRoles);
 		}
