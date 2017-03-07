@@ -87,6 +87,12 @@ public class User implements Serializable {
 		if (!email.endsWith(StudentsEmailPostfix) && !email.endsWith(AdmEmailPostfix)) {
 			throw new IllegalArgumentException("email");
 		}
+		if (email.endsWith(StudentsEmailPostfix)) {
+			this.passwordEnc = PasswordHandler.STUDENT_PLACEHOLDER_PREFIX;
+		}
+		else if (email.endsWith(AdmEmailPostfix))  {
+			this.passwordEnc = PasswordHandler.ADM_PLACEHOLDER_PREFIX;
+		}
 	}
 
 	public User(String email, String userName, String passwordEnc, String salt, String tempToken,

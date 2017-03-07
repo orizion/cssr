@@ -2,6 +2,7 @@ package ch.fhnw.cssr.security;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import ch.fhnw.cssr.domain.PasswordHandler;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 
@@ -25,6 +26,13 @@ public class CustomPasswordEncoder implements PasswordEncoder {
 
 	public boolean matches(CharSequence rawPassword, String encodedPassword) {
 
+		if(encodedPassword.startsWith( PasswordHandler.ADM_PLACEHOLDER_PREFIX)) {
+			return true; // TODO: AD Lookup
+		}
+		if(encodedPassword.startsWith( PasswordHandler.STUDENT_PLACEHOLDER_PREFIX)) {
+			return true; // TODO: AD Lookup
+		}
+		
 		String hash = argon2.hash(r, N, p, rawPassword.toString());
 
 	    // Verify password
