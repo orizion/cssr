@@ -23,9 +23,6 @@ public class User implements Serializable {
 	@Column(name = "passwordEnc")
 	private String passwordEnc;
 
-	@Column(name = "salt")
-	private String salt;
-
 	@Column(name = "email")
 	private String email;
 
@@ -55,10 +52,6 @@ public class User implements Serializable {
 		this.passwordEnc = passwordEnc;
 	}
 
-	public String getSalt() {
-		return salt;
-	}
-
 	public String getEmail() {
 		return email;
 	}
@@ -84,22 +77,21 @@ public class User implements Serializable {
 	 * This is a constructor for students or other AD Users only
 	 */
 	protected User(long userId, String email, String userName) {
-		if (!email.endsWith(StudentsEmailPostfix) && !email.endsWith(AdmEmailPostfix)) {
-			throw new IllegalArgumentException("email");
-		}
 		if (email.endsWith(StudentsEmailPostfix)) {
 			this.passwordEnc = PasswordHandler.STUDENT_PLACEHOLDER_PREFIX;
 		}
 		else if (email.endsWith(AdmEmailPostfix))  {
 			this.passwordEnc = PasswordHandler.ADM_PLACEHOLDER_PREFIX;
 		}
+		else {
+			throw new IllegalArgumentException("email");	
+		}
 	}
 
-	public User(String email, String userName, String passwordEnc, String salt, String tempToken,
+	public User(String email, String userName, String passwordEnc, String tempToken,
 			java.sql.Date tempTokenExpiresAt) {
 		this.userName = userName;
 		this.passwordEnc = passwordEnc;
-		this.salt = salt;
 		this.tempToken = tempToken;
 		this.tempTokenExpiresAt = tempTokenExpiresAt;
 	}
@@ -108,7 +100,6 @@ public class User implements Serializable {
 		this.userId = copyUser.userId;
 		this.email = copyUser.email;
 		this.passwordEnc = copyUser.passwordEnc;
-		this.salt = copyUser.salt;
 		this.tempToken = copyUser.tempToken;
 		this.tempTokenExpiresAt = copyUser.tempTokenExpiresAt;
 		this.userName = copyUser.userName;
