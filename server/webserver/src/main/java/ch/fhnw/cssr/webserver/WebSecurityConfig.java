@@ -3,8 +3,10 @@ package ch.fhnw.cssr.webserver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,12 +28,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
          //.antMatchers("/hello").access("hasRole('ROLE_ADMIN')")
 		  .anyRequest().authenticated()
 		  .and()
-		  
-		  .formLogin().loginPage("/login")
+		  .formLogin()
 		     .usernameParameter("username").passwordParameter("password")
 	      .and().csrf().disable()	
 		;
     }
+	
 	
 	/**
 	 * This section defines the user accounts which can be used for authentication as well as the roles each user has.
