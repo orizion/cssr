@@ -1,18 +1,36 @@
 package ch.fhnw.cssr.webserver;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
+
+import ch.fhnw.cssr.security.CustomPasswordEncoder;
+import ch.fhnw.cssr.security.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
+@ComponentScan(basePackageClasses = CustomUserDetailsService.class)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+	@Autowired
+	private UserDetailsService userDetailsService;
 
 	@Override
     protected void configure(HttpSecurity http) throws Exception {
-        // No authentication yet
+         http.authorizeRequests()
+         //.antMatchers("/hello").access("hasRole('ROLE_ADMIN')")
+		  .anyRequest().authenticated()
+		  .and()
+		  
+		  .formLogin().loginPage("/login")
+		     .usernameParameter("username").passwordParameter("password")
+	      .and().csrf().disable()	
+		;
     }
 	
 	/**
@@ -22,7 +40,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		
+		auth.userDetailsService(userDetailsService).passwordEncoder(new CustomPasswordEncoder());
+
 	}
 	
 }
