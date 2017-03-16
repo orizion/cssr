@@ -1,5 +1,7 @@
 package ch.fhnw.cssr.webserver.controllers;
 
+import java.security.Principal;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,4 +16,8 @@ public class TestController {
         return "Hello " + name;
     }
 	
+	@RequestMapping(method = RequestMethod.GET, path = "user")
+    public Principal GetUser(Principal user) {
+        return user;
+    }
 }
