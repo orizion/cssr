@@ -1,12 +1,16 @@
 package ch.fhnw.cssr.webserver.auth;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
+import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -18,10 +22,26 @@ import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFacto
 @EnableAuthorizationServer
 public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
+
+	@Autowired
+	private UserDetailsService userDetailsService;
+	
+	@Autowired
+	private AuthenticationManager authenticationManager;
+
 	@Override
 	public void configure(final AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
 		oauthServer.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
+		 
 	}
+	@Override
+    public void configure(AuthorizationServerEndpointsConfigurer    endpoints)
+            throws Exception {
+        endpoints.authenticationManager(authenticationManager)
+                .tokenStore(tokenStore()).tokenServices(tokenServices());
+        endpoints.userDetailsService(userDetailsService); // Inject custom
+        
+    }
 
 	
 
@@ -64,6 +84,7 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
 		final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
 		defaultTokenServices.setTokenStore(tokenStore());
 		defaultTokenServices.setSupportRefreshToken(true);
+		defaultTokenServices.setAuthenticationManager(authenticationManager);
 		return defaultTokenServices;
 	}
 
