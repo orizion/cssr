@@ -1,10 +1,16 @@
 package ch.fhnw.cssr.domain;
 
+import java.io.Serializable;
+
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
-public class Subscription {
+@Entity
+@Table(name = "subscription")
+public class Subscription implements Serializable {
 	private static final long serialVersionUID = 10013005L;
 
 	public static final char TYPE_SANDWICH_VEGI = 'v';

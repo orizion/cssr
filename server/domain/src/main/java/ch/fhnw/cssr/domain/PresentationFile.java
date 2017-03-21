@@ -1,5 +1,7 @@
 package ch.fhnw.cssr.domain;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "presentationfile")
-public class PresentationFile {
+public class PresentationFile implements Serializable {
 	private static final long serialVersionUID = 10013001L;
 
 	public static final char TYPE_PRESENTATION = 'f';
