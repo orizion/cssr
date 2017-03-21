@@ -16,6 +16,37 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `email`
+--
+
+DROP TABLE IF EXISTS `email`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `email` (
+  `emailId` bigint(20) NOT NULL AUTO_INCREMENT,
+  `to` varchar(1000) NOT NULL,
+  `bcc` varchar(1000) DEFAULT NULL,
+  `cc` varchar(1000) DEFAULT NULL,
+  `subject` varchar(1000) NOT NULL,
+  `body` text NOT NULL,
+  `sentDate` datetime DEFAULT NULL,
+  `tryCount` int(11) NOT NULL DEFAULT '0',
+  `error` text,
+  `insertedAt` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`emailId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `email`
+--
+
+LOCK TABLES `email` WRITE;
+/*!40000 ALTER TABLE `email` DISABLE KEYS */;
+/*!40000 ALTER TABLE `email` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `presentation`
 --
 
@@ -155,30 +186,6 @@ LOCK TABLES `user2roles` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `userroles`
---
-
-DROP TABLE IF EXISTS `userroles`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `userroles` (
-  `userRoleId` bigint(20) NOT NULL AUTO_INCREMENT,
-  `roleId` int(11) DEFAULT NULL,
-  `userId` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`userRoleId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `userroles`
---
-
-LOCK TABLES `userroles` WRITE;
-/*!40000 ALTER TABLE `userroles` DISABLE KEYS */;
-/*!40000 ALTER TABLE `userroles` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `users`
 --
 
@@ -215,4 +222,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-03-21 12:54:37
+-- Dump completed on 2017-03-21 14:28:28

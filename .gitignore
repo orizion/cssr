@@ -13,3 +13,6 @@ client/dist
 
 # Visio Temp Files
 *~vsdx
+
+# Mysql Workbench Temp File
+*.bak
