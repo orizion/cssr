@@ -30,6 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter  {
 	    http.csrf().disable().authorizeRequests()
 	        .antMatchers("/").permitAll()
 	        .antMatchers(HttpMethod.POST, "/login").permitAll()
+	        .antMatchers(HttpMethod.GET, "/v2/api-docs").permitAll() // Swagger
 	        .anyRequest().authenticated()
 	        .and()
 	        // We filter the api/login requests
