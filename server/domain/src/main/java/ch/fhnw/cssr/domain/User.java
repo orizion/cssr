@@ -17,8 +17,8 @@ public class User implements Serializable {
 	@Column(name = "userId")
 	private Long userId;
 
-	@Column(name = "userName")
-	private String userName;
+	@Column(name = "displayName")
+	private String displayName;
 
 	@Column(name = "passwordEnc")
 	private String passwordEnc;
@@ -36,12 +36,12 @@ public class User implements Serializable {
 		return userId;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getDisplayName() {
+		return displayName;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 
 	public String getPasswordEnc() {
@@ -77,6 +77,7 @@ public class User implements Serializable {
 	 * This is a constructor for students or other AD Users only
 	 */
 	protected User(long userId, String email, String userName) {
+		this.email = email;
 		if (email.endsWith(StudentsEmailPostfix)) {
 			this.passwordEnc = PasswordHandler.STUDENT_PLACEHOLDER_PREFIX;
 		}
@@ -88,9 +89,9 @@ public class User implements Serializable {
 		}
 	}
 
-	public User(String email, String userName, String passwordEnc, String tempToken,
+	public User(String email, String displayName, String passwordEnc, String tempToken,
 			java.sql.Date tempTokenExpiresAt) {
-		this.userName = userName;
+		this.displayName = displayName;
 		this.passwordEnc = passwordEnc;
 		this.tempToken = tempToken;
 		this.tempTokenExpiresAt = tempTokenExpiresAt;
@@ -102,7 +103,7 @@ public class User implements Serializable {
 		this.passwordEnc = copyUser.passwordEnc;
 		this.tempToken = copyUser.tempToken;
 		this.tempTokenExpiresAt = copyUser.tempTokenExpiresAt;
-		this.userName = copyUser.userName;
+		this.displayName = copyUser.displayName;
 	}
 
 }

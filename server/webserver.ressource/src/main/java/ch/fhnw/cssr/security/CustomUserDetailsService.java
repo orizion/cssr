@@ -29,7 +29,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 		if (null == user) {
 			if (email.toLowerCase().endsWith(User.StudentsEmailPostfix)) {
 				// TODO: Implement AD Lookup (Domain EDU)
-				return new StudentUserDetails(0, email);
+				StudentUserDetails dt = new StudentUserDetails(0, email);
+				return dt;
 			}
 			if (email.toLowerCase().endsWith(User.AdmEmailPostfix)) {
 				// TODO: Implement AD Lookup (Domain ADM)
