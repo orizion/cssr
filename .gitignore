@@ -1,12 +1,6 @@
 *.class
 .vs 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-server/*.jar
-client/*.jar
-
+# Mobile Tools for Java 
 *.war
 *.ear
 
@@ -16,3 +10,6 @@ hs_err_pid*
 # Client
 node_modules
 client/dist
+
+# Visio Temp Files
+*~vsdx
