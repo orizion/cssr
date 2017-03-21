@@ -47,6 +47,23 @@ LOCK TABLES `email` WRITE;
 UNLOCK TABLES;
 
 --
+-- Temporary view structure for view `emailtosend`
+--
+
+DROP TABLE IF EXISTS `emailtosend`;
+/*!50001 DROP VIEW IF EXISTS `emailtosend`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE VIEW `emailtosend` AS SELECT 
+ 1 AS `emailId`,
+ 1 AS `to`,
+ 1 AS `bcc`,
+ 1 AS `cc`,
+ 1 AS `subject`,
+ 1 AS `body`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `presentation`
 --
 
@@ -212,6 +229,24 @@ LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Final view structure for view `emailtosend`
+--
+
+/*!50001 DROP VIEW IF EXISTS `emailtosend`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `emailtosend` AS select `email`.`emailId` AS `emailId`,`email`.`to` AS `to`,`email`.`bcc` AS `bcc`,`email`.`cc` AS `cc`,`email`.`subject` AS `subject`,`email`.`body` AS `body` from `email` where (isnull(`email`.`sentDate`) and (`email`.`tryCount` < 3) and ((to_days(now()) - to_days(`email`.`insertedAt`)) < 30)) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -222,4 +257,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-03-21 14:28:28
+-- Dump completed on 2017-03-21 14:50:46
