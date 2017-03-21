@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { FormControl,FormGroup,ControlLabel,Checkbox,Button } from "react-bootstrap";
 
-export interface SubscribeProps { apiUrl:string; }
+export interface SubscribeProps { apiUrl:string;}
 export interface SubscribeState {
   presentation: string; email:string; sandwich_type:string; drink:boolean;
 }

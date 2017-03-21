@@ -2,8 +2,10 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import { Subscribe } from "./components/Subscribe";
+import { CreatePresentation } from "./components/CreatePresentation";
+import { Main } from "./components/Main";
 
 ReactDOM.render(
-    <Subscribe apiUrl="test"/>,
+    <Main apiUrl="test"/>,
     document.getElementById("container")
 );
