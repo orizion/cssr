@@ -35,6 +35,171 @@ export class BaseAPI {
     }
 };
 
+export interface IterableUser {
+}
+
+export interface Presentation {
+    "abstract"?: string;
+    "dateTime"?: Timestamp;
+    "location"?: string;
+    "presentationId"?: number;
+    "speakerId"?: number;
+    "title"?: string;
+}
+
+export interface Principal {
+    "name"?: string;
+}
+
+export interface Timestamp {
+    "date"?: number;
+    "day"?: number;
+    "hours"?: number;
+    "minutes"?: number;
+    "month"?: number;
+    "nanos"?: number;
+    "seconds"?: number;
+    "time"?: number;
+    "timezoneOffset"?: number;
+    "year"?: number;
+}
+
+export interface User {
+    "displayName"?: string;
+    "email"?: string;
+    "passwordEnc"?: string;
+    "tempToken"?: string;
+    "tempTokenExpiresAt"?: Timestamp;
+    "userId"?: number;
+}
+
+
+
+/**
+ * PresentationcontrollerApi - fetch parameter creator
+ */
+export const PresentationcontrollerApiFetchParamCreator = {
+    /** 
+     * addPresentation
+     * @param pres pres
+     */
+    addPresentationUsingPOST(params: {  "pres": Presentation; }, options?: any): FetchArgs {
+        // verify required parameter "pres" is set
+        if (params["pres"] == null) {
+            throw new Error("Missing required parameter pres when calling addPresentationUsingPOST");
+        }
+        const baseUrl = `/presentation`;
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "POST" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        contentTypeHeader = { "Content-Type": "application/json" };
+        if (params["pres"]) {
+            fetchOptions.body = JSON.stringify(params["pres"] || {});
+        }
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
+     * getFuture
+     */
+    getFutureUsingGET(options?: any): FetchArgs {
+        const baseUrl = `/presentation`;
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "GET" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+};
+
+/**
+ * PresentationcontrollerApi - functional programming interface
+ */
+export const PresentationcontrollerApiFp = {
+    /** 
+     * addPresentation
+     * @param pres pres
+     */
+    addPresentationUsingPOST(params: { "pres": Presentation;  }, options?: any): (basePath?: string) => Promise<Presentation> {
+        const fetchArgs = PresentationcontrollerApiFetchParamCreator.addPresentationUsingPOST(params, options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<Presentation>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
+     * getFuture
+     */
+    getFutureUsingGET(options?: any): (basePath?: string) => Promise<Array<Presentation>> {
+        const fetchArgs = PresentationcontrollerApiFetchParamCreator.getFutureUsingGET(options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<Array<Presentation>>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+};
+
+/**
+ * PresentationcontrollerApi - object-oriented interface
+ */
+export class PresentationcontrollerApi extends BaseAPI {
+    /** 
+     * addPresentation
+     * @param pres pres
+     */
+    addPresentationUsingPOST(params: {  "pres": Presentation; }, options?: any) {
+        return PresentationcontrollerApiFp.addPresentationUsingPOST(params, options)(this.basePath);
+    }
+    /** 
+     * getFuture
+     */
+    getFutureUsingGET(options?: any) {
+        return PresentationcontrollerApiFp.getFutureUsingGET(options)(this.basePath);
+    }
+};
+
+/**
+ * PresentationcontrollerApi - factory interface
+ */
+export const PresentationcontrollerApiFactory = function (basePath?: string) {
+    return {
+        /** 
+         * addPresentation
+         * @param pres pres
+         */
+        addPresentationUsingPOST(params: {  "pres": Presentation; }, options?: any) {
+            return PresentationcontrollerApiFp.addPresentationUsingPOST(params, options)(basePath);
+        },
+        /** 
+         * getFuture
+         */
+        getFutureUsingGET(options?: any) {
+            return PresentationcontrollerApiFp.getFutureUsingGET(options)(basePath);
+        },
+    };
+};
 
 
 /**
@@ -51,6 +216,23 @@ export const TestcontrollerApiFetchParamCreator = {
         urlObj.query = Object.assign({}, urlObj.query, {
             "name": params["name"],
         });
+        let fetchOptions: RequestInit = Object.assign({}, { method: "GET" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
+     * GetUser
+     */
+    getUserUsingGET(options?: any): FetchArgs {
+        const baseUrl = `/test/user`;
+        let urlObj = url.parse(baseUrl, true);
         let fetchOptions: RequestInit = Object.assign({}, { method: "GET" }, options);
 
         let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
@@ -84,6 +266,21 @@ export const TestcontrollerApiFp = {
             });
         };
     },
+    /** 
+     * GetUser
+     */
+    getUserUsingGET(options?: any): (basePath?: string) => Promise<Principal> {
+        const fetchArgs = TestcontrollerApiFetchParamCreator.getUserUsingGET(options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<Principal>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
 };
 
 /**
@@ -96,6 +293,12 @@ export class TestcontrollerApi extends BaseAPI {
      */
     getTestUsingGET(params: {  "name"?: string; }, options?: any) {
         return TestcontrollerApiFp.getTestUsingGET(params, options)(this.basePath);
+    }
+    /** 
+     * GetUser
+     */
+    getUserUsingGET(options?: any) {
+        return TestcontrollerApiFp.getUserUsingGET(options)(this.basePath);
     }
 };
 
@@ -110,6 +313,83 @@ export const TestcontrollerApiFactory = function (basePath?: string) {
          */
         getTestUsingGET(params: {  "name"?: string; }, options?: any) {
             return TestcontrollerApiFp.getTestUsingGET(params, options)(basePath);
+        },
+        /** 
+         * GetUser
+         */
+        getUserUsingGET(options?: any) {
+            return TestcontrollerApiFp.getUserUsingGET(options)(basePath);
+        },
+    };
+};
+
+
+/**
+ * UsercontrollerApi - fetch parameter creator
+ */
+export const UsercontrollerApiFetchParamCreator = {
+    /** 
+     * getAll
+     */
+    getAllUsingGET(options?: any): FetchArgs {
+        const baseUrl = `/user`;
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "GET" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+};
+
+/**
+ * UsercontrollerApi - functional programming interface
+ */
+export const UsercontrollerApiFp = {
+    /** 
+     * getAll
+     */
+    getAllUsingGET(options?: any): (basePath?: string) => Promise<IterableUser> {
+        const fetchArgs = UsercontrollerApiFetchParamCreator.getAllUsingGET(options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<IterableUser>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+};
+
+/**
+ * UsercontrollerApi - object-oriented interface
+ */
+export class UsercontrollerApi extends BaseAPI {
+    /** 
+     * getAll
+     */
+    getAllUsingGET(options?: any) {
+        return UsercontrollerApiFp.getAllUsingGET(options)(this.basePath);
+    }
+};
+
+/**
+ * UsercontrollerApi - factory interface
+ */
+export const UsercontrollerApiFactory = function (basePath?: string) {
+    return {
+        /** 
+         * getAll
+         */
+        getAllUsingGET(options?: any) {
+            return UsercontrollerApiFp.getAllUsingGET(options)(basePath);
         },
     };
 };

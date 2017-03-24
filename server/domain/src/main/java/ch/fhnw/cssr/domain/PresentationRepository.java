@@ -7,8 +7,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRolesRepository extends CrudRepository<UserRole, Long> {
+public interface PresentationRepository extends CrudRepository<Presentation, Integer> {
 
-	public Iterable<UserRole> findByUserId(long userId);
-
+	@Query("SELECT c FROM Presentation AS c")
+	public List<Presentation> getAllFuture();
 }

@@ -27,13 +27,13 @@ public class Email implements Serializable {
 	
 	private String body;
 	
-	private java.sql.Date sentDate;
+	private java.sql.Timestamp sentDate;
 	
 	private int tryCount=0;
 	
 	private String error;
 	
-	private java.sql.Date insertedAt;
+	private java.sql.Timestamp insertedAt;
 
 	public String getTo() {
 		return to;
@@ -75,11 +75,11 @@ public class Email implements Serializable {
 		this.body = body;
 	}
 
-	public java.sql.Date getSentDate() {
+	public java.sql.Timestamp getSentDate() {
 		return sentDate;
 	}
 
-	public void setSentDate(java.sql.Date sentDate) {
+	public void setSentDate(java.sql.Timestamp sentDate) {
 		this.sentDate = sentDate;
 	}
 
@@ -99,11 +99,11 @@ public class Email implements Serializable {
 		this.error = error;
 	}
 
-	public java.sql.Date getInsertedAt() {
+	public java.sql.Timestamp getInsertedAt() {
 		return insertedAt;
 	}
 
-	public void setInsertedAt(java.sql.Date insertedAt) {
+	public void setInsertedAt(java.sql.Timestamp insertedAt) {
 		this.insertedAt = insertedAt;
 	}
 

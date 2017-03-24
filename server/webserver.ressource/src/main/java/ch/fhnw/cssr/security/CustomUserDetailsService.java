@@ -30,10 +30,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 			if (email.toLowerCase().endsWith(User.StudentsEmailPostfix)) {
 				// TODO: Implement AD Lookup (Domain EDU)
 				StudentUserDetails dt = new StudentUserDetails(0, email);
+				this.userRepository.save(dt.copy());
 				return dt;
 			}
 			if (email.toLowerCase().endsWith(User.AdmEmailPostfix)) {
 				// TODO: Implement AD Lookup (Domain ADM)
+				
 			}
 			throw new UsernameNotFoundException("No user present with email: " + email);
 		} else {

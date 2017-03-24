@@ -1,5 +1,7 @@
 package ch.fhnw.cssr.domain;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,9 +11,9 @@ public class Presentation implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int presentationId;
+	private Integer presentationId;
 	
-	private java.sql.Date dateTime;
+	private LocalDateTime dateTime;
 
 
 	private String location;
@@ -23,11 +25,11 @@ public class Presentation implements Serializable {
 	@Column (name = "abstract")
 	private String _abstract;
 	
-	public java.sql.Date getDateTime() {
+	public LocalDateTime getDateTime() {
 		return dateTime;
 	}
 
-	public void setDateTime(java.sql.Date dateTime) {
+	public void setDateTime(LocalDateTime dateTime) {
 		this.dateTime = dateTime;
 	}
 
@@ -64,7 +66,7 @@ public class Presentation implements Serializable {
 	}
 
 
-	public int getPresentationId() {
+	public Integer getPresentationId() {
 		return presentationId;
 	}
 }

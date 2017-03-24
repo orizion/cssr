@@ -30,7 +30,7 @@ public class User implements Serializable {
 	private String tempToken;
 
 	@Column(name = "tempTokenExpiresAt")
-	private java.sql.Date tempTokenExpiresAt;
+	private java.sql.Timestamp tempTokenExpiresAt;
 
 	public Long getUserId() {
 		return userId;
@@ -60,12 +60,12 @@ public class User implements Serializable {
 		return tempToken;
 	}
 
-	public void setTempToken(String tempToken, java.sql.Date expiresAt) {
+	public void setTempToken(String tempToken, java.sql.Timestamp expiresAt) {
 		this.tempToken = tempToken;
 		this.tempTokenExpiresAt = expiresAt;
 	}
 
-	public java.sql.Date getTempTokenExpiresAt() {
+	public java.sql.Timestamp getTempTokenExpiresAt() {
 		return tempTokenExpiresAt;
 	}
 
@@ -90,7 +90,7 @@ public class User implements Serializable {
 	}
 
 	public User(String email, String displayName, String passwordEnc, String tempToken,
-			java.sql.Date tempTokenExpiresAt) {
+			java.sql.Timestamp tempTokenExpiresAt) {
 		this.displayName = displayName;
 		this.passwordEnc = passwordEnc;
 		this.tempToken = tempToken;
@@ -104,6 +104,10 @@ public class User implements Serializable {
 		this.tempToken = copyUser.tempToken;
 		this.tempTokenExpiresAt = copyUser.tempTokenExpiresAt;
 		this.displayName = copyUser.displayName;
+	}
+	
+	public User copy(){
+		return new User(this);
 	}
 
 }
