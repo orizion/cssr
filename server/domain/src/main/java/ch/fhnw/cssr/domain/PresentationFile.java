@@ -8,13 +8,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
 @Table(name = "presentationfile")
 public class PresentationFile implements Serializable {
 	private static final long serialVersionUID = 10013001L;
 
-	public static final char TYPE_PRESENTATION = 'f';
-	public static final char TYPE_RESSOURCEN = 'r';
+	public static final String TYPE_PRESENTATION = "f";
+	public static final String TYPE_RESSOURCEN = "r";
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +24,7 @@ public class PresentationFile implements Serializable {
 
 	private int presentationId;
 	
-	private char type;
+	private String type;
 	
 	private byte[] content;
 	
@@ -36,11 +38,12 @@ public class PresentationFile implements Serializable {
 		this.presentationId = presentationId;
 	}
 
-	public char getType() {
+	@ApiModelProperty(value = "The type of the file. f for Presentation, r for Ressource", allowableValues = "f,r")
+	public String getType() {
 		return type;
 	}
 
-	public void setType(char type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 

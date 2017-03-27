@@ -35,9 +35,6 @@ export class BaseAPI {
     }
 };
 
-export interface Character {
-}
-
 export interface LocalTime {
     "hour"?: number;
     "minute"?: number;
@@ -61,11 +58,15 @@ export interface Principal {
 export interface Subscription {
     "drink"?: string;
     "presentationId"?: number;
-    "sandwichType"?: Character;
+    /**
+     * The type of the sandwich. v for Vegi, f for Meat
+     */
+    "sandwichType"?: SubscriptionSandwichTypeEnum;
     "subscriptionId"?: number;
     "userId"?: number;
 }
 
+export type SubscriptionSandwichTypeEnum = "v" | "f";
 export interface User {
     "displayName"?: string;
     "email"?: string;

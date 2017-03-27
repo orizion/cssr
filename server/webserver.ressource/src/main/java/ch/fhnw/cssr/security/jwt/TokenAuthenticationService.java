@@ -25,8 +25,9 @@ class TokenAuthenticationService {
 	static final String TOKEN_PREFIX = "Bearer";
 	static final String HEADER_STRING = "Authorization";
 	static final String ROLES_KEY = "r";
-	static final SignatureAlgorithm Algorithm = SignatureAlgorithm.HS512;
-	static final String JwtHeader = "eyJhbGciOiJIUzUxMiJ9";
+	
+	
+	static final String JWT_HEADER = "eyJhbGciOiJIUzUxMiJ9";
 	
 	
 	static void addAuthentication(HttpServletResponse res, Collection<? extends GrantedAuthority> authorities,
@@ -39,14 +40,13 @@ class TokenAuthenticationService {
 		s.setSubject(username);
 		s.setExpiration(new Date(System.currentTimeMillis() + EXPIRATIONTIME));
 		builder.setClaims(s);
-		String JWT = builder.signWith(Algorithm, SECRET).compact();
+		String JWT = builder.signWith(SignatureAlgorithm.HS512, SECRET).compact();
 		
 		// Set the first header bits to the JwtHeader Field
 		JWT = JWT.substring(JWT.indexOf('.')+1) ; // Remove headers, as this is often a cause for weak security
 		
 		res.setContentType("application/json");
 		res.getWriter().write("{ \"token\": \"" + JWT + "\" }");
-		// res.addHeader(HEADER_STRING, TOKEN_PREFIX + " " + JWT);
 	}
 
 	static Authentication getAuthentication(HttpServletRequest request) {
@@ -54,7 +54,7 @@ class TokenAuthenticationService {
 		if (token != null) {
 			// parse the token.
 			Jws<Claims> claims = Jwts.parser().setSigningKey(SECRET)
-					.parseClaimsJws(JwtHeader + "." + token.replace(TOKEN_PREFIX, "").trim());
+					.parseClaimsJws(JWT_HEADER + "." + token.replace(TOKEN_PREFIX, "").trim());
 			if (claims.getHeader().getAlgorithm().equals("none")) {
 				throw new IllegalArgumentException("Algorithm not valid");
 			}

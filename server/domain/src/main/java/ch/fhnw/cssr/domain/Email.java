@@ -129,7 +129,7 @@ public class Email implements Serializable {
 	/** 
 	 * Checks if all email addresses in a list do have an @ in the address
 	 * You can pass an empty address
-	 * @param address One or more (;-separated) adresses
+	 * @param address One or more (;-separated) addresses
 	 */
 	private final void primitiveEmailAddressCheck(String address) {
 		if (address == null || address.equals("")) {
