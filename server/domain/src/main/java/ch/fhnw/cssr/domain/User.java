@@ -1,6 +1,8 @@
 package ch.fhnw.cssr.domain;
 
 import java.io.Serializable;
+import java.time.LocalTime;
+
 import javax.persistence.*;
 
 @Entity
@@ -30,7 +32,7 @@ public class User implements Serializable {
 	private String tempToken;
 
 	@Column(name = "tempTokenExpiresAt")
-	private java.sql.Timestamp tempTokenExpiresAt;
+	private LocalTime tempTokenExpiresAt;
 
 	public Long getUserId() {
 		return userId;
@@ -60,12 +62,12 @@ public class User implements Serializable {
 		return tempToken;
 	}
 
-	public void setTempToken(String tempToken, java.sql.Timestamp expiresAt) {
+	public void setTempToken(String tempToken, LocalTime expiresAt) {
 		this.tempToken = tempToken;
 		this.tempTokenExpiresAt = expiresAt;
 	}
 
-	public java.sql.Timestamp getTempTokenExpiresAt() {
+	public LocalTime getTempTokenExpiresAt() {
 		return tempTokenExpiresAt;
 	}
 
@@ -90,7 +92,7 @@ public class User implements Serializable {
 	}
 
 	public User(String email, String displayName, String passwordEnc, String tempToken,
-			java.sql.Timestamp tempTokenExpiresAt) {
+			LocalTime tempTokenExpiresAt) {
 		this.displayName = displayName;
 		this.passwordEnc = passwordEnc;
 		this.tempToken = tempToken;

@@ -19,7 +19,7 @@ public class Subscription implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long subscriptionId;
+	private Long subscriptionId;
 	
 	private int presentationId;
 	
@@ -61,7 +61,7 @@ public class Subscription implements Serializable {
 		this.drink = drink;
 	}
 
-	public long getSubscriptionId() {
+	public Long getSubscriptionId() {
 		return subscriptionId;
 	}
 }

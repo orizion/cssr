@@ -7,9 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PresentationRepository extends CrudRepository<Presentation, Integer> {
+public interface SubscriptionRepository extends CrudRepository<Subscription, Long> {
 
-	// TODO: Really get future only 
-	@Query("SELECT c FROM Presentation AS c")
-	public List<Presentation> getAllFuture();
+	public List<Subscription> findByPresentationId(int presentationId);
 }

@@ -35,12 +35,19 @@ export class BaseAPI {
     }
 };
 
-export interface IterableUser {
+export interface Character {
+}
+
+export interface LocalTime {
+    "hour"?: number;
+    "minute"?: number;
+    "nano"?: number;
+    "second"?: number;
 }
 
 export interface Presentation {
     "abstract"?: string;
-    "dateTime"?: Timestamp;
+    "dateTime"?: Date;
     "location"?: string;
     "presentationId"?: number;
     "speakerId"?: number;
@@ -51,17 +58,12 @@ export interface Principal {
     "name"?: string;
 }
 
-export interface Timestamp {
-    "date"?: number;
-    "day"?: number;
-    "hours"?: number;
-    "minutes"?: number;
-    "month"?: number;
-    "nanos"?: number;
-    "seconds"?: number;
-    "time"?: number;
-    "timezoneOffset"?: number;
-    "year"?: number;
+export interface Subscription {
+    "drink"?: string;
+    "presentationId"?: number;
+    "sandwichType"?: Character;
+    "subscriptionId"?: number;
+    "userId"?: number;
 }
 
 export interface User {
@@ -69,7 +71,7 @@ export interface User {
     "email"?: string;
     "passwordEnc"?: string;
     "tempToken"?: string;
-    "tempTokenExpiresAt"?: Timestamp;
+    "tempTokenExpiresAt"?: LocalTime;
     "userId"?: number;
 }
 
@@ -122,6 +124,55 @@ export const PresentationcontrollerApiFetchParamCreator = {
             options: fetchOptions,
         };
     },
+    /** 
+     * getSingle
+     * @param id id
+     */
+    getSingleUsingGET(params: {  "id": number; }, options?: any): FetchArgs {
+        // verify required parameter "id" is set
+        if (params["id"] == null) {
+            throw new Error("Missing required parameter id when calling getSingleUsingGET");
+        }
+        const baseUrl = `/presentation/{id}`
+            .replace(`{${"id"}}`, `${ params["id"] }`);
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "GET" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
+     * modifyPresentation
+     * @param pres pres
+     */
+    modifyPresentationUsingPUT(params: {  "pres": Presentation; }, options?: any): FetchArgs {
+        // verify required parameter "pres" is set
+        if (params["pres"] == null) {
+            throw new Error("Missing required parameter pres when calling modifyPresentationUsingPUT");
+        }
+        const baseUrl = `/presentation`;
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "PUT" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        contentTypeHeader = { "Content-Type": "application/json" };
+        if (params["pres"]) {
+            fetchOptions.body = JSON.stringify(params["pres"] || {});
+        }
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
 };
 
 /**
@@ -159,6 +210,38 @@ export const PresentationcontrollerApiFp = {
             });
         };
     },
+    /** 
+     * getSingle
+     * @param id id
+     */
+    getSingleUsingGET(params: { "id": number;  }, options?: any): (basePath?: string) => Promise<Presentation> {
+        const fetchArgs = PresentationcontrollerApiFetchParamCreator.getSingleUsingGET(params, options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<Presentation>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
+     * modifyPresentation
+     * @param pres pres
+     */
+    modifyPresentationUsingPUT(params: { "pres": Presentation;  }, options?: any): (basePath?: string) => Promise<Presentation> {
+        const fetchArgs = PresentationcontrollerApiFetchParamCreator.modifyPresentationUsingPUT(params, options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<Presentation>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
 };
 
 /**
@@ -177,6 +260,20 @@ export class PresentationcontrollerApi extends BaseAPI {
      */
     getFutureUsingGET(options?: any) {
         return PresentationcontrollerApiFp.getFutureUsingGET(options)(this.basePath);
+    }
+    /** 
+     * getSingle
+     * @param id id
+     */
+    getSingleUsingGET(params: {  "id": number; }, options?: any) {
+        return PresentationcontrollerApiFp.getSingleUsingGET(params, options)(this.basePath);
+    }
+    /** 
+     * modifyPresentation
+     * @param pres pres
+     */
+    modifyPresentationUsingPUT(params: {  "pres": Presentation; }, options?: any) {
+        return PresentationcontrollerApiFp.modifyPresentationUsingPUT(params, options)(this.basePath);
     }
 };
 
@@ -197,6 +294,283 @@ export const PresentationcontrollerApiFactory = function (basePath?: string) {
          */
         getFutureUsingGET(options?: any) {
             return PresentationcontrollerApiFp.getFutureUsingGET(options)(basePath);
+        },
+        /** 
+         * getSingle
+         * @param id id
+         */
+        getSingleUsingGET(params: {  "id": number; }, options?: any) {
+            return PresentationcontrollerApiFp.getSingleUsingGET(params, options)(basePath);
+        },
+        /** 
+         * modifyPresentation
+         * @param pres pres
+         */
+        modifyPresentationUsingPUT(params: {  "pres": Presentation; }, options?: any) {
+            return PresentationcontrollerApiFp.modifyPresentationUsingPUT(params, options)(basePath);
+        },
+    };
+};
+
+
+/**
+ * SubscriptioncontrollerApi - fetch parameter creator
+ */
+export const SubscriptioncontrollerApiFetchParamCreator = {
+    /** 
+     * addSubscription
+     * @param presentationId presentationId
+     * @param subscription subscription
+     */
+    addSubscriptionUsingPOST(params: {  "presentationId": number; "subscription": Subscription; }, options?: any): FetchArgs {
+        // verify required parameter "presentationId" is set
+        if (params["presentationId"] == null) {
+            throw new Error("Missing required parameter presentationId when calling addSubscriptionUsingPOST");
+        }
+        // verify required parameter "subscription" is set
+        if (params["subscription"] == null) {
+            throw new Error("Missing required parameter subscription when calling addSubscriptionUsingPOST");
+        }
+        const baseUrl = `/presentation/{presentationId}/subscription`
+            .replace(`{${"presentationId"}}`, `${ params["presentationId"] }`);
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "POST" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        contentTypeHeader = { "Content-Type": "application/json" };
+        if (params["subscription"]) {
+            fetchOptions.body = JSON.stringify(params["subscription"] || {});
+        }
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
+     * deleteSingle
+     * @param presentationId presentationId
+     * @param subscriptionId subscriptionId
+     */
+    deleteSingleUsingDELETE(params: {  "presentationId": number; "subscriptionId": number; }, options?: any): FetchArgs {
+        // verify required parameter "presentationId" is set
+        if (params["presentationId"] == null) {
+            throw new Error("Missing required parameter presentationId when calling deleteSingleUsingDELETE");
+        }
+        // verify required parameter "subscriptionId" is set
+        if (params["subscriptionId"] == null) {
+            throw new Error("Missing required parameter subscriptionId when calling deleteSingleUsingDELETE");
+        }
+        const baseUrl = `/presentation/{presentationId}/subscription/{subscriptionId}`
+            .replace(`{${"presentationId"}}`, `${ params["presentationId"] }`)
+            .replace(`{${"subscriptionId"}}`, `${ params["subscriptionId"] }`);
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "DELETE" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
+     * getSubscriptions
+     * @param presentationId presentationId
+     */
+    getSubscriptionsUsingGET(params: {  "presentationId": number; }, options?: any): FetchArgs {
+        // verify required parameter "presentationId" is set
+        if (params["presentationId"] == null) {
+            throw new Error("Missing required parameter presentationId when calling getSubscriptionsUsingGET");
+        }
+        const baseUrl = `/presentation/{presentationId}/subscription`
+            .replace(`{${"presentationId"}}`, `${ params["presentationId"] }`);
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "GET" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
+     * modifySubscription
+     * @param subscription subscription
+     */
+    modifySubscriptionUsingPUT(params: {  "subscription": Subscription; }, options?: any): FetchArgs {
+        // verify required parameter "subscription" is set
+        if (params["subscription"] == null) {
+            throw new Error("Missing required parameter subscription when calling modifySubscriptionUsingPUT");
+        }
+        const baseUrl = `/presentation/{presentationId}/subscription`;
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "PUT" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        contentTypeHeader = { "Content-Type": "application/json" };
+        if (params["subscription"]) {
+            fetchOptions.body = JSON.stringify(params["subscription"] || {});
+        }
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+};
+
+/**
+ * SubscriptioncontrollerApi - functional programming interface
+ */
+export const SubscriptioncontrollerApiFp = {
+    /** 
+     * addSubscription
+     * @param presentationId presentationId
+     * @param subscription subscription
+     */
+    addSubscriptionUsingPOST(params: { "presentationId": number; "subscription": Subscription;  }, options?: any): (basePath?: string) => Promise<Subscription> {
+        const fetchArgs = SubscriptioncontrollerApiFetchParamCreator.addSubscriptionUsingPOST(params, options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<Subscription>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
+     * deleteSingle
+     * @param presentationId presentationId
+     * @param subscriptionId subscriptionId
+     */
+    deleteSingleUsingDELETE(params: { "presentationId": number; "subscriptionId": number;  }, options?: any): (basePath?: string) => Promise<Subscription> {
+        const fetchArgs = SubscriptioncontrollerApiFetchParamCreator.deleteSingleUsingDELETE(params, options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<Subscription>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
+     * getSubscriptions
+     * @param presentationId presentationId
+     */
+    getSubscriptionsUsingGET(params: { "presentationId": number;  }, options?: any): (basePath?: string) => Promise<Array<Subscription>> {
+        const fetchArgs = SubscriptioncontrollerApiFetchParamCreator.getSubscriptionsUsingGET(params, options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<Array<Subscription>>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
+     * modifySubscription
+     * @param subscription subscription
+     */
+    modifySubscriptionUsingPUT(params: { "subscription": Subscription;  }, options?: any): (basePath?: string) => Promise<Subscription> {
+        const fetchArgs = SubscriptioncontrollerApiFetchParamCreator.modifySubscriptionUsingPUT(params, options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<Subscription>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+};
+
+/**
+ * SubscriptioncontrollerApi - object-oriented interface
+ */
+export class SubscriptioncontrollerApi extends BaseAPI {
+    /** 
+     * addSubscription
+     * @param presentationId presentationId
+     * @param subscription subscription
+     */
+    addSubscriptionUsingPOST(params: {  "presentationId": number; "subscription": Subscription; }, options?: any) {
+        return SubscriptioncontrollerApiFp.addSubscriptionUsingPOST(params, options)(this.basePath);
+    }
+    /** 
+     * deleteSingle
+     * @param presentationId presentationId
+     * @param subscriptionId subscriptionId
+     */
+    deleteSingleUsingDELETE(params: {  "presentationId": number; "subscriptionId": number; }, options?: any) {
+        return SubscriptioncontrollerApiFp.deleteSingleUsingDELETE(params, options)(this.basePath);
+    }
+    /** 
+     * getSubscriptions
+     * @param presentationId presentationId
+     */
+    getSubscriptionsUsingGET(params: {  "presentationId": number; }, options?: any) {
+        return SubscriptioncontrollerApiFp.getSubscriptionsUsingGET(params, options)(this.basePath);
+    }
+    /** 
+     * modifySubscription
+     * @param subscription subscription
+     */
+    modifySubscriptionUsingPUT(params: {  "subscription": Subscription; }, options?: any) {
+        return SubscriptioncontrollerApiFp.modifySubscriptionUsingPUT(params, options)(this.basePath);
+    }
+};
+
+/**
+ * SubscriptioncontrollerApi - factory interface
+ */
+export const SubscriptioncontrollerApiFactory = function (basePath?: string) {
+    return {
+        /** 
+         * addSubscription
+         * @param presentationId presentationId
+         * @param subscription subscription
+         */
+        addSubscriptionUsingPOST(params: {  "presentationId": number; "subscription": Subscription; }, options?: any) {
+            return SubscriptioncontrollerApiFp.addSubscriptionUsingPOST(params, options)(basePath);
+        },
+        /** 
+         * deleteSingle
+         * @param presentationId presentationId
+         * @param subscriptionId subscriptionId
+         */
+        deleteSingleUsingDELETE(params: {  "presentationId": number; "subscriptionId": number; }, options?: any) {
+            return SubscriptioncontrollerApiFp.deleteSingleUsingDELETE(params, options)(basePath);
+        },
+        /** 
+         * getSubscriptions
+         * @param presentationId presentationId
+         */
+        getSubscriptionsUsingGET(params: {  "presentationId": number; }, options?: any) {
+            return SubscriptioncontrollerApiFp.getSubscriptionsUsingGET(params, options)(basePath);
+        },
+        /** 
+         * modifySubscription
+         * @param subscription subscription
+         */
+        modifySubscriptionUsingPUT(params: {  "subscription": Subscription; }, options?: any) {
+            return SubscriptioncontrollerApiFp.modifySubscriptionUsingPUT(params, options)(basePath);
         },
     };
 };
@@ -345,6 +719,23 @@ export const UsercontrollerApiFetchParamCreator = {
             options: fetchOptions,
         };
     },
+    /** 
+     * resetPassword
+     */
+    resetPasswordUsingPOST(options?: any): FetchArgs {
+        const baseUrl = `/user/me/resetPassword`;
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "POST" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
 };
 
 /**
@@ -354,12 +745,27 @@ export const UsercontrollerApiFp = {
     /** 
      * getAll
      */
-    getAllUsingGET(options?: any): (basePath?: string) => Promise<IterableUser> {
+    getAllUsingGET(options?: any): (basePath?: string) => Promise<Array<User>> {
         const fetchArgs = UsercontrollerApiFetchParamCreator.getAllUsingGET(options);
         return (basePath: string = BASE_PATH) => {
             return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
                 if (response.status >= 200 && response.status < 300) {
-                    return <Promise<IterableUser>>response.json();
+                    return <Promise<Array<User>>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
+     * resetPassword
+     */
+    resetPasswordUsingPOST(options?: any): (basePath?: string) => Promise<string> {
+        const fetchArgs = UsercontrollerApiFetchParamCreator.resetPasswordUsingPOST(options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<string>>response.json();
                 } else {
                     throw response;
                 }
@@ -378,6 +784,12 @@ export class UsercontrollerApi extends BaseAPI {
     getAllUsingGET(options?: any) {
         return UsercontrollerApiFp.getAllUsingGET(options)(this.basePath);
     }
+    /** 
+     * resetPassword
+     */
+    resetPasswordUsingPOST(options?: any) {
+        return UsercontrollerApiFp.resetPasswordUsingPOST(options)(this.basePath);
+    }
 };
 
 /**
@@ -390,6 +802,12 @@ export const UsercontrollerApiFactory = function (basePath?: string) {
          */
         getAllUsingGET(options?: any) {
             return UsercontrollerApiFp.getAllUsingGET(options)(basePath);
+        },
+        /** 
+         * resetPassword
+         */
+        resetPasswordUsingPOST(options?: any) {
+            return UsercontrollerApiFp.resetPasswordUsingPOST(options)(basePath);
         },
     };
 };

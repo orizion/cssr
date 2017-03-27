@@ -1,0 +1,112 @@
+package ch.fhnw.cssr.mailer;
+
+import java.time.LocalTime;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.Message.RecipientType;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+
+import ch.fhnw.cssr.domain.Email;
+import ch.fhnw.cssr.domain.EmailRepository;
+
+public class MailSender {
+
+	@Value("${mail.from}")
+	private String from;
+
+	@Value("${mail.host}")
+	private String host;
+
+	@Value("${mail.password}")
+	private String emailPassword;
+
+	@Autowired
+	private EmailRepository emailRepo;
+
+	private void addRecipients(Message message, RecipientType type, String addresses)
+			throws AddressException, MessagingException {
+		if (addresses == null) {
+			return;
+		}
+		String[] adressList = addresses.split(";");
+		for (String address : adressList) {
+			message.addRecipient(type, new InternetAddress(address));
+		}
+	}
+
+	public void sendMail(Email mail) {
+
+		Properties properties = new Properties();
+		if (host.contains(":")) {
+			properties.put("mail.smtp.host", host.substring(0, host.indexOf(":")));
+			properties.put("mail.smtp.port", host.substring(host.indexOf(":" + 1)));
+		} else {
+			properties.setProperty("mail.smtp.host", host);
+		}
+		if (emailPassword != null) {
+			properties.put("mail.smtp.auth", "true");
+		}
+		properties.put("mail.transport.protocol", "smtp");
+
+		// Get the default Session object.
+		Session session = Session.getInstance(properties,
+				emailPassword == null ? null : new javax.mail.Authenticator() {
+					protected PasswordAuthentication getPasswordAuthentication() {
+						return new PasswordAuthentication(from, emailPassword);
+					}
+				});
+
+		Transport transport = null;
+		try {
+			// Create a default MimeMessage object.
+			MimeMessage message = new MimeMessage(session);
+
+			// Set From: header field of the header.
+			message.setFrom(new InternetAddress(from));
+
+			// Set To: header field of the header.
+			addRecipients(message, Message.RecipientType.TO, mail.getTo());
+			addRecipients(message, Message.RecipientType.BCC, mail.getBcc());
+			addRecipients(message, Message.RecipientType.CC, mail.getCc());
+
+			// Set Subject: header field
+			message.setSubject(mail.getSubject());
+
+			// Send the actual HTML message, as big as you like
+			message.setContent(mail.getBody(), "text/html");
+
+			transport = session.getTransport();
+			if (emailPassword != null) {
+				transport.connect(from, emailPassword);
+			}
+			// Send message
+			transport.sendMessage(message, message.getAllRecipients());
+			System.out.println("Sent message successfully....");
+			mail.setSentDate(LocalTime.now());
+			mail.setTryCount(mail.getTryCount() + 1);
+		} catch (Exception ex) {
+			mail.setError(ex.toString());
+			mail.setTryCount(mail.getTryCount() + 1);
+		} finally {
+			if (transport != null) {
+				try {
+					transport.close();
+				} catch (MessagingException e) {
+					e.printStackTrace(); // We ignore it
+				}
+			}
+		}
+		emailRepo.save(mail);
+	}
+
+}

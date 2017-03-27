@@ -82,7 +82,12 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.4</version>
 		</dependency>
-
+		<!-- Mail generation -->
+		<dependency>
+			<groupId>com.github.spullara.mustache.java</groupId>
+			<artifactId>compiler</artifactId>
+			<version>0.9.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>

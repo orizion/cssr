@@ -1,6 +1,7 @@
 package ch.fhnw.cssr.domain;
 
 import java.io.Serializable;
+import java.time.LocalTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,22 +19,22 @@ public class Email implements Serializable {
 	private long emailId;
 
 	private String to;
-	
+
 	private String bcc;
-	
+
 	private String cc;
-	
+
 	private String subject;
-	
+
 	private String body;
-	
-	private java.sql.Timestamp sentDate;
-	
-	private int tryCount=0;
-	
+
+	private LocalTime sentDate;
+
+	private int tryCount = 0;
+
 	private String error;
-	
-	private java.sql.Timestamp insertedAt;
+
+	private LocalTime insertedAt;
 
 	public String getTo() {
 		return to;
@@ -75,11 +76,11 @@ public class Email implements Serializable {
 		this.body = body;
 	}
 
-	public java.sql.Timestamp getSentDate() {
+	public LocalTime getSentDate() {
 		return sentDate;
 	}
 
-	public void setSentDate(java.sql.Timestamp sentDate) {
+	public void setSentDate(LocalTime sentDate) {
 		this.sentDate = sentDate;
 	}
 
@@ -99,15 +100,48 @@ public class Email implements Serializable {
 		this.error = error;
 	}
 
-	public java.sql.Timestamp getInsertedAt() {
+	public LocalTime getInsertedAt() {
 		return insertedAt;
-	}
-
-	public void setInsertedAt(java.sql.Timestamp insertedAt) {
-		this.insertedAt = insertedAt;
 	}
 
 	public long getEmailId() {
 		return emailId;
+	}
+
+	private Email() {
+		// 4 JPA
+		this.insertedAt = LocalTime.now();
+	}
+
+	public Email(String to, String bcc, String cc, String subject, String body) {
+		this();
+		this.to = to;
+		this.bcc = bcc;
+		this.cc = cc;
+		this.subject = subject;
+		this.body = body;
+		if (to == null || to.equals(""))
+			throw new IllegalArgumentException("to");
+		this.primitiveEmailAddressCheck(bcc);
+		this.primitiveEmailAddressCheck(cc);
+	}
+
+	/** 
+	 * Checks if all email addresses in a list do have an @ in the address
+	 * You can pass an empty address
+	 * @param address One or more (;-separated) adresses
+	 */
+	private final void primitiveEmailAddressCheck(String address) {
+		if (address == null || address.equals("")) {
+			return; // it's fine, no address is a correct address :)
+		}
+		if (address.contains(";")) {
+			String[] adresses = address.split(";");
+			for (String addr : adresses) {
+				this.primitiveEmailAddressCheck(addr);
+			}
+		}
+		if (!address.contains("@"))
+			throw new IllegalArgumentException("address");
 	}
 }
