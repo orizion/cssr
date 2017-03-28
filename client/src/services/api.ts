@@ -887,6 +887,23 @@ export const SubscriptioncontrollerApiFactory = function (basePath?: string) {
  */
 export const TestcontrollerApiFetchParamCreator = {
     /** 
+     * GetNow
+     */
+    getNowUsingGET(options?: any): FetchArgs {
+        const baseUrl = `/test/date`;
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "GET" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
      * GetTest
      * @param name name
      */
@@ -931,6 +948,21 @@ export const TestcontrollerApiFetchParamCreator = {
  */
 export const TestcontrollerApiFp = {
     /** 
+     * GetNow
+     */
+    getNowUsingGET(options?: any): (basePath?: string) => Promise<Date> {
+        const fetchArgs = TestcontrollerApiFetchParamCreator.getNowUsingGET(options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<Date>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
      * GetTest
      * @param name name
      */
@@ -968,6 +1000,12 @@ export const TestcontrollerApiFp = {
  */
 export class TestcontrollerApi extends BaseAPI {
     /** 
+     * GetNow
+     */
+    getNowUsingGET(options?: any) {
+        return TestcontrollerApiFp.getNowUsingGET(options)(this.basePath);
+    }
+    /** 
      * GetTest
      * @param name name
      */
@@ -987,6 +1025,12 @@ export class TestcontrollerApi extends BaseAPI {
  */
 export const TestcontrollerApiFactory = function (basePath?: string) {
     return {
+        /** 
+         * GetNow
+         */
+        getNowUsingGET(options?: any) {
+            return TestcontrollerApiFp.getNowUsingGET(options)(basePath);
+        },
         /** 
          * GetTest
          * @param name name
