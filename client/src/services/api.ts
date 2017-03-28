@@ -51,6 +51,17 @@ export interface Presentation {
     "title"?: string;
 }
 
+export interface PresentationFileMeta {
+    "contentLink"?: string;
+    "presentationFileId"?: number;
+    "presentationId"?: number;
+    /**
+     * The type of the file. f for Presentation, r for Ressource
+     */
+    "type"?: PresentationFileMetaTypeEnum;
+}
+
+export type PresentationFileMetaTypeEnum = "f" | "r";
 export interface Principal {
     "name"?: string;
 }
@@ -309,6 +320,300 @@ export const PresentationcontrollerApiFactory = function (basePath?: string) {
          */
         modifyPresentationUsingPUT(params: {  "pres": Presentation; }, options?: any) {
             return PresentationcontrollerApiFp.modifyPresentationUsingPUT(params, options)(basePath);
+        },
+    };
+};
+
+
+/**
+ * PresentationfilecontrollerApi - fetch parameter creator
+ */
+export const PresentationfilecontrollerApiFetchParamCreator = {
+    /** 
+     * addFileBinary
+     * @param presentationId presentationId
+     * @param content content
+     * @param type type
+     */
+    addFileBinaryUsingPOST(params: {  "presentationId": number; "content": string; "type": string; }, options?: any): FetchArgs {
+        // verify required parameter "presentationId" is set
+        if (params["presentationId"] == null) {
+            throw new Error("Missing required parameter presentationId when calling addFileBinaryUsingPOST");
+        }
+        // verify required parameter "content" is set
+        if (params["content"] == null) {
+            throw new Error("Missing required parameter content when calling addFileBinaryUsingPOST");
+        }
+        // verify required parameter "type" is set
+        if (params["type"] == null) {
+            throw new Error("Missing required parameter type when calling addFileBinaryUsingPOST");
+        }
+        const baseUrl = `/presentation/{presentationId}/file/binary`
+            .replace(`{${"presentationId"}}`, `${ params["presentationId"] }`);
+        let urlObj = url.parse(baseUrl, true);
+        urlObj.query = Object.assign({}, urlObj.query, {
+            "type": params["type"],
+        });
+        let fetchOptions: RequestInit = Object.assign({}, { method: "POST" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        contentTypeHeader = { "Content-Type": "application/json" };
+        if (params["content"]) {
+            fetchOptions.body = JSON.stringify(params["content"] || {});
+        }
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
+     * addFileLink
+     * @param presentationId presentationId
+     * @param file file
+     * @param contentLink contentLink
+     */
+    addFileLinkUsingPOST(params: {  "presentationId": number; "file": PresentationFileMeta; "contentLink": string; }, options?: any): FetchArgs {
+        // verify required parameter "presentationId" is set
+        if (params["presentationId"] == null) {
+            throw new Error("Missing required parameter presentationId when calling addFileLinkUsingPOST");
+        }
+        // verify required parameter "file" is set
+        if (params["file"] == null) {
+            throw new Error("Missing required parameter file when calling addFileLinkUsingPOST");
+        }
+        // verify required parameter "contentLink" is set
+        if (params["contentLink"] == null) {
+            throw new Error("Missing required parameter contentLink when calling addFileLinkUsingPOST");
+        }
+        const baseUrl = `/presentation/{presentationId}/file/link`
+            .replace(`{${"presentationId"}}`, `${ params["presentationId"] }`);
+        let urlObj = url.parse(baseUrl, true);
+        urlObj.query = Object.assign({}, urlObj.query, {
+            "contentLink": params["contentLink"],
+        });
+        let fetchOptions: RequestInit = Object.assign({}, { method: "POST" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        contentTypeHeader = { "Content-Type": "application/json" };
+        if (params["file"]) {
+            fetchOptions.body = JSON.stringify(params["file"] || {});
+        }
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
+     * deleteFile
+     * @param presentationId presentationId
+     * @param fileId fileId
+     */
+    deleteFileUsingDELETE(params: {  "presentationId": number; "fileId": number; }, options?: any): FetchArgs {
+        // verify required parameter "presentationId" is set
+        if (params["presentationId"] == null) {
+            throw new Error("Missing required parameter presentationId when calling deleteFileUsingDELETE");
+        }
+        // verify required parameter "fileId" is set
+        if (params["fileId"] == null) {
+            throw new Error("Missing required parameter fileId when calling deleteFileUsingDELETE");
+        }
+        const baseUrl = `/presentation/{presentationId}/file/{fileId}`
+            .replace(`{${"presentationId"}}`, `${ params["presentationId"] }`)
+            .replace(`{${"fileId"}}`, `${ params["fileId"] }`);
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "DELETE" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
+     * getFiles
+     * @param presentationId presentationId
+     */
+    getFilesUsingGET(params: {  "presentationId": number; }, options?: any): FetchArgs {
+        // verify required parameter "presentationId" is set
+        if (params["presentationId"] == null) {
+            throw new Error("Missing required parameter presentationId when calling getFilesUsingGET");
+        }
+        const baseUrl = `/presentation/{presentationId}/file`
+            .replace(`{${"presentationId"}}`, `${ params["presentationId"] }`);
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "GET" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+};
+
+/**
+ * PresentationfilecontrollerApi - functional programming interface
+ */
+export const PresentationfilecontrollerApiFp = {
+    /** 
+     * addFileBinary
+     * @param presentationId presentationId
+     * @param content content
+     * @param type type
+     */
+    addFileBinaryUsingPOST(params: { "presentationId": number; "content": string; "type": string;  }, options?: any): (basePath?: string) => Promise<PresentationFileMeta> {
+        const fetchArgs = PresentationfilecontrollerApiFetchParamCreator.addFileBinaryUsingPOST(params, options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<PresentationFileMeta>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
+     * addFileLink
+     * @param presentationId presentationId
+     * @param file file
+     * @param contentLink contentLink
+     */
+    addFileLinkUsingPOST(params: { "presentationId": number; "file": PresentationFileMeta; "contentLink": string;  }, options?: any): (basePath?: string) => Promise<PresentationFileMeta> {
+        const fetchArgs = PresentationfilecontrollerApiFetchParamCreator.addFileLinkUsingPOST(params, options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<PresentationFileMeta>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
+     * deleteFile
+     * @param presentationId presentationId
+     * @param fileId fileId
+     */
+    deleteFileUsingDELETE(params: { "presentationId": number; "fileId": number;  }, options?: any): (basePath?: string) => Promise<PresentationFileMeta> {
+        const fetchArgs = PresentationfilecontrollerApiFetchParamCreator.deleteFileUsingDELETE(params, options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<PresentationFileMeta>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
+     * getFiles
+     * @param presentationId presentationId
+     */
+    getFilesUsingGET(params: { "presentationId": number;  }, options?: any): (basePath?: string) => Promise<Array<PresentationFileMeta>> {
+        const fetchArgs = PresentationfilecontrollerApiFetchParamCreator.getFilesUsingGET(params, options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<Array<PresentationFileMeta>>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+};
+
+/**
+ * PresentationfilecontrollerApi - object-oriented interface
+ */
+export class PresentationfilecontrollerApi extends BaseAPI {
+    /** 
+     * addFileBinary
+     * @param presentationId presentationId
+     * @param content content
+     * @param type type
+     */
+    addFileBinaryUsingPOST(params: {  "presentationId": number; "content": string; "type": string; }, options?: any) {
+        return PresentationfilecontrollerApiFp.addFileBinaryUsingPOST(params, options)(this.basePath);
+    }
+    /** 
+     * addFileLink
+     * @param presentationId presentationId
+     * @param file file
+     * @param contentLink contentLink
+     */
+    addFileLinkUsingPOST(params: {  "presentationId": number; "file": PresentationFileMeta; "contentLink": string; }, options?: any) {
+        return PresentationfilecontrollerApiFp.addFileLinkUsingPOST(params, options)(this.basePath);
+    }
+    /** 
+     * deleteFile
+     * @param presentationId presentationId
+     * @param fileId fileId
+     */
+    deleteFileUsingDELETE(params: {  "presentationId": number; "fileId": number; }, options?: any) {
+        return PresentationfilecontrollerApiFp.deleteFileUsingDELETE(params, options)(this.basePath);
+    }
+    /** 
+     * getFiles
+     * @param presentationId presentationId
+     */
+    getFilesUsingGET(params: {  "presentationId": number; }, options?: any) {
+        return PresentationfilecontrollerApiFp.getFilesUsingGET(params, options)(this.basePath);
+    }
+};
+
+/**
+ * PresentationfilecontrollerApi - factory interface
+ */
+export const PresentationfilecontrollerApiFactory = function (basePath?: string) {
+    return {
+        /** 
+         * addFileBinary
+         * @param presentationId presentationId
+         * @param content content
+         * @param type type
+         */
+        addFileBinaryUsingPOST(params: {  "presentationId": number; "content": string; "type": string; }, options?: any) {
+            return PresentationfilecontrollerApiFp.addFileBinaryUsingPOST(params, options)(basePath);
+        },
+        /** 
+         * addFileLink
+         * @param presentationId presentationId
+         * @param file file
+         * @param contentLink contentLink
+         */
+        addFileLinkUsingPOST(params: {  "presentationId": number; "file": PresentationFileMeta; "contentLink": string; }, options?: any) {
+            return PresentationfilecontrollerApiFp.addFileLinkUsingPOST(params, options)(basePath);
+        },
+        /** 
+         * deleteFile
+         * @param presentationId presentationId
+         * @param fileId fileId
+         */
+        deleteFileUsingDELETE(params: {  "presentationId": number; "fileId": number; }, options?: any) {
+            return PresentationfilecontrollerApiFp.deleteFileUsingDELETE(params, options)(basePath);
+        },
+        /** 
+         * getFiles
+         * @param presentationId presentationId
+         */
+        getFilesUsingGET(params: {  "presentationId": number; }, options?: any) {
+            return PresentationfilecontrollerApiFp.getFilesUsingGET(params, options)(basePath);
         },
     };
 };

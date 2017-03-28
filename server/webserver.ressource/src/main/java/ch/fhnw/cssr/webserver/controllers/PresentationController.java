@@ -9,14 +9,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import ch.fhnw.cssr.domain.PresentationRepository;
-import ch.fhnw.cssr.domain.SubscriptionRepository;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.ApiResponse;
 import ch.fhnw.cssr.domain.Presentation;
+import ch.fhnw.cssr.domain.PresentationRepository;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping("/presentation")

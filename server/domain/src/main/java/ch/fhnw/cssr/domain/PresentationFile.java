@@ -17,18 +17,34 @@ public class PresentationFile implements Serializable {
 
 	public static final String TYPE_PRESENTATION = "f";
 	public static final String TYPE_RESSOURCEN = "r";
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long presentationFileId;
 
 	private int presentationId;
-	
+
 	private String type;
-	
+
 	private byte[] content;
-	
+
 	private String contentLink;
+
+	private PresentationFile() {
+		// Not used currently
+	}
+
+	public PresentationFile(int presentationId, String type, String contentLink) {
+		this.presentationId = presentationId;
+		this.type = type;
+		this.contentLink = contentLink;
+	}
+	
+	public PresentationFile(int presentationId, String type, byte[] content) {
+		this.presentationId = presentationId;
+		this.type = type;
+		this.content = content;
+	}
 
 	public int getPresentationId() {
 		return presentationId;
@@ -53,7 +69,7 @@ public class PresentationFile implements Serializable {
 
 	public void setContent(byte[] content) {
 		this.content = content;
-		if(content != null) {
+		if (content != null) {
 			this.contentLink = null;
 		}
 	}
@@ -64,12 +80,16 @@ public class PresentationFile implements Serializable {
 
 	public void setContentLink(String contentLink) {
 		this.contentLink = contentLink;
-		if(contentLink != null) {
+		if (contentLink != null) {
 			this.content = null;
 		}
 	}
 
 	public long getPresentationFileId() {
 		return presentationFileId;
+	}
+	
+	public PresentationFileMeta getAsMeta(){
+		return new PresentationFileMeta(presentationFileId, presentationId, type, contentLink);
 	}
 }
