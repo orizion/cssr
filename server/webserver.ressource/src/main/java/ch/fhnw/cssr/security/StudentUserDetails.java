@@ -12,44 +12,55 @@ import ch.fhnw.cssr.domain.UserRole;
 
 public class StudentUserDetails extends ch.fhnw.cssr.domain.User implements UserDetails {
 
-	private static final long serialVersionUID = 1989867L;
-	
-	public StudentUserDetails(long id, String email) {
-		super(id, email, email);
-		if(email == null)
-			throw new NullPointerException("email");
-		// TODO: Get UserName from AD
-	}
+    private static final long serialVersionUID = 1989867L;
 
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		
-		String roles = UserRole.getRoleName(UserRole.ROLEID_STUDENT);
-		return AuthorityUtils.commaSeparatedStringToAuthorityList(roles);
-	}
+    /**
+     * Creates a new student.
+     * 
+     * @param id
+     *            The id of the Student
+     * @param email
+     *            The email of the student
+     */
+    public StudentUserDetails(long id, String email) {
+        super(id, email, email);
+        if (email == null) {
+            throw new NullPointerException("email");
+        }
+        // TODO: Get UserName from AD
+    }
 
-	
-	public boolean isAccountNonExpired() {
-		return true;
-	}
+    /**
+     * Gets the roles of the student. (one of which will be student)
+     */
+    public Collection<? extends GrantedAuthority> getAuthorities() {
 
-	public boolean isAccountNonLocked() {
-		return true;
-	}
+        String roles = UserRole.getRoleName(UserRole.ROLEID_STUDENT);
+        return AuthorityUtils.commaSeparatedStringToAuthorityList(roles);
+    }
 
-	public boolean isCredentialsNonExpired() {
-		return true;
-	}
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
-	public boolean isEnabled() {
-		return true;
-	}
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
-	public String getUsername() {
-		return super.getEmail();
-	}
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
-	public String getPassword() {
-		return super.getPasswordEnc();
-	}
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public String getUsername() {
+        return super.getEmail();
+    }
+
+    public String getPassword() {
+        return super.getPasswordEnc();
+    }
 
 }
