@@ -373,9 +373,8 @@ export const PresentationfilecontrollerApiFetchParamCreator = {
      * addFileLink
      * @param presentationId presentationId
      * @param file file
-     * @param contentLink contentLink
      */
-    addFileLinkUsingPOST(params: {  "presentationId": number; "file": PresentationFileMeta; "contentLink": string; }, options?: any): FetchArgs {
+    addFileLinkUsingPOST(params: {  "presentationId": number; "file": PresentationFileMeta; }, options?: any): FetchArgs {
         // verify required parameter "presentationId" is set
         if (params["presentationId"] == null) {
             throw new Error("Missing required parameter presentationId when calling addFileLinkUsingPOST");
@@ -384,16 +383,9 @@ export const PresentationfilecontrollerApiFetchParamCreator = {
         if (params["file"] == null) {
             throw new Error("Missing required parameter file when calling addFileLinkUsingPOST");
         }
-        // verify required parameter "contentLink" is set
-        if (params["contentLink"] == null) {
-            throw new Error("Missing required parameter contentLink when calling addFileLinkUsingPOST");
-        }
         const baseUrl = `/presentation/{presentationId}/file/link`
             .replace(`{${"presentationId"}}`, `${ params["presentationId"] }`);
         let urlObj = url.parse(baseUrl, true);
-        urlObj.query = Object.assign({}, urlObj.query, {
-            "contentLink": params["contentLink"],
-        });
         let fetchOptions: RequestInit = Object.assign({}, { method: "POST" }, options);
 
         let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
@@ -489,9 +481,8 @@ export const PresentationfilecontrollerApiFp = {
      * addFileLink
      * @param presentationId presentationId
      * @param file file
-     * @param contentLink contentLink
      */
-    addFileLinkUsingPOST(params: { "presentationId": number; "file": PresentationFileMeta; "contentLink": string;  }, options?: any): (basePath?: string) => Promise<PresentationFileMeta> {
+    addFileLinkUsingPOST(params: { "presentationId": number; "file": PresentationFileMeta;  }, options?: any): (basePath?: string) => Promise<PresentationFileMeta> {
         const fetchArgs = PresentationfilecontrollerApiFetchParamCreator.addFileLinkUsingPOST(params, options);
         return (basePath: string = BASE_PATH) => {
             return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
@@ -555,9 +546,8 @@ export class PresentationfilecontrollerApi extends BaseAPI {
      * addFileLink
      * @param presentationId presentationId
      * @param file file
-     * @param contentLink contentLink
      */
-    addFileLinkUsingPOST(params: {  "presentationId": number; "file": PresentationFileMeta; "contentLink": string; }, options?: any) {
+    addFileLinkUsingPOST(params: {  "presentationId": number; "file": PresentationFileMeta; }, options?: any) {
         return PresentationfilecontrollerApiFp.addFileLinkUsingPOST(params, options)(this.basePath);
     }
     /** 
@@ -595,9 +585,8 @@ export const PresentationfilecontrollerApiFactory = function (basePath?: string)
          * addFileLink
          * @param presentationId presentationId
          * @param file file
-         * @param contentLink contentLink
          */
-        addFileLinkUsingPOST(params: {  "presentationId": number; "file": PresentationFileMeta; "contentLink": string; }, options?: any) {
+        addFileLinkUsingPOST(params: {  "presentationId": number; "file": PresentationFileMeta; }, options?: any) {
             return PresentationfilecontrollerApiFp.addFileLinkUsingPOST(params, options)(basePath);
         },
         /** 
@@ -887,7 +876,7 @@ export const SubscriptioncontrollerApiFactory = function (basePath?: string) {
  */
 export const TestcontrollerApiFetchParamCreator = {
     /** 
-     * GetNow
+     * getNow
      */
     getNowUsingGET(options?: any): FetchArgs {
         const baseUrl = `/test/date`;
@@ -904,7 +893,7 @@ export const TestcontrollerApiFetchParamCreator = {
         };
     },
     /** 
-     * GetTest
+     * getTest
      * @param name name
      */
     getTestUsingGET(params: {  "name"?: string; }, options?: any): FetchArgs {
@@ -925,7 +914,7 @@ export const TestcontrollerApiFetchParamCreator = {
         };
     },
     /** 
-     * GetUser
+     * getUser
      */
     getUserUsingGET(options?: any): FetchArgs {
         const baseUrl = `/test/user`;
@@ -948,7 +937,7 @@ export const TestcontrollerApiFetchParamCreator = {
  */
 export const TestcontrollerApiFp = {
     /** 
-     * GetNow
+     * getNow
      */
     getNowUsingGET(options?: any): (basePath?: string) => Promise<Date> {
         const fetchArgs = TestcontrollerApiFetchParamCreator.getNowUsingGET(options);
@@ -963,7 +952,7 @@ export const TestcontrollerApiFp = {
         };
     },
     /** 
-     * GetTest
+     * getTest
      * @param name name
      */
     getTestUsingGET(params: { "name"?: string;  }, options?: any): (basePath?: string) => Promise<string> {
@@ -979,7 +968,7 @@ export const TestcontrollerApiFp = {
         };
     },
     /** 
-     * GetUser
+     * getUser
      */
     getUserUsingGET(options?: any): (basePath?: string) => Promise<Principal> {
         const fetchArgs = TestcontrollerApiFetchParamCreator.getUserUsingGET(options);
@@ -1000,20 +989,20 @@ export const TestcontrollerApiFp = {
  */
 export class TestcontrollerApi extends BaseAPI {
     /** 
-     * GetNow
+     * getNow
      */
     getNowUsingGET(options?: any) {
         return TestcontrollerApiFp.getNowUsingGET(options)(this.basePath);
     }
     /** 
-     * GetTest
+     * getTest
      * @param name name
      */
     getTestUsingGET(params: {  "name"?: string; }, options?: any) {
         return TestcontrollerApiFp.getTestUsingGET(params, options)(this.basePath);
     }
     /** 
-     * GetUser
+     * getUser
      */
     getUserUsingGET(options?: any) {
         return TestcontrollerApiFp.getUserUsingGET(options)(this.basePath);
@@ -1026,20 +1015,20 @@ export class TestcontrollerApi extends BaseAPI {
 export const TestcontrollerApiFactory = function (basePath?: string) {
     return {
         /** 
-         * GetNow
+         * getNow
          */
         getNowUsingGET(options?: any) {
             return TestcontrollerApiFp.getNowUsingGET(options)(basePath);
         },
         /** 
-         * GetTest
+         * getTest
          * @param name name
          */
         getTestUsingGET(params: {  "name"?: string; }, options?: any) {
             return TestcontrollerApiFp.getTestUsingGET(params, options)(basePath);
         },
         /** 
-         * GetUser
+         * getUser
          */
         getUserUsingGET(options?: any) {
             return TestcontrollerApiFp.getUserUsingGET(options)(basePath);
