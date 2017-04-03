@@ -7,4 +7,5 @@ mvn package
 cd ../webserver.ressource/
 mvn package
 
-../../tools/deploy/system.sh
+cd ../../tools/deploy
+sudo ./systemd.sh

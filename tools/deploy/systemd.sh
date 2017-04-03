@@ -1,19 +1,30 @@
 # Deployment as seen on
-
+# https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html
+#
+# Execute whole script as root
 set -e
 
-# https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html
 
-appdir = "/var/cssr/web"
-appuser = "cssr" 
+appdir="/var/cssr/web"
+appuser="cssr" 
 
 if [ ! -d "$appdir" ]; then
-   mkdir "$appdir"
-   chown $appdir $appuser
-   chgrp $appdir $appuser 
-   chmod 0400 $appdir # The user can only read
+    mkdir "$appdir"
    
-   sudo cp ./cssr/tools/deploy/cssr.service /etc/systemd/system 
+    cp ./cssr/tools/deploy/cssr.service /etc/systemd/system 
+else 
+    service cssr stop
+    systemctl disable cssr.service
 fi
 
-sudo cp -f ./cssr/server/webserver.ressource/target/webserver.*.jar $appdir/webserver.ressource.jar
+cp -f ./cssr/server/webserver.ressource/target/webserver.*.jar $appdir/webserver.ressource.jar
+chown -R $appuser $appdir
+chgrp -R $appuser $appdir
+chmod -R 0400 $appdir # The user can only read
+
+# Enable Systemd service
+systemctl enable cssr.service
+
+# Start service
+service cssr start
+       
