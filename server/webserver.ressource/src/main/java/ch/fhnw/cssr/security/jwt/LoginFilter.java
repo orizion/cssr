@@ -3,7 +3,7 @@ package ch.fhnw.cssr.security.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -28,15 +28,14 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
         setAuthenticationManager(authManager);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res)
             throws AuthenticationException, IOException, ServletException {
         AccountCredentials creds = new ObjectMapper().readValue(req.getInputStream(),
                 AccountCredentials.class);
         return getAuthenticationManager().authenticate(
-                new UsernamePasswordAuthenticationToken(creds.getEmail(), creds.getPassword(),
-                        (Collection<? extends GrantedAuthority>) Collections.emptyList()));
+                new UsernamePasswordAuthenticationToken(creds.getEmail(), creds.getPassword(), 
+                       new ArrayList<GrantedAuthority>()));
     }
 
     @Override
