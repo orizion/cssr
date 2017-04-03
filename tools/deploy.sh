@@ -8,4 +8,4 @@ cd ../webserver.ressource/
 mvn package
 
 cd ../../
-sudo ./systemd.sh
+sudo ./cssr/tools/deploy/systemd.sh
