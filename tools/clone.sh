@@ -1,3 +1,6 @@
+set -e
+
+
 if [ -d cssr ]; then
    cd cssr
    git reset --hard HEAD

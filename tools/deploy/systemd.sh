@@ -1,5 +1,7 @@
 # Deployment as seen on
 
+set -e
+
 # https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html
 
 appdir = "/var/cssr/web"
