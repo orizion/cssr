@@ -23,30 +23,39 @@ import ch.fhnw.cssr.mailutils.EmailTemplate;
 @RequestMapping("/user")
 public class UserController {
 
-	@Autowired
-	private UserRepository repo;
-	
-	@Autowired
-	private EmailRepository emailRepo;
+    @Autowired
+    private UserRepository repo;
 
-	@RequestMapping(method = RequestMethod.GET)
+    @Autowired
+    private EmailRepository emailRepo;
+
+    /**
+     * Gets all users in the database.
+     * @return A list of all users
+     */
+    @RequestMapping(method = RequestMethod.GET)
     public List<User> getAll() {
-		ArrayList<User> ls = new ArrayList<>();
-		Iterable<User> users = repo.findAll();
-		users.forEach(ls::add);
-		return ls;
+        ArrayList<User> ls = new ArrayList<>();
+        Iterable<User> users = repo.findAll();
+        users.forEach(ls::add);
+        return ls;
     }
-	
-	@RequestMapping(method = RequestMethod.POST, path="me/resetPassword") 
-	public ResponseEntity<String> resetPassword(Principal user) {
-		User dbuser = repo.findByEmail(user.getName());
-		String tempToken = UUID.randomUUID().toString() + "." + UUID.randomUUID().toString();
-		LocalTime expiresAt = LocalTime.now().plusHours(10);
-		dbuser.setTempToken(tempToken, expiresAt);
-		repo.save(dbuser);
-		String mailBody = EmailTemplate.getValue("resetPassword", dbuser);
-		Email mail = new Email(dbuser.getEmail(), null, null, "Reset password", mailBody);
-		emailRepo.save(mail);
-		return new ResponseEntity<String>(dbuser.getEmail(), HttpStatus.OK);
-	}
+
+    /**
+     * Resets the password of the current user by sending a temporary token by mail.
+     * @param user The user
+     * @return The mail of the user
+     */
+    @RequestMapping(method = RequestMethod.POST, path = "me/resetPassword")
+    public ResponseEntity<String> resetPassword(Principal user) {
+        User dbuser = repo.findByEmail(user.getName());
+        String tempToken = UUID.randomUUID().toString() + "." + UUID.randomUUID().toString();
+        LocalTime expiresAt = LocalTime.now().plusHours(10);
+        dbuser.setTempToken(tempToken, expiresAt);
+        repo.save(dbuser);
+        String mailBody = EmailTemplate.getValue("resetPassword", dbuser);
+        Email mail = new Email(dbuser.getEmail(), null, null, "Reset password", mailBody);
+        emailRepo.save(mail);
+        return new ResponseEntity<String>(dbuser.getEmail(), HttpStatus.OK);
+    }
 }

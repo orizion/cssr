@@ -21,50 +21,67 @@ import ch.fhnw.cssr.domain.Presentation;
 @RequestMapping("/presentation/{presentationId}/subscription")
 public class SubscriptionController {
 
-	@Autowired
-	private SubscriptionRepository subscriptionRepo;
+    @Autowired
+    private SubscriptionRepository subscriptionRepo;
 
-	@RequestMapping(method = RequestMethod.GET)
-	public List<Subscription> getSubscriptions(
-			@PathVariable(name = "presentationId", required = true) int presentationId) {
-		return subscriptionRepo.findByPresentationId(presentationId);
-	}
+    @RequestMapping(method = RequestMethod.GET)
+    public List<Subscription> getSubscriptions(
+            @PathVariable(name = "presentationId", required = true) int presentationId) {
+        return subscriptionRepo.findByPresentationId(presentationId);
+    }
 
-	@RequestMapping(method = RequestMethod.DELETE, path = "{subscriptionId}")
-	public ResponseEntity<Subscription> deleteSingle(
-			@PathVariable(name = "presentationId", required = true) int presentationId,
-			@PathVariable(name = "subscriptionId", required = true) long subscriptionId) {
-		Subscription subscription = subscriptionRepo.findOne(subscriptionId);
-		if (subscription == null) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-		if (subscription.getPresentationId() != presentationId) {
-			return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-		}
-		subscriptionRepo.delete(subscription);
-		return new ResponseEntity<Subscription>(subscription, HttpStatus.OK);
-	}
+    /**
+     * Deletes a subscription
+     * @param presentationId The presentation Id. While this information is redundant, it is checked
+     * @param subscriptionId The actual subscriptionId
+     * @return The deleted subscription
+     */
+    @RequestMapping(method = RequestMethod.DELETE, path = "{subscriptionId}")
+    public ResponseEntity<Subscription> deleteSingle(
+            @PathVariable(name = "presentationId", required = true) int presentationId,
+            @PathVariable(name = "subscriptionId", required = true) long subscriptionId) {
+        Subscription subscription = subscriptionRepo.findOne(subscriptionId);
+        if (subscription == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        if (subscription.getPresentationId() != presentationId) {
+            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+        }
+        subscriptionRepo.delete(subscription);
+        return new ResponseEntity<Subscription>(subscription, HttpStatus.OK);
+    }
 
-	@RequestMapping(method = RequestMethod.PUT)
-	public ResponseEntity<Subscription> modifySubscription(@RequestBody Subscription subscription) {
-		if (subscription.getSubscriptionId() == null) {
-			return new ResponseEntity<Subscription>(HttpStatus.PRECONDITION_FAILED);
-		}
-		subscriptionRepo.save(subscription);
-		return new ResponseEntity<Subscription>(subscription, HttpStatus.OK);
-	}
+    /**
+     * Modifies an existing Subscription.
+     * @param subscription The subscription to modify.
+     * @return The modified subscription.
+     */
+    @RequestMapping(method = RequestMethod.PUT)
+    public ResponseEntity<Subscription> modifySubscription(@RequestBody Subscription subscription) {
+        if (subscription.getSubscriptionId() == null) {
+            return new ResponseEntity<Subscription>(HttpStatus.PRECONDITION_FAILED);
+        }
+        subscriptionRepo.save(subscription);
+        return new ResponseEntity<Subscription>(subscription, HttpStatus.OK);
+    }
 
-	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Subscription> addSubscription(
-			@PathVariable(name = "presentationId", required = true) int presentationId,
-			@RequestBody Subscription subscription) {
-		if (subscription.getSubscriptionId() != null) {
-			return new ResponseEntity<Subscription>(HttpStatus.PRECONDITION_FAILED);
-		}
-		if (subscription.getPresentationId() != presentationId) {
-			return new ResponseEntity<Subscription>(HttpStatus.PRECONDITION_FAILED);
-		}
-		subscriptionRepo.save(subscription);
-		return new ResponseEntity<Subscription>(subscription, HttpStatus.CREATED);
-	}
+    /**
+     * Adds a new subscription
+     * @param presentationId The presentationId
+     * @param subscription The new subscription. The presentationId must match
+     * @return The new subscription
+     */
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<Subscription> addSubscription(
+            @PathVariable(name = "presentationId", required = true) int presentationId,
+            @RequestBody Subscription subscription) {
+        if (subscription.getSubscriptionId() != null) {
+            return new ResponseEntity<Subscription>(HttpStatus.PRECONDITION_FAILED);
+        }
+        if (subscription.getPresentationId() != presentationId) {
+            return new ResponseEntity<Subscription>(HttpStatus.PRECONDITION_FAILED);
+        }
+        subscriptionRepo.save(subscription);
+        return new ResponseEntity<Subscription>(subscription, HttpStatus.CREATED);
+    }
 }

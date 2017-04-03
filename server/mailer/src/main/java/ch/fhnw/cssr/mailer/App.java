@@ -1,13 +1,29 @@
 package ch.fhnw.cssr.mailer;
 
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
 /**
  * Hello world!
  *
  */
-public class App 
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
-    }
+@ComponentScan("ch.fhnw.cssr")
+@EnableJpaRepositories(basePackages = { "ch.fhnw.cssr.domain" })
+@SpringBootApplication
+@EntityScan("ch.fhnw.cssr")
+public class App {
+	public static void main(String[] args) {
+		SpringApplicationBuilder build = new SpringApplicationBuilder(App.class);
+		build.web(false);
+
+		try {
+			build.run(args);
+		} catch (Exception err) {
+			err.printStackTrace();
+			System.err.println(err.toString());
+		}
+	}
 }

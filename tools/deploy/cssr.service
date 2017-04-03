@@ -1,0 +1,11 @@
+[Unit]
+Description=cssr
+After=syslog.target
+
+[Service]
+User=cssr
+ExecStart=/var/cssr/web/webserver.ressource.jar
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target

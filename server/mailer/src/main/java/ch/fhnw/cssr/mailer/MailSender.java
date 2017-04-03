@@ -15,12 +15,21 @@ import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import ch.fhnw.cssr.domain.Email;
 import ch.fhnw.cssr.domain.EmailRepository;
 
+@Component
 public class MailSender {
 
+	public static final long MAX_HOURS_TOSEND = 3 * 24; // After 3 days, we do
+														// not send a mail
+														// anymore, it's
+														// deprecated anyway
+	public static final String DEPRECATED_ERROR = "Mail is not sent as it is deprecated";
+
+	
 	@Value("${mail.from}")
 	private String from;
 
@@ -44,8 +53,19 @@ public class MailSender {
 		}
 	}
 
-	public void sendMail(Email mail) {
+	public void sendAll() {
+		Iterable<Email> mails = emailRepo.findNotSent();
+		for (Email mail : mails) {
+			if (mail.getInsertedAt().plusHours(MAX_HOURS_TOSEND).compareTo(LocalTime.now()) < 0) {
+				mail.setError(DEPRECATED_ERROR);
+				emailRepo.save(mail);
+			} else {
+				sendMail(mail);
+			}
+		}
+	}
 
+	public void sendMail(Email mail) {
 		Properties properties = new Properties();
 		if (host.contains(":")) {
 			properties.put("mail.smtp.host", host.substring(0, host.indexOf(":")));
@@ -94,9 +114,12 @@ public class MailSender {
 			System.out.println("Sent message successfully....");
 			mail.setSentDate(LocalTime.now());
 			mail.setTryCount(mail.getTryCount() + 1);
+			
 		} catch (Exception ex) {
 			mail.setError(ex.toString());
 			mail.setTryCount(mail.getTryCount() + 1);
+			System.err.println("Error sending mail with subject: " + mail.getSubject());
+			System.err.println(ex);
 		} finally {
 			if (transport != null) {
 				try {
