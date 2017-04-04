@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -24,8 +25,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import ch.fhnw.cssr.domain.EmailRepository;
 import ch.fhnw.cssr.domain.Presentation;
+import ch.fhnw.cssr.domain.PresentationFileRepository;
 import ch.fhnw.cssr.domain.PresentationRepository;
+import ch.fhnw.cssr.domain.SubscriptionRepository;
+import ch.fhnw.cssr.domain.UserRepository;
+import ch.fhnw.cssr.domain.UserRolesRepository;
+import ch.fhnw.cssr.security.StudentUserDetails;
 
 /**
  * Unit test for simple App.
@@ -39,9 +46,28 @@ public class PresentationControllerTest {
     @MockBean
     private PresentationRepository presentationRepositoryMock;
 
+    @MockBean
+    private  UserRepository userRepositoryMock;
+    @MockBean
+    private UserRolesRepository userRolesRepositoryMock;
+    
+    @MockBean
+    private PresentationFileRepository presentationFileRepositoryMock;
+    
+    @MockBean
+    private SubscriptionRepository subscriptionRepositoryMock;
+    
+    @MockBean
+    private EmailRepository emailRepositoryMock;
+    
     @Before
     public void setUp() {
         Mockito.reset(presentationRepositoryMock);
+        Mockito.reset(userRepositoryMock);
+        Mockito.reset(userRolesRepositoryMock);
+        
+        when(userRepositoryMock.findByEmail("testie@students.fhnw.ch")).thenReturn(null);
+        when(userRolesRepositoryMock.findByUserId(1000)).thenReturn(null);
     }
 
     @Test
@@ -59,13 +85,15 @@ public class PresentationControllerTest {
         when(presentationRepositoryMock.findAll()).thenReturn(Arrays.asList(p, p2));
         when(presentationRepositoryMock.getAllFuture()).thenReturn(Arrays.asList(p));
 
-        mockMvc.perform(get("/presentation?futureOnly=true").header("Accept", "application/json"))
+        mockMvc.perform(get("/presentation?futureOnly=true").header("Accept", "application/json")
+                .with(user(new StudentUserDetails(1000, "testie@students.fhnw.ch"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].abstract", is("test abstract")))
                 .andExpect(jsonPath("$[0].location", is("here")))
                 .andExpect(jsonPath("$.length", is(1)));
 
-        mockMvc.perform(get("/presentation?futureOnly=false").header("Accept", "application/json"))
+        mockMvc.perform(get("/presentation?futureOnly=false").header("Accept", "application/json")
+                .with(user(new StudentUserDetails(1000, "testie@students.fhnw.ch"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].abstract", is("test abstract")))
                 .andExpect(jsonPath("$[0].location", is("here")))
