@@ -1,4 +1,4 @@
-package ch.fhnw.cssr.webserver.ressource;
+package ch.fhnw.cssr.webserver;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;

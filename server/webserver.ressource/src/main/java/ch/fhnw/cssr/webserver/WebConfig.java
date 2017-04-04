@@ -1,4 +1,4 @@
-package ch.fhnw.cssr.webserver.ressource;
+package ch.fhnw.cssr.webserver;
 
 import java.util.List;
 
