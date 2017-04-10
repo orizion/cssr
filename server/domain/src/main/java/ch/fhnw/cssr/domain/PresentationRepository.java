@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PresentationRepository extends CrudRepository<Presentation, Integer> {
 
-	// TODO: Really get future only 
-	@Query("SELECT c FROM Presentation AS c")
+	@Query("SELECT c FROM Presentation AS c WHERE c.dateTime > CURRENT_TIMESTAMP()")
 	public List<Presentation> getAllFuture();
 }
