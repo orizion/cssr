@@ -19,10 +19,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.web.servlet.MockMvc;
 
 import ch.fhnw.cssr.domain.EmailRepository;
@@ -39,6 +42,8 @@ import ch.fhnw.cssr.security.StudentUserDetails;
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest(PresentationController.class)
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class)
+
 public class PresentationControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -47,25 +52,28 @@ public class PresentationControllerTest {
     private PresentationRepository presentationRepositoryMock;
 
     @MockBean
-    private  UserRepository userRepositoryMock;
+    private UserRepository userRepositoryMock;
     @MockBean
     private UserRolesRepository userRolesRepositoryMock;
-    
+
     @MockBean
     private PresentationFileRepository presentationFileRepositoryMock;
-    
+
     @MockBean
     private SubscriptionRepository subscriptionRepositoryMock;
-    
+
     @MockBean
     private EmailRepository emailRepositoryMock;
-    
+
+    /**
+     * Sets up the mocks.
+     */
     @Before
     public void setUp() {
         Mockito.reset(presentationRepositoryMock);
         Mockito.reset(userRepositoryMock);
         Mockito.reset(userRolesRepositoryMock);
-        
+
         when(userRepositoryMock.findByEmail("testie@students.fhnw.ch")).thenReturn(null);
         when(userRolesRepositoryMock.findByUserId(1000)).thenReturn(null);
     }

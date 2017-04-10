@@ -120,11 +120,19 @@ export const PresentationcontrollerApiFetchParamCreator = {
         };
     },
     /** 
-     * getFuture
+     * findAll
+     * @param futureOnly futureOnly
      */
-    getFutureUsingGET(options?: any): FetchArgs {
+    findAllUsingGET(params: {  "futureOnly": boolean; }, options?: any): FetchArgs {
+        // verify required parameter "futureOnly" is set
+        if (params["futureOnly"] == null) {
+            throw new Error("Missing required parameter futureOnly when calling findAllUsingGET");
+        }
         const baseUrl = `/presentation`;
         let urlObj = url.parse(baseUrl, true);
+        urlObj.query = Object.assign({}, urlObj.query, {
+            "futureOnly": params["futureOnly"],
+        });
         let fetchOptions: RequestInit = Object.assign({}, { method: "GET" }, options);
 
         let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
@@ -208,10 +216,11 @@ export const PresentationcontrollerApiFp = {
         };
     },
     /** 
-     * getFuture
+     * findAll
+     * @param futureOnly futureOnly
      */
-    getFutureUsingGET(options?: any): (basePath?: string) => Promise<Array<Presentation>> {
-        const fetchArgs = PresentationcontrollerApiFetchParamCreator.getFutureUsingGET(options);
+    findAllUsingGET(params: { "futureOnly": boolean;  }, options?: any): (basePath?: string) => Promise<Array<Presentation>> {
+        const fetchArgs = PresentationcontrollerApiFetchParamCreator.findAllUsingGET(params, options);
         return (basePath: string = BASE_PATH) => {
             return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
                 if (response.status >= 200 && response.status < 300) {
@@ -268,10 +277,11 @@ export class PresentationcontrollerApi extends BaseAPI {
         return PresentationcontrollerApiFp.addPresentationUsingPOST(params, options)(this.basePath);
     }
     /** 
-     * getFuture
+     * findAll
+     * @param futureOnly futureOnly
      */
-    getFutureUsingGET(options?: any) {
-        return PresentationcontrollerApiFp.getFutureUsingGET(options)(this.basePath);
+    findAllUsingGET(params: {  "futureOnly": boolean; }, options?: any) {
+        return PresentationcontrollerApiFp.findAllUsingGET(params, options)(this.basePath);
     }
     /** 
      * getSingle
@@ -302,10 +312,11 @@ export const PresentationcontrollerApiFactory = function (basePath?: string) {
             return PresentationcontrollerApiFp.addPresentationUsingPOST(params, options)(basePath);
         },
         /** 
-         * getFuture
+         * findAll
+         * @param futureOnly futureOnly
          */
-        getFutureUsingGET(options?: any) {
-            return PresentationcontrollerApiFp.getFutureUsingGET(options)(basePath);
+        findAllUsingGET(params: {  "futureOnly": boolean; }, options?: any) {
+            return PresentationcontrollerApiFp.findAllUsingGET(params, options)(basePath);
         },
         /** 
          * getSingle
@@ -1043,10 +1054,14 @@ export const TestcontrollerApiFactory = function (basePath?: string) {
 export const UsercontrollerApiFetchParamCreator = {
     /** 
      * getAll
+     * @param searchString searchString
      */
-    getAllUsingGET(options?: any): FetchArgs {
+    getAllUsingGET(params: {  "searchString"?: string; }, options?: any): FetchArgs {
         const baseUrl = `/user`;
         let urlObj = url.parse(baseUrl, true);
+        urlObj.query = Object.assign({}, urlObj.query, {
+            "searchString": params["searchString"],
+        });
         let fetchOptions: RequestInit = Object.assign({}, { method: "GET" }, options);
 
         let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
@@ -1083,9 +1098,10 @@ export const UsercontrollerApiFetchParamCreator = {
 export const UsercontrollerApiFp = {
     /** 
      * getAll
+     * @param searchString searchString
      */
-    getAllUsingGET(options?: any): (basePath?: string) => Promise<Array<User>> {
-        const fetchArgs = UsercontrollerApiFetchParamCreator.getAllUsingGET(options);
+    getAllUsingGET(params: { "searchString"?: string;  }, options?: any): (basePath?: string) => Promise<Array<User>> {
+        const fetchArgs = UsercontrollerApiFetchParamCreator.getAllUsingGET(params, options);
         return (basePath: string = BASE_PATH) => {
             return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
                 if (response.status >= 200 && response.status < 300) {
@@ -1119,9 +1135,10 @@ export const UsercontrollerApiFp = {
 export class UsercontrollerApi extends BaseAPI {
     /** 
      * getAll
+     * @param searchString searchString
      */
-    getAllUsingGET(options?: any) {
-        return UsercontrollerApiFp.getAllUsingGET(options)(this.basePath);
+    getAllUsingGET(params: {  "searchString"?: string; }, options?: any) {
+        return UsercontrollerApiFp.getAllUsingGET(params, options)(this.basePath);
     }
     /** 
      * resetPassword
@@ -1138,9 +1155,10 @@ export const UsercontrollerApiFactory = function (basePath?: string) {
     return {
         /** 
          * getAll
+         * @param searchString searchString
          */
-        getAllUsingGET(options?: any) {
-            return UsercontrollerApiFp.getAllUsingGET(options)(basePath);
+        getAllUsingGET(params: {  "searchString"?: string; }, options?: any) {
+            return UsercontrollerApiFp.getAllUsingGET(params, options)(basePath);
         },
         /** 
          * resetPassword

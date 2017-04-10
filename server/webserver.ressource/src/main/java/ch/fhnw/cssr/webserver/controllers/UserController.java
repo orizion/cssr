@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ch.fhnw.cssr.domain.Email;
@@ -31,19 +32,25 @@ public class UserController {
 
     /**
      * Gets all users in the database.
+     * 
      * @return A list of all users
      */
     @RequestMapping(method = RequestMethod.GET)
-    public List<User> getAll() {
+    public List<User> getAll(
+            @RequestParam(name = "searchString", required = false, defaultValue = "")
+            String searchString) {
         ArrayList<User> ls = new ArrayList<>();
-        Iterable<User> users = repo.findAll();
+        Iterable<User> users = searchString == null || searchString.equals("") ? repo.findAll()
+                : repo.findByEmailOrDisplayName(searchString);
         users.forEach(ls::add);
         return ls;
     }
 
     /**
      * Resets the password of the current user by sending a temporary token by mail.
-     * @param user The user
+     * 
+     * @param user
+     *            The user
      * @return The mail of the user
      */
     @RequestMapping(method = RequestMethod.POST, path = "me/resetPassword")
