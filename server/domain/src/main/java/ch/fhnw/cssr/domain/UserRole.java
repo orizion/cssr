@@ -4,7 +4,8 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user2roles")
+@Table(name = "user2roles",
+    uniqueConstraints=@UniqueConstraint(columnNames={"roleId", "userId"}, name="UK_user2Roles"))
 public class UserRole implements Serializable {
 
 	private static final long serialVersionUID = 10023988L;

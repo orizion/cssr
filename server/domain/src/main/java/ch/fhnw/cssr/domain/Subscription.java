@@ -7,11 +7,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
-@Table(name = "subscription")
+@Table(name = "subscription",
+    uniqueConstraints=@UniqueConstraint(columnNames={"presentationId", "userId"}, name="UK_user_subs"))
 public class Subscription implements Serializable {
 	private static final long serialVersionUID = 10013005L;
 
