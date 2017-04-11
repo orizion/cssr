@@ -3,6 +3,8 @@ package ch.fhnw.cssr.webserver.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,9 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping("/presentation")
 public class PresentationController {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    
     @Autowired
     private PresentationRepository repo;
 
@@ -36,8 +41,10 @@ public class PresentationController {
             @RequestParam(name = "futureOnly", required = true) boolean futureOnly) {
 
         if (futureOnly) {
+            logger.debug("Find future presentations");
             return repo.getAllFuture();
         }
+        logger.debug("Find all presentations");
         ArrayList<Presentation> presentations = new ArrayList<Presentation>();
         for (Presentation p : repo.findAll()) {
             presentations.add(p);
@@ -60,6 +67,7 @@ public class PresentationController {
             @PathVariable(name = "id", required = true) Integer id) {
         Presentation resp = repo.findOne(id);
         if (resp == null) {
+            logger.warn("Presentation not found");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<Presentation>(resp, HttpStatus.FOUND);
@@ -75,6 +83,7 @@ public class PresentationController {
     @RequestMapping(method = RequestMethod.PUT)
     public ResponseEntity<Presentation> modifyPresentation(@RequestBody Presentation pres) {
         if (pres.getPresentationId() == null) {
+            logger.warn("Presentation Id is null, use POST instead");
             return new ResponseEntity<Presentation>(HttpStatus.PRECONDITION_FAILED);
         }
         repo.save(pres);
@@ -91,6 +100,7 @@ public class PresentationController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Presentation> addPresentation(@RequestBody Presentation pres) {
         if (pres.getPresentationId() != null) {
+            logger.warn("Presentation Id is not null, use PUT instead");
             return new ResponseEntity<Presentation>(HttpStatus.PRECONDITION_FAILED);
         }
         repo.save(pres);

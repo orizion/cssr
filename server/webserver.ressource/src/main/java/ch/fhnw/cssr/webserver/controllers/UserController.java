@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,8 @@ import ch.fhnw.cssr.mailutils.EmailTemplate;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+    
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private UserRepository repo;
@@ -39,6 +43,7 @@ public class UserController {
     public List<User> getAll(
             @RequestParam(name = "searchString", required = false, defaultValue = "")
             String searchString) {
+        logger.debug("Searching for users");
         ArrayList<User> ls = new ArrayList<>();
         Iterable<User> users = searchString == null || searchString.equals("") ? repo.findAll()
                 : repo.findByEmailOrDisplayName(searchString);
@@ -55,6 +60,8 @@ public class UserController {
      */
     @RequestMapping(method = RequestMethod.POST, path = "me/resetPassword")
     public ResponseEntity<String> resetPassword(Principal user) {
+        logger.debug("Resetting password");
+        
         User dbuser = repo.findByEmail(user.getName());
         String tempToken = UUID.randomUUID().toString() + "." + UUID.randomUUID().toString();
         LocalTime expiresAt = LocalTime.now().plusHours(10);
