@@ -35,7 +35,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableJpaRepositories(basePackages = { "ch.fhnw.cssr.domain" })
 public class WebConfig extends WebMvcConfigurerAdapter {
 
-    @Value("${cors.domain}")
+    @Value("${cssr.cors.domain}")
     private String corsDomain;
 
     @Override

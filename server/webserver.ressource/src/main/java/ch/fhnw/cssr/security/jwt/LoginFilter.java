@@ -24,7 +24,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 
     public LoginFilter(String url, AuthenticationManager authManager) {
-        super(new AntPathRequestMatcher(url));
+        super(new AntPathRequestMatcher(url, "POST"));
         setAuthenticationManager(authManager);
     }
 

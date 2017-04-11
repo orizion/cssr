@@ -17,6 +17,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfig {
     /**
      * Gets the info for Swagger / OpenAPI.
+     * 
      * @return A Docket type of the info.
      */
     @Bean
@@ -24,13 +25,15 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).select()
                 .apis(Predicates
                         .not(RequestHandlerSelectors.basePackage("org.springframework.boot")))
+                
                 .build();
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder().title("CSSR Backend")
-                .description("A REST backend for the CSSR application").version("0.1").build();
+                .description("A REST backend for the CSSR application")
+                .version("0.1")
+                .build();
     }
-
 
 }

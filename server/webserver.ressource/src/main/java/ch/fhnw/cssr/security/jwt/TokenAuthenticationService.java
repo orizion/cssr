@@ -12,6 +12,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,13 +25,25 @@ import java.io.IOException;
 
 class TokenAuthenticationService {
     static final long EXPIRATIONTIME = 3_600_000; // 60 Minutes
-    static final String SECRET = "ThisIsASecret";
     static final String TOKEN_PREFIX = "Bearer";
     static final String HEADER_STRING = "Authorization";
     static final String ROLES_KEY = "r";
 
-    static final String JWT_HEADER = "eyJhbGciOiJIUzUxMiJ9";
+    static String JwtHeader = "eyJhbGciOiJIUzUxMiJ9";
 
+    static SignatureAlgorithm Algorithm = SignatureAlgorithm.HS512;
+    static String Secret = "ThisIsASecret";
+    
+    
+    public static void initialize(SignatureAlgorithm algo, String secret) {
+        TokenAuthenticationService.Algorithm = algo;
+        TokenAuthenticationService.Secret = secret;
+        
+        JwtBuilder builder = Jwts.builder();
+        String jwtToken = builder.signWith(Algorithm, Secret).compact();
+        TokenAuthenticationService.JwtHeader =  jwtToken.substring(0, jwtToken.indexOf("."));
+    }
+    
     static void addAuthentication(HttpServletResponse res,
             Collection<? extends GrantedAuthority> authorities, String username)
             throws IOException {
@@ -42,23 +56,23 @@ class TokenAuthenticationService {
 
         JwtBuilder builder = Jwts.builder();
         builder.setClaims(s);
-        String jwtToken = builder.signWith(SignatureAlgorithm.HS512, SECRET).compact();
+        String jwtToken = builder.signWith(Algorithm, Secret).compact();
 
         // Set the first header bits to the JwtHeader Field
         jwtToken = jwtToken.substring(jwtToken.indexOf('.') + 1);
         // Remove headers, as this is often a cause for weak security
 
         res.setContentType("application/json");
-        
-        res.getWriter().write("{ \"token\": \"" + jwtToken + "\" }");
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(res.getWriter(), new TokenResult(jwtToken));
     }
 
     static Authentication getAuthentication(HttpServletRequest request) {
         String token = request.getHeader(HEADER_STRING);
         if (token != null) {
             // parse the token.
-            Jws<Claims> claims = Jwts.parser().setSigningKey(SECRET)
-                    .parseClaimsJws(JWT_HEADER + "." + token.replace(TOKEN_PREFIX, "").trim());
+            Jws<Claims> claims = Jwts.parser().setSigningKey(Secret)
+                    .parseClaimsJws(JwtHeader + "." + token.replace(TOKEN_PREFIX, "").trim());
             if (claims.getHeader().getAlgorithm().equals("none")) {
                 throw new IllegalArgumentException("Algorithm not valid");
             }

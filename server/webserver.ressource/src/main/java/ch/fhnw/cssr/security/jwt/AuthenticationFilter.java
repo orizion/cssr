@@ -8,18 +8,32 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.web.filter.GenericFilterBean;
 
+import io.jsonwebtoken.SignatureAlgorithm;
+
 public class AuthenticationFilter extends GenericFilterBean {
 
+    @Value("${cssr.jwt.algorithm}")
+    private String algorithm;
+    
+    @Value("${cssr.jwt.secret}")
+    private String secret;
+    
     @Override
     protected void initFilterBean() throws ServletException {
         super.initFilterBean();
-        // TODO: Set key of TokenAuthenticationService to something secure
+        SignatureAlgorithm algo = SignatureAlgorithm.forName(algorithm);
+        TokenAuthenticationService.initialize(algo, secret);
+        
+        // This class should not store these values
+        this.secret = null;
+        this.algorithm = null;
     }
 
     @Override
