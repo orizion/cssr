@@ -3,7 +3,7 @@ import * as React from "react";
 import { FormControl,FormGroup,ControlLabel,Checkbox,Button } from "react-bootstrap";
 
 export interface EditPresentationProps {
-  apiUrl:string;
+  
 }
 export interface EditPresentationState {
   title:string; abstract:string;
@@ -23,7 +23,7 @@ export class EditPresentation extends React.Component<EditPresentationProps, Edi
     console.log(this.state);
   }
   submit(){
-    fetch(this.props.apiUrl)
+    /*fetch(this.props.apiUrl)
     .then((res)=> {
       if(res.ok){
         this.setState({
@@ -33,7 +33,7 @@ export class EditPresentation extends React.Component<EditPresentationProps, Edi
       }else {
 
       }
-    });
+    });*/
   }
   render() {
     return (

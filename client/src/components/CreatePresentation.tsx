@@ -1,48 +1,101 @@
 import * as React from "react";
+import { FormControl, FormGroup, ControlLabel, Checkbox, Button } from "react-bootstrap";
+import * as API from "../services/api";
+import  Select = require('react-select');
 
-import { FormControl,FormGroup,ControlLabel,Checkbox,Button } from "react-bootstrap";
+export interface CreatePresentationProps {
 
-export interface CreatePresentationProps { apiUrl:string; }
+}
 export interface CreatePresentationState {
-  datetime:Date;location:string; speaker_email:string; speaker_id:number; title:string; abstract:string;
+    presentation: API.Presentation;
 }
 
 export class CreatePresentation extends React.Component<CreatePresentationProps, CreatePresentationState> {
   constructor(props: CreatePresentationProps){
     super(props);
     this.state = {
-      datetime:new Date(),
-      location:"",
-      speaker_email:"",
-      speaker_id:0,
-      title:"",
-      abstract:"",
+        presentation: {
+            dateTime: new Date(),
+            location: "",
+            speakerId: 0,
+            title: "",
+            abstract: "",
+        }
     };
     this.handleChanged = this.handleChanged.bind(this);
+
+    //get token for api calls
+
+    fetch(API.BASE_PATH+"/login",{
+      method:"POST",
+      mode: "cors",
+      body: JSON.stringify({
+        "email": "adrian.ehrsam@students.fhnw.ch",
+	      "password": "oij"
+      })
+    }).then((response) => {
+      console.log("received login response");
+        response.json().then((json) =>{
+          console.log("The received token as json: "+ json)
+          this.token = json.token;
+        });
+      
+    }).catch(()=>{
+      console.log("No login access granted");
+    });
   }
   inputStyle = {
     borderColor: 'red',
   }
-  handleChanged(e:any) {
-    this.setState({[e.target.name]: e.target.value});
-    console.log(this.state);
-  }
-  submit(){
-    fetch(this.props.apiUrl)
-    .then((res)=> {
-      if(res.ok){
-        this.setState({
-          datetime: new Date(),
-          location:"",
-          speaker_email:"",
-          speaker_id:0,
-          title:"",
-          abstract:"",
-        });
-      }else {
+  presentationAPI = new API.PresentationcontrollerApi();
+  userAPI = new API.UsercontrollerApi();
 
+  options: any[] = [
+    {value: 1, label: "speaker1"},
+    {value: 2, label: "speaker2"},
+  ];
+
+  selectedOption : any = {}
+  token = "";
+  getSpeakerList = (input:any) => {
+    if(!this.token) {
+      console.log("Token not available");
+    }
+    return this.userAPI.getAllUsingGET(input,{"Authorization":"Bearer "+this.token})
+    .then((response) => {
+      return response;
+    }).then((json) => {
+      return { options: json };
+    });
+  }
+  componentDidMount() {
+    //fill options with the existing speakers
+    
+  }
+  handleChanged(e:any) {
+    this.setState({
+      presentation: {
+        [e.target.name]: e.target.value
       }
     });
+
+    console.log(this.state);
+  }
+  handleSelectChanged(e:any) {
+    this.setState({
+      presentation: {
+        speakerId:e.value
+      }
+    });
+
+    console.log(this.state);
+  }
+  submit() {
+    this.presentationAPI.addPresentationUsingPOST({ 'pres': this.state.presentation }).then((response) => {
+        this.setState({
+            presentation: response
+        });
+    });    
   }
   render() {
     return (
@@ -77,9 +130,15 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
 
         <FormGroup controlId="formControlsSpeakerEmail">
           <ControlLabel>Email Referent</ControlLabel>
-          <br/>
-          <FormControl type="email" name="speaker_email"
-              onChange={this.handleChanged} required/>
+          <br/>       
+        <Select.Async
+            name="speakerId"
+            value={this.state.presentation.speakerId}
+            loadOptions={this.getSpeakerList}
+            onChange={this.handleSelectChanged}
+            searchable={true}
+            clearable={true}
+          /> 
         </FormGroup>
 
         <Button type="submit" bsStyle="primary" onClick={this.submit}>

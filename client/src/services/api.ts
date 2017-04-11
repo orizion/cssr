@@ -17,7 +17,7 @@ import * as url from "url";
 
 export interface Dictionary<T> { [index: string]: T; }
 export const defaultHeaders : Dictionary<string> = { };
-export let BASE_PATH = "https://localhost:8090/".replace(/\/+$/, "");
+export let BASE_PATH = "http://localhost:8090/".replace(/\/+$/, "");
 
 export interface FetchArgs {
     url: string;

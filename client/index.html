@@ -15,10 +15,12 @@
         <div id="container"></div>
 
         <!-- Dependencies -->
-        <script src="./node_modules/react/dist/react.js"></script>
-        <script src="./node_modules/react-dom/dist/react-dom.js"></script>
+        <!-- DIRTY HACK, TODO: need to find other way to fix the issue of wrong js linking, when changing URI per Navigo -->
+        <script src="http://localhost:8080/node_modules/react/dist/react.js"></script>
+        <script src="http://localhost:8080/node_modules/react-dom/dist/react-dom.js"></script>
 
         <!-- Main -->
-        <script src="./dist/bundle.js"></script>
+        <script src="http://localhost:8080/dist/bundle.js"></script>
+        <link rel="stylesheet" href="node_modules/react-select/dist/react-select.css" />
     </body>
 </html>

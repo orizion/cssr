@@ -2,7 +2,11 @@ import * as React from "react";
 
 import { FormControl,FormGroup,ControlLabel,Checkbox,Button } from "react-bootstrap";
 
-export interface SubscribeProps { apiUrl:string;}
+import * as API from "../services/api";
+
+export interface SubscribeProps {  
+  presentation: API.Presentation;
+}
 export interface SubscribeState {
   presentation: string; email:string; sandwich_type:string; drink:boolean;
 }
@@ -22,7 +26,7 @@ export class Subscribe extends React.Component<SubscribeProps, SubscribeState> {
     this.setState({[e.target.name]: e.target.value});
   }
   submit(){
-    fetch(this.props.apiUrl)
+    /*fetch()
     .then((res)=> {
       if(res.ok){
         this.setState({
@@ -34,7 +38,7 @@ export class Subscribe extends React.Component<SubscribeProps, SubscribeState> {
       }else {
 
       }
-    });
+    });*/
   }
   render() {
     return (
@@ -42,7 +46,8 @@ export class Subscribe extends React.Component<SubscribeProps, SubscribeState> {
         <FormGroup controlId="formControlsPresentation">
           <ControlLabel>Präsentation</ControlLabel>
           <br/>
-          <FormControl type="text" name="presentation" placeholder="Präsentationstitel" onChange={this.handleChanged} required/>
+          <h2>{this.props.presentation.title}</h2>
+          <FormControl type="hidden" name="presentationID" value={this.props.presentation.presentationId} />
         </FormGroup>
 
         <FormGroup controlId="formControlsEmail">
@@ -64,7 +69,7 @@ export class Subscribe extends React.Component<SubscribeProps, SubscribeState> {
           </Checkbox>
         </FormGroup>
         <Button type="submit" bsStyle="primary" onClick={this.submit}>
-          Senden
+          Einschreiben
         </Button>
       </form>
     );

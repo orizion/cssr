@@ -29,4 +29,10 @@ module.exports = {
         "react": "React",
         "react-dom": "ReactDOM"
     },
+    devServer: {
+    port: 8080,
+    historyApiFallback: {
+      index: 'index.html'
+    }
+  }
 };

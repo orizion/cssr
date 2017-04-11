@@ -4,6 +4,8 @@ import { FormControl,FormGroup,ControlLabel,Checkbox,Button } from "react-bootst
 
 import  Navigo  = require("navigo");
 
+import * as API from "../services/api";
+
 import { Subscribe } from "./Subscribe";
 import { CreatePresentation } from "./CreatePresentation";
 import { EditPresentation } from "./EditPresentation";
@@ -25,26 +27,49 @@ export class Main extends React.Component<MainProps,MainState> {
     }
   }
   componentDidMount() {
-    let router:any  = new Navigo(null ,true);
+    let router:any  = new Navigo(null ,false);
     let self:Main = this;
       router
-      .on('/subscribe', function () {
+      .on('/subscribe/:id',(params:any,query:string) => {
+        console.log("It succeeded");
+        let presentationAPI: API.PresentationcontrollerApi  = new API.PresentationcontrollerApi();
+        presentationAPI.getSingleUsingGET({"id":params.id})
+        .then((response: API.Presentation)=> {
+          console.log("It succeeded");
+          self.setState(
+           {component:<Subscribe presentation={response}/>}
+         );
+        }).catch((err) => {
+          console.log("No Presentation found");
+        });
+         
+      })//Only for testing
+      .on('/subscribe',() => {
+        self.setState(
+           {
+            component:<Subscribe presentation={{
+              title:"",
+              presentationId:1,
+              abstract:"",
+              dateTime: new Date(),
+              location:"",
+              speakerId:1
+            }}/>
+          }
+        );
+      })
+      .on('/createpresentation',() => {
          self.setState(
-           {component:<Subscribe apiUrl={self.props.apiUrl} />}
+           {component:<CreatePresentation  />}
          );
       })
-      .on('/createpresentation', function () {
+      .on('/editpresentation', () => {
          self.setState(
-           {component:<CreatePresentation apiUrl={self.props.apiUrl} />}
-         );
-      })
-      .on('/editpresentation', function () {
-         self.setState(
-           {component:<EditPresentation apiUrl={self.props.apiUrl} />}
+           {component:<EditPresentation  />}
          );
       })
       .resolve();
-
+      router.resolve();
   }
   render() {
     return (
