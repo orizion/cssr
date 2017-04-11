@@ -26,9 +26,10 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
 
     //get token for api calls
 
-    fetch(API.BASE_PATH+"/login",{
+    fetch(API.BASE_PATH+"/user/login",{
       method:"POST",
       mode: "cors",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         "email": "adrian.ehrsam@students.fhnw.ch",
 	      "password": "oij"

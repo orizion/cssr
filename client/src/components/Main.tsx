@@ -27,7 +27,7 @@ export class Main extends React.Component<MainProps,MainState> {
     }
   }
   componentDidMount() {
-    let router:any  = new Navigo(null ,false);
+    let router:any  = new Navigo(null , false);
     let self:Main = this;
       router
       .on('/subscribe/:id',(params:any,query:string) => {

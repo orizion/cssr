@@ -23,7 +23,7 @@ import java.util.Collection;
 
 import java.io.IOException;
 
-class TokenAuthenticationService {
+public class TokenAuthenticationService {
     static final long EXPIRATIONTIME = 3_600_000; // 60 Minutes
     static final String TOKEN_PREFIX = "Bearer";
     static final String HEADER_STRING = "Authorization";
@@ -34,7 +34,11 @@ class TokenAuthenticationService {
     static SignatureAlgorithm Algorithm = SignatureAlgorithm.HS512;
     static String Secret = "ThisIsASecret";
     
-    
+    /**
+     * Initialize this class with some meaningful parameters.
+     * @param algo The Signature algorithm, such as HS412
+     * @param secret The secret key
+     */
     public static void initialize(SignatureAlgorithm algo, String secret) {
         TokenAuthenticationService.Algorithm = algo;
         TokenAuthenticationService.Secret = secret;
@@ -44,10 +48,14 @@ class TokenAuthenticationService {
         TokenAuthenticationService.JwtHeader =  jwtToken.substring(0, jwtToken.indexOf("."));
     }
     
-    static void addAuthentication(HttpServletResponse res,
-            Collection<? extends GrantedAuthority> authorities, String username)
-            throws IOException {
-
+    /**
+     * Gets the JWT Token for the given user.
+     * @param authorities The roles for the user
+     * @param username The username
+     * @return The jwt token result
+     */
+    public static TokenResult getJwtTokenResult(Collection<? extends GrantedAuthority> authorities, 
+            String username) {
         Claims s = new DefaultClaims();
         String rolesStr = String.join(",", AuthorityUtils.authorityListToSet(authorities));
         s.put(ROLES_KEY, rolesStr);
@@ -57,14 +65,19 @@ class TokenAuthenticationService {
         JwtBuilder builder = Jwts.builder();
         builder.setClaims(s);
         String jwtToken = builder.signWith(Algorithm, Secret).compact();
-
-        // Set the first header bits to the JwtHeader Field
-        jwtToken = jwtToken.substring(jwtToken.indexOf('.') + 1);
+        
         // Remove headers, as this is often a cause for weak security
+        jwtToken = jwtToken.substring(jwtToken.indexOf('.') + 1);
+        return new TokenResult(jwtToken);
+    }
+    
+    static void addAuthentication(HttpServletResponse res,
+            Collection<? extends GrantedAuthority> authorities, String username)
+            throws IOException {
 
         res.setContentType("application/json");
         ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(res.getWriter(), new TokenResult(jwtToken));
+        mapper.writeValue(res.getWriter(), getJwtTokenResult(authorities, username));
     }
 
     static Authentication getAuthentication(HttpServletRequest request) {

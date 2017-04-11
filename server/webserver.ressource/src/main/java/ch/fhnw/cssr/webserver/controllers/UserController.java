@@ -6,11 +6,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,11 +28,14 @@ import ch.fhnw.cssr.domain.User;
 import ch.fhnw.cssr.domain.repository.EmailRepository;
 import ch.fhnw.cssr.domain.repository.UserRepository;
 import ch.fhnw.cssr.mailutils.EmailTemplate;
+import ch.fhnw.cssr.security.jwt.AccountCredentials;
+import ch.fhnw.cssr.security.jwt.TokenAuthenticationService;
+import ch.fhnw.cssr.security.jwt.TokenResult;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
-    
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -33,6 +43,9 @@ public class UserController {
 
     @Autowired
     private EmailRepository emailRepo;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     /**
      * Gets all users in the database.
@@ -61,7 +74,7 @@ public class UserController {
     @RequestMapping(method = RequestMethod.POST, path = "me/resetPassword")
     public ResponseEntity<String> resetPassword(Principal user) {
         logger.debug("Resetting password");
-        
+
         User dbuser = repo.findByEmail(user.getName());
         String tempToken = UUID.randomUUID().toString() + "." + UUID.randomUUID().toString();
         LocalTime expiresAt = LocalTime.now().plusHours(10);
@@ -71,5 +84,27 @@ public class UserController {
         Email mail = new Email(dbuser.getEmail(), null, null, "Reset password", mailBody);
         emailRepo.save(mail);
         return new ResponseEntity<String>(dbuser.getEmail(), HttpStatus.OK);
+    }
+
+    /**
+     * Use this method to login the user.
+     * @param creds The credentials
+     * @return The tokenResult
+     */
+    @RequestMapping(method = RequestMethod.POST, path = "/login")
+    public ResponseEntity<TokenResult> login(@RequestBody AccountCredentials creds,
+            HttpServletRequest request) {
+        if (request.getMethod().toUpperCase().equals("OPTIONS")) {
+            return new ResponseEntity<TokenResult>(HttpStatus.OK);
+        }
+        Authentication auth = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(creds.getEmail(),
+                        creds.getPassword(), new ArrayList<GrantedAuthority>()));
+        if (!auth.isAuthenticated()) {
+            return new ResponseEntity<TokenResult>(HttpStatus.UNAUTHORIZED);
+        }
+        TokenResult token = TokenAuthenticationService.getJwtTokenResult(auth.getAuthorities(),
+                auth.getName());
+        return new ResponseEntity<TokenResult>(token, HttpStatus.OK);
     }
 }

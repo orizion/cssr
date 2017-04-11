@@ -15,6 +15,7 @@ import ch.fhnw.cssr.security.CustomPasswordEncoder;
 import ch.fhnw.cssr.security.CustomUserDetailsService;
 import ch.fhnw.cssr.security.jwt.AuthenticationFilter;
 import ch.fhnw.cssr.security.jwt.LoginFilter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
@@ -23,11 +24,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsService userDetailsService;
+    
+    @Autowired
+    private PasswordEncoder customPasswordEncoder;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests().antMatchers("/").permitAll()
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/user/login").permitAll()
+                // Preflight request for cors
+                .antMatchers(HttpMethod.OPTIONS, "/user/login").permitAll() 
                 .antMatchers(HttpMethod.GET, "/v2/api-docs").permitAll() // Swagger
                 .anyRequest().authenticated().and()
                 // We filter the api/login requests
@@ -40,7 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(new CustomPasswordEncoder());
+        auth.userDetailsService(userDetailsService).passwordEncoder(customPasswordEncoder);
     }
 
 }
