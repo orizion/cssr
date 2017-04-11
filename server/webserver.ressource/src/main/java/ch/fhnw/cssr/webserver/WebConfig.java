@@ -33,7 +33,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EntityScan("ch.fhnw.cssr")
 @ComponentScan("ch.fhnw.cssr")
 @EnableJpaRepositories(basePackages = { "ch.fhnw.cssr.domain" })
-@EnableSwagger2
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Value("${cors.domain}")
@@ -64,21 +63,4 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         }
     }
     
-    /**
-     * Gets the info for Swagger / OpenAPI.
-     * @return A Docket type of the info.
-     */
-    @Bean
-    public Docket newsApi() {
-        return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).select()
-                .apis(Predicates
-                        .not(RequestHandlerSelectors.basePackage("org.springframework.boot")))
-                .build();
-    }
-
-    private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title("CSSR Backend")
-                .description("A REST backend for the CSSR application").version("0.1").build();
-    }
-
 }

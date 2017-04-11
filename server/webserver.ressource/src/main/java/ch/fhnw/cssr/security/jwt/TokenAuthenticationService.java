@@ -49,6 +49,7 @@ class TokenAuthenticationService {
         // Remove headers, as this is often a cause for weak security
 
         res.setContentType("application/json");
+        
         res.getWriter().write("{ \"token\": \"" + jwtToken + "\" }");
     }
 

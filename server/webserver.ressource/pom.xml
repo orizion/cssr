@@ -27,6 +27,7 @@
         <commons-io.version>2.4</commons-io.version>
         <mustache.version>0.9.2</mustache.version>
         <cssr-domain.version>0.0.1-SNAPSHOT</cssr-domain.version>
+        <h2.version>1.4.194</h2.version>
     </properties>
     <dependencies>
         <dependency>
@@ -111,6 +112,14 @@
             <version>${checkstyle.version}</version>
             <type>maven-plugin</type>
         </dependency>
+        <!-- In Memory Database for testing -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

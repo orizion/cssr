@@ -21,4 +21,11 @@ public class AccountCredentials {
         this.password = password;
     }
 
+    public AccountCredentials() {
+    }
+
+    public AccountCredentials(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 }
