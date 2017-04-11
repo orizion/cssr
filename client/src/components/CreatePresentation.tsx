@@ -26,7 +26,7 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
 
     //get token for api calls
 
-    fetch(API.BASE_PATH+"/user/login",{
+    this.loginPromise = fetch(API.BASE_PATH+"/user/login",{
       method:"POST",
       mode: "cors",
       headers: { "Content-Type": "application/json" },
@@ -34,22 +34,23 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
         "email": "adrian.ehrsam@students.fhnw.ch",
 	      "password": "oij"
       })
-    }).then((response) => {
-      console.log("received login response");
-        response.json().then((json) =>{
+    })
+     .then(r=> r.json() as Promise<{token: string}>)
+     .then((json) => {
           console.log("The received token as json: "+ json)
-          this.token = json.token;
-        });
-      
-    }).catch(()=>{
-      console.log("No login access granted");
-    });
+          API.defaultHeaders["Authorization"] = "Bearer "+ json.token;
+          return json.token;
+        })
+        .catch(()=>{
+          console.log("No login access granted");
+      }) as Promise<string>;
   }
   inputStyle = {
     borderColor: 'red',
   }
   presentationAPI = new API.PresentationcontrollerApi();
   userAPI = new API.UsercontrollerApi();
+  loginPromise: Promise<String>;
 
   options: any[] = [
     {value: 1, label: "speaker1"},
@@ -59,11 +60,11 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
   selectedOption : any = {}
   token = "";
   getSpeakerList = (input:any) => {
-    if(!this.token) {
-      console.log("Token not available");
-    }
-    return this.userAPI.getAllUsingGET(input,{"Authorization":"Bearer "+this.token})
-    .then((response) => {
+    
+    return this.loginPromise.then(token => {
+        return this.userAPI.getAllUsingGET(input);
+     })
+     .then((response) => {
       return response;
     }).then((json) => {
       return { options: json };
@@ -135,8 +136,8 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
         <Select.Async
             name="speakerId"
             value={this.state.presentation.speakerId}
-            loadOptions={this.getSpeakerList}
-            onChange={this.handleSelectChanged}
+            loadOptions={this.getSpeakerList.bind(this)}
+            onChange={this.handleSelectChanged.bind(this)}
             searchable={true}
             clearable={true}
           /> 
