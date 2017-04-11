@@ -8,9 +8,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import ch.fhnw.cssr.domain.User;
-import ch.fhnw.cssr.domain.UserRepository;
 import ch.fhnw.cssr.domain.UserRole;
-import ch.fhnw.cssr.domain.UserRolesRepository;
+import ch.fhnw.cssr.domain.repository.UserRepository;
+import ch.fhnw.cssr.domain.repository.UserRolesRepository;
 
 @Service("customUserDetailsService")
 public class CustomUserDetailsService implements UserDetailsService {

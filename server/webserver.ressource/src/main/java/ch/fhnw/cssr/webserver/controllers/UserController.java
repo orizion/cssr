@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ch.fhnw.cssr.domain.Email;
-import ch.fhnw.cssr.domain.EmailRepository;
 import ch.fhnw.cssr.domain.User;
-import ch.fhnw.cssr.domain.UserRepository;
+import ch.fhnw.cssr.domain.repository.EmailRepository;
+import ch.fhnw.cssr.domain.repository.UserRepository;
 import ch.fhnw.cssr.mailutils.EmailTemplate;
 
 @RestController

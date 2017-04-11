@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import ch.fhnw.cssr.domain.Email;
-import ch.fhnw.cssr.domain.EmailRepository;
+import ch.fhnw.cssr.domain.repository.EmailRepository;
 
 @Component
 public class MailSender {

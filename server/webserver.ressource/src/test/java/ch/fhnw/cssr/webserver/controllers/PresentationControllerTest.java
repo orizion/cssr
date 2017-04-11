@@ -13,7 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -46,14 +45,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ch.fhnw.cssr.domain.EmailRepository;
 import ch.fhnw.cssr.domain.Presentation;
-import ch.fhnw.cssr.domain.PresentationFileRepository;
-import ch.fhnw.cssr.domain.PresentationRepository;
-import ch.fhnw.cssr.domain.SubscriptionRepository;
 import ch.fhnw.cssr.domain.User;
-import ch.fhnw.cssr.domain.UserRepository;
-import ch.fhnw.cssr.domain.UserRolesRepository;
+import ch.fhnw.cssr.domain.repository.EmailRepository;
+import ch.fhnw.cssr.domain.repository.PresentationFileRepository;
+import ch.fhnw.cssr.domain.repository.PresentationRepository;
+import ch.fhnw.cssr.domain.repository.SubscriptionRepository;
+import ch.fhnw.cssr.domain.repository.UserRepository;
+import ch.fhnw.cssr.domain.repository.UserRolesRepository;
 import ch.fhnw.cssr.security.StudentUserDetails;
 import ch.fhnw.cssr.security.jwt.AccountCredentials;
 import ch.fhnw.cssr.security.jwt.TokenResult;

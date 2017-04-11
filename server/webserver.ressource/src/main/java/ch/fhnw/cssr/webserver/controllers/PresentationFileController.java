@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ch.fhnw.cssr.domain.PresentationFile;
 import ch.fhnw.cssr.domain.PresentationFileMeta;
-import ch.fhnw.cssr.domain.PresentationFileRepository;
+import ch.fhnw.cssr.domain.repository.PresentationFileRepository;
 
 @RestController
 @RequestMapping("/presentation/{presentationId}/file")

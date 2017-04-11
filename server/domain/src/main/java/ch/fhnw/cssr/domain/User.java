@@ -98,7 +98,9 @@ public class User implements Serializable {
     }
 
     protected User(User copyUser) {
-        this.userId = copyUser.userId == 0 ? null : copyUser.userId;
+        if(copyUser == null)
+            throw new NullPointerException("copyUser");
+        this.userId = new Long(0).equals(copyUser.userId) ? null : copyUser.userId;
         this.email = copyUser.email;
         this.passwordEnc = copyUser.passwordEnc;
         this.tempToken = copyUser.tempToken;

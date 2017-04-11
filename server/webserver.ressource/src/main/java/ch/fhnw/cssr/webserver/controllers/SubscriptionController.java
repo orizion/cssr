@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import ch.fhnw.cssr.domain.PresentationRepository;
 import ch.fhnw.cssr.domain.Subscription;
-import ch.fhnw.cssr.domain.SubscriptionRepository;
+import ch.fhnw.cssr.domain.repository.PresentationRepository;
+import ch.fhnw.cssr.domain.repository.SubscriptionRepository;
 import ch.fhnw.cssr.domain.Presentation;
 
 @RestController

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ch.fhnw.cssr.domain.Presentation;
-import ch.fhnw.cssr.domain.PresentationRepository;
+import ch.fhnw.cssr.domain.repository.PresentationRepository;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 

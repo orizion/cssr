@@ -1,10 +1,12 @@
-package ch.fhnw.cssr.domain;
+package ch.fhnw.cssr.domain.repository;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+
+import ch.fhnw.cssr.domain.Subscription;
 
 @Repository
 public interface SubscriptionRepository extends CrudRepository<Subscription, Long> {
