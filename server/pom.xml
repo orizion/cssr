@@ -1,0 +1,18 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>ch.fhnw.cssr</groupId>
+    <artifactId>cssr-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0</version>
+    <name>Cssr Webserver Application</name>
+
+    <modules>
+        <module>domain</module>
+        <module>mailer</module>
+        <module>webserver.ressource</module>
+    </modules>
+</project>
