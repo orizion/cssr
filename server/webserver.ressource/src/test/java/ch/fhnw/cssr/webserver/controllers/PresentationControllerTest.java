@@ -56,6 +56,7 @@ import ch.fhnw.cssr.domain.repository.UserRolesRepository;
 import ch.fhnw.cssr.security.StudentUserDetails;
 import ch.fhnw.cssr.security.jwt.AccountCredentials;
 import ch.fhnw.cssr.security.jwt.TokenResult;
+import ch.fhnw.cssr.test.TestUtils;
 import ch.fhnw.cssr.webserver.App;
 
 /**
@@ -130,21 +131,10 @@ public class PresentationControllerTest {
         assertNotNull(presentationRepository);
     }
     
-    private String getAuthValue(String email) throws Exception {
-        String password = email + "PASSWORD"; // Just a convention
-        ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(new AccountCredentials(email, password));
-        MvcResult res = mockMvc.perform(post("/login").content(json))
-            .andExpect(status().isOk())
-            .andReturn();
-        String content = res.getResponse().getContentAsString();
-        TokenResult tokenRes = mapper.readValue(content, TokenResult.class);
-        return "Bearer " + tokenRes.getToken();
-    }
 
     @Test
     public void findAllPresentations() throws Exception {
-        String header = getAuthValue("testie2@students.fhnw.ch");        
+        String header = TestUtils.getAuthValue(mockMvc, "testie2@students.fhnw.ch");        
 
         mockMvc.perform(get("/presentation?futureOnly=false").header("Accept", "application/json")
                 .header("Authorization", header))
@@ -159,7 +149,7 @@ public class PresentationControllerTest {
     
     @Test
     public void findFuturePresentations() throws Exception {
-        String header = getAuthValue("testie2@students.fhnw.ch");
+        String header = TestUtils.getAuthValue(mockMvc, "testie2@students.fhnw.ch");
         
         mockMvc.perform(get("/presentation?futureOnly=true").header("Accept", "application/json")
                     .header("Authorization", header))

@@ -69,4 +69,8 @@ public class Presentation implements Serializable {
 	public Integer getPresentationId() {
 		return presentationId;
 	}
+	
+	public Presentation() {
+	    
+	}
 }
