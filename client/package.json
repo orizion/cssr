@@ -10,11 +10,13 @@
   },
   "dependencies": {
     "@types/navigo": "^4.0.0",
+    "@types/react-addons-update": "^0.14.16",
     "@types/react-bootstrap": "^0.0.45",
     "@types/react-select": "^1.0.45",
     "navigo": "^4.1.2",
     "querystring": "^0.2.0",
     "react": "^15.4.2",
+    "react-addons-update": "^15.5.2",
     "react-bootstrap": "^0.30.7",
     "react-dom": "^15.4.2",
     "react-router-dom": "^4.0.0-beta.8",
@@ -26,6 +28,6 @@
   "scripts": {
     "dev": "webpack -d --watch",
     "build": "webpack -p",
-    "serve": "webpack && webpack-dev-server"
+    "serve": "webpack-dev-server"
   }
 }

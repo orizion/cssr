@@ -2,6 +2,7 @@ import * as React from "react";
 import { FormControl, FormGroup, ControlLabel, Checkbox, Button } from "react-bootstrap";
 import * as API from "../services/api";
 import  Select = require('react-select');
+import update = require( 'react-addons-update');
 
 export interface CreatePresentationProps {
 
@@ -23,6 +24,8 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
         }
     };
     this.handleChanged = this.handleChanged.bind(this);
+    this.handleSelectChanged = this.handleSelectChanged.bind(this);
+    this.submit = this.submit.bind(this);
 
     //get token for api calls
 
@@ -51,52 +54,56 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
   presentationAPI = new API.PresentationcontrollerApi();
   userAPI = new API.UsercontrollerApi();
   loginPromise: Promise<String>;
-
-  options: any[] = [
-    {value: 1, label: "speaker1"},
-    {value: 2, label: "speaker2"},
-  ];
-
-  selectedOption : any = {}
   token = "";
   getSpeakerList = (input:any) => {
-    
     return this.loginPromise.then(token => {
         return this.userAPI.getAllUsingGET(input);
      })
      .then((response) => {
-      return response;
+      let speakers:any = response.map((s)=> {
+        return {label: s.email, value: s.userId};
+      });
+      return speakers;
     }).then((json) => {
       return { options: json };
     });
   }
   componentDidMount() {
     //fill options with the existing speakers
-    
+    console.log("changes applied");
   }
   handleChanged(e:any) {
+    let val:any = e.target.value;
     this.setState({
-      presentation: {
-        [e.target.name]: e.target.value
-      }
+        presentation: update(this.state.presentation,{
+            [e.target.name]: {$set: val}
+        })
     });
-
-    console.log(this.state);
   }
   handleSelectChanged(e:any) {
     this.setState({
-      presentation: {
-        speakerId:e.value
-      }
+      presentation: update(this.state.presentation,{
+          speakerId: {$set: e.value}
+      })
     });
 
     console.log(this.state);
   }
-  submit() {
-    this.presentationAPI.addPresentationUsingPOST({ 'pres': this.state.presentation }).then((response) => {
+  submit(e:any) {
+    console.log("changes applied");
+    console.log(API.defaultHeaders["Authorization"]);
+
+    e.preventDefault();
+    return this.loginPromise.then(token => {
+      return this.presentationAPI.addPresentationUsingPOST({ 'pres': this.state.presentation });
+    })
+    .then((response) => {
         this.setState({
             presentation: response
         });
+        console.log(response);
+    }).catch((r) => {
+      console.log("Failed: "+r);
     });    
   }
   render() {
@@ -119,7 +126,7 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
         <FormGroup controlId="formControlsDateTime">
           <ControlLabel>Datum</ControlLabel>
           <br/>
-          <FormControl type="date" name="datetime" placeholder="yyyy.mm.dd"
+          <FormControl type="date" name="dateTime" placeholder="yyyy.mm.dd"
               onChange={this.handleChanged} required/>
         </FormGroup>
 
