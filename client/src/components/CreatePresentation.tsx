@@ -1,5 +1,7 @@
 import * as React from "react";
 import { FormControl, FormGroup, ControlLabel, Checkbox, Button } from "react-bootstrap";
+import * as moment from 'moment';
+import * as Datetime from 'react-datetime';
 import * as API from "../services/api";
 import Select = require('react-select');
 import update = require('react-addons-update');
@@ -25,10 +27,11 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
         };
         this.handleChanged = this.handleChanged.bind(this);
         this.handleSelectChanged = this.handleSelectChanged.bind(this);
+        this.handleDateChanged = this.handleDateChanged.bind(this);
         this.submit = this.submit.bind(this);
 
         //get token for api calls
-
+        //This maybe needs to be transferred to the top level Main class if it is used across views
         this.loginPromise = API.UsercontrollerApiFp.loginUsingPOST({creds: {"email": "adrian.ehrsam@students.fhnw.ch",
                 "password": "oij" }})()
             .then((json) => {
@@ -46,7 +49,7 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
     presentationAPI = new API.PresentationcontrollerApi();
     userAPI = new API.UsercontrollerApi();
     loginPromise: Promise<String>;
-    token = "";
+    date = new Date();
     getSpeakerList = (input: any) => {
         return this.loginPromise.then(token => {
             return this.userAPI.getAllUsingGET(input);
@@ -62,7 +65,6 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
     }
     componentDidMount() {
         //fill options with the existing speakers
-        console.log("changes applied");
     }
     handleChanged(e: any) {
         let val: any = e.target.value;
@@ -71,6 +73,14 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
                 [e.target.name]: { $set: val }
             })
         });
+    }
+    handleDateChanged(moment: any) {
+        this.setState({
+            presentation: update(this.state.presentation, {
+                dateTime: { $set: moment.toISOString() }
+            })
+        });
+        console.log(this.state);
     }
     handleSelectChanged(e: any) {
         this.setState({
@@ -82,9 +92,6 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
         console.log(this.state);
     }
     submit(e: any) {
-        console.log("changes applied");
-        console.log(API.defaultHeaders["Authorization"]);
-
         e.preventDefault();
         return this.loginPromise.then(token => {
             return this.presentationAPI.addPresentationUsingPOST({ 'pres': this.state.presentation });
@@ -118,8 +125,9 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
                 <FormGroup controlId="formControlsDateTime">
                     <ControlLabel>Datum</ControlLabel>
                     <br />
-                    <FormControl type="date" name="dateTime" placeholder="yyyy.mm.dd"
-                        onChange={this.handleChanged} required />
+                    
+                    <Datetime input={true} locale="de"
+                        onChange={this.handleDateChanged} />
                 </FormGroup>
 
                 <FormGroup controlId="formControlsLocation">
@@ -144,7 +152,7 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
 
                 <Button type="submit" bsStyle="primary" onClick={this.submit}>
                     Senden
-        </Button>
+                </Button>
             </form>
         );
     }
