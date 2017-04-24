@@ -16,3 +16,6 @@ client/dist
 
 # Mysql Workbench Temp File
 *.bak
+
+# Local log files 
+npm-debug.log

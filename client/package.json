@@ -1,18 +1,18 @@
 {
   "name": "cssr",
   "version": "0.0.1",
-  "devDependencies": {
-    "@types/react": "^15.0.13",
-    "@types/react-dom": "^0.14.23",
-    "awesome-typescript-loader": "^3.0.8",
-    "source-map-loader": "^0.1.6",
-    "typescript": "^2.2.1"
-  },
+    "devDependencies": {
+        "@types/navigo": "^4.0.0",
+        "@types/react-addons-update": "^0.14.16",
+        "@types/react-bootstrap": "^0.0.45",
+        "@types/react-select": "^1.0.45",
+        "@types/react": "^15.0.13",
+        "@types/react-dom": "^0.14.23",
+        "awesome-typescript-loader": "^3.0.8",
+        "source-map-loader": "^0.1.6",
+        "typescript": "^2.2.1"
+    },
   "dependencies": {
-    "@types/navigo": "^4.0.0",
-    "@types/react-addons-update": "^0.14.16",
-    "@types/react-bootstrap": "^0.0.45",
-    "@types/react-select": "^1.0.45",
     "navigo": "^4.1.2",
     "querystring": "^0.2.0",
     "react": "^15.4.2",

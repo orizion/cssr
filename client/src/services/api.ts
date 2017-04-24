@@ -17,7 +17,7 @@ import * as url from "url";
 
 export interface Dictionary<T> { [index: string]: T; }
 export const defaultHeaders : Dictionary<string> = { };
-export let BASE_PATH = "http://localhost:8090/".replace(/\/+$/, "");
+export let BASE_PATH = "http://localhost:8090".replace(/\/+$/, "");
 
 export interface FetchArgs {
     url: string;
@@ -34,6 +34,11 @@ export class BaseAPI {
         this.basePath = basePath;
     }
 };
+
+export interface AccountCredentials {
+    "email"?: string;
+    "password"?: string;
+}
 
 export interface LocalTime {
     "hour"?: number;
@@ -78,6 +83,10 @@ export interface Subscription {
 }
 
 export type SubscriptionSandwichTypeEnum = "v" | "f";
+export interface TokenResult {
+    "token"?: string;
+}
+
 export interface User {
     "displayName"?: string;
     "email"?: string;
@@ -107,7 +116,7 @@ export const PresentationcontrollerApiFetchParamCreator = {
         let fetchOptions: RequestInit = Object.assign({}, { method: "POST" }, options);
 
         let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
-        contentTypeHeader = { "Content-Type": "application/json" };
+        contentTypeHeader["Content-Type"] = "application/json";
         if (params["pres"]) {
             fetchOptions.body = JSON.stringify(params["pres"] || {});
         }
@@ -181,7 +190,7 @@ export const PresentationcontrollerApiFetchParamCreator = {
         let fetchOptions: RequestInit = Object.assign({}, { method: "PUT" }, options);
 
         let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
-        contentTypeHeader = { "Content-Type": "application/json" };
+        contentTypeHeader["Content-Type"] = "application/json";
         if (params["pres"]) {
             fetchOptions.body = JSON.stringify(params["pres"] || {});
         }
@@ -368,7 +377,7 @@ export const PresentationfilecontrollerApiFetchParamCreator = {
         let fetchOptions: RequestInit = Object.assign({}, { method: "POST" }, options);
 
         let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
-        contentTypeHeader = { "Content-Type": "application/json" };
+        contentTypeHeader["Content-Type"] = "application/json";
         if (params["content"]) {
             fetchOptions.body = JSON.stringify(params["content"] || {});
         }
@@ -400,7 +409,7 @@ export const PresentationfilecontrollerApiFetchParamCreator = {
         let fetchOptions: RequestInit = Object.assign({}, { method: "POST" }, options);
 
         let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
-        contentTypeHeader = { "Content-Type": "application/json" };
+        contentTypeHeader["Content-Type"] = "application/json";
         if (params["file"]) {
             fetchOptions.body = JSON.stringify(params["file"] || {});
         }
@@ -643,7 +652,7 @@ export const SubscriptioncontrollerApiFetchParamCreator = {
         let fetchOptions: RequestInit = Object.assign({}, { method: "POST" }, options);
 
         let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
-        contentTypeHeader = { "Content-Type": "application/json" };
+        contentTypeHeader["Content-Type"] = "application/json";
         if (params["subscription"]) {
             fetchOptions.body = JSON.stringify(params["subscription"] || {});
         }
@@ -721,7 +730,7 @@ export const SubscriptioncontrollerApiFetchParamCreator = {
         let fetchOptions: RequestInit = Object.assign({}, { method: "PUT" }, options);
 
         let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
-        contentTypeHeader = { "Content-Type": "application/json" };
+        contentTypeHeader["Content-Type"] = "application/json";
         if (params["subscription"]) {
             fetchOptions.body = JSON.stringify(params["subscription"] || {});
         }
@@ -1074,6 +1083,32 @@ export const UsercontrollerApiFetchParamCreator = {
         };
     },
     /** 
+     * login
+     * @param creds creds
+     */
+    loginUsingPOST(params: {  "creds": AccountCredentials; }, options?: any): FetchArgs {
+        // verify required parameter "creds" is set
+        if (params["creds"] == null) {
+            throw new Error("Missing required parameter creds when calling loginUsingPOST");
+        }
+        const baseUrl = `/user/login`;
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "POST" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        contentTypeHeader["Content-Type"] = "application/json";
+        if (params["creds"]) {
+            fetchOptions.body = JSON.stringify(params["creds"] || {});
+        }
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
      * resetPassword
      */
     resetPasswordUsingPOST(options?: any): FetchArgs {
@@ -1113,6 +1148,22 @@ export const UsercontrollerApiFp = {
         };
     },
     /** 
+     * login
+     * @param creds creds
+     */
+    loginUsingPOST(params: { "creds": AccountCredentials;  }, options?: any): (basePath?: string) => Promise<TokenResult> {
+        const fetchArgs = UsercontrollerApiFetchParamCreator.loginUsingPOST(params, options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<TokenResult>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
      * resetPassword
      */
     resetPasswordUsingPOST(options?: any): (basePath?: string) => Promise<string> {
@@ -1141,6 +1192,13 @@ export class UsercontrollerApi extends BaseAPI {
         return UsercontrollerApiFp.getAllUsingGET(params, options)(this.basePath);
     }
     /** 
+     * login
+     * @param creds creds
+     */
+    loginUsingPOST(params: {  "creds": AccountCredentials; }, options?: any) {
+        return UsercontrollerApiFp.loginUsingPOST(params, options)(this.basePath);
+    }
+    /** 
      * resetPassword
      */
     resetPasswordUsingPOST(options?: any) {
@@ -1159,6 +1217,13 @@ export const UsercontrollerApiFactory = function (basePath?: string) {
          */
         getAllUsingGET(params: {  "searchString"?: string; }, options?: any) {
             return UsercontrollerApiFp.getAllUsingGET(params, options)(basePath);
+        },
+        /** 
+         * login
+         * @param creds creds
+         */
+        loginUsingPOST(params: {  "creds": AccountCredentials; }, options?: any) {
+            return UsercontrollerApiFp.loginUsingPOST(params, options)(basePath);
         },
         /** 
          * resetPassword
