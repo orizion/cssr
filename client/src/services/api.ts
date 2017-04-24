@@ -1,3 +1,5 @@
+/* tslint:disable */
+
 /**
  * CSSR Backend
  * A REST backend for the CSSR application

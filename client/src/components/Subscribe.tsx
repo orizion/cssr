@@ -58,7 +58,8 @@ export class Subscribe extends React.Component<SubscribeProps, SubscribeState> {
         <FormGroup controlId="formControlsSandwichType">
           <ControlLabel>Sandwichtyp</ControlLabel>
           <br/>
-          <FormControl componentClass="select" name="sandwich_type" onChange={this.handleChanged} placeholder="Sandwichtyp" >
+          <FormControl componentClass="select" name="sandwich_type" onChange={this.handleChanged}
+            placeholder="Sandwichtyp" >
             <option value="vegi">vegi</option>
             <option value="fleisch">fleisch</option>
           </FormControl>

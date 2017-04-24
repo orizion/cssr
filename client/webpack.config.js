@@ -16,6 +16,12 @@ module.exports = {
 
     module: {
         rules: [
+            {
+                test: /\.tsx?$/,
+                enforce: 'pre',
+                loader: 'tslint-loader',
+                options: { /* Loader options go here */ }
+            },
             // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
             { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
             { test: /\.js$/,enforce:"pre", loader: "source-map-loader" }
@@ -33,7 +39,7 @@ module.exports = {
     devServer: {
     port: 8080,
     historyApiFallback: {
-      index: 'index.html'
+      index: '/dist/index.html'
     }
   }
 };
