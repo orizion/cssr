@@ -6,6 +6,7 @@ import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 
 /**
@@ -19,6 +20,23 @@ public class EmailTemplate {
     public static String getValue(String templateName, Object variables) {
         MustacheFactory mf = new DefaultMustacheFactory();
         Mustache mustache = mf.compile("mailtemplates/" + templateName + ".moustache");
+        StringWriter writer = new StringWriter();
+        try {
+            mustache.execute(writer, variables).flush();
+        } catch (IOException e) { 
+            // We really should not get an IO Exception
+            // for writing to a string
+            throw new RuntimeException(e);
+        }
+        return writer.toString();
+    }
+    
+    /**
+     * This renders a mustache template.
+     */
+    public static String getSubject(String keyName, String template, Object variables) {
+        MustacheFactory mf = new DefaultMustacheFactory();
+        Mustache mustache = mf.compile(new StringReader(template), keyName);
         StringWriter writer = new StringWriter();
         try {
             mustache.execute(writer, variables).flush();

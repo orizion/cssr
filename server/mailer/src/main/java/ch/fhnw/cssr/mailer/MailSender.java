@@ -30,13 +30,13 @@ public class MailSender {
 	public static final String DEPRECATED_ERROR = "Mail is not sent as it is deprecated";
 
 	
-	@Value("${mail.from}")
+	@Value("${cssr.mail.from}")
 	private String from;
 
-	@Value("${mail.host}")
+	@Value("${cssr.mail.host}")
 	private String host;
 
-	@Value("${mail.password}")
+	@Value("${cssr.mail.password}")
 	private String emailPassword;
 
 	@Autowired

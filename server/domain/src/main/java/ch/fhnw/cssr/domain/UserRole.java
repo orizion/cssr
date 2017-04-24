@@ -43,11 +43,11 @@ public class UserRole implements Serializable {
 
 	public static String getRoleName(int roleId) {
 		if (roleId == ROLEID_ADMIN) {
-			return "admin";
+			return "ROLE_ADMIN";
 		}
 		if (roleId == ROLEID_STUDENT) {
-			return "stud";
+			return "ROLE_STUD";
 		}
-		return "role" + roleId;
+		return "ROLE_" + roleId;
 	}
 }
