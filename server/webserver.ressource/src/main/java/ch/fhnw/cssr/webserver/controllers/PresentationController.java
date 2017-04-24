@@ -30,19 +30,10 @@ import io.swagger.annotations.ApiResponses;
 public class PresentationController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    @Value("${cssr.mail.invitation.target}")
-    private String invitationTarget;
-
-    @Value("${cssr.mail.invitation.subject}")
-    private String invitationSubject;
-
     
     @Autowired
     private PresentationRepository repo;
 
-    @Autowired
-    private EmailRepository emailRepo;
 
     
     /**
@@ -122,26 +113,4 @@ public class PresentationController {
         return new ResponseEntity<Presentation>(pres, HttpStatus.CREATED);
     }
     
-    /**
-     * Sends the invitation mail for a presentation.
-     * @param id The presentation Id.
-     * @return The presentation that a mail was sent for.
-     */
-    @RequestMapping(method = RequestMethod.GET, path = "{id}/sendinvitation")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Presentation> sendInvitationMail(
-            @PathVariable(name = "id", required = true) Integer id) {
-        Presentation resp = repo.findOne(id);
-        if (resp == null) {
-            logger.warn("Presentation not found");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        String mailBody = EmailTemplate.getValue("sendInvitation", resp);
-        String mailSubject = EmailTemplate.getSubject("cssr.mail.invitation.subject",
-                invitationSubject, resp);
-        Email mail = new Email(invitationTarget, null, null, mailSubject, 
-                mailBody);
-        emailRepo.save(mail);
-        return new ResponseEntity<Presentation>(resp, HttpStatus.FOUND);
-    }
 }

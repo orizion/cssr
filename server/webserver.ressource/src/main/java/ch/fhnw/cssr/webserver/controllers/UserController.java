@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ch.fhnw.cssr.domain.Email;
+import ch.fhnw.cssr.domain.EmailView;
 import ch.fhnw.cssr.domain.User;
 import ch.fhnw.cssr.domain.repository.EmailRepository;
 import ch.fhnw.cssr.domain.repository.UserRepository;
@@ -81,7 +82,11 @@ public class UserController {
         dbuser.setTempToken(tempToken, expiresAt);
         repo.save(dbuser);
         String mailBody = EmailTemplate.getValue("resetPassword", dbuser);
-        Email mail = new Email(dbuser.getEmail(), null, null, "Reset password", mailBody);
+        EmailView v = new EmailView()
+                .setTo(dbuser.getEmail())
+                .setSubject("Reset password")
+                .setBody(mailBody);
+        Email mail = new Email(v);
         emailRepo.save(mail);
         return new ResponseEntity<String>(dbuser.getEmail(), HttpStatus.OK);
     }

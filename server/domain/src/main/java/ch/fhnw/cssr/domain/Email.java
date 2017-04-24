@@ -113,13 +113,13 @@ public class Email implements Serializable {
 		this.insertedAt = LocalTime.now();
 	}
 
-	public Email(String to, String bcc, String cc, String subject, String body) {
+	public Email(EmailView v) {
 		this();
-		this.to = to;
-		this.bcc = bcc;
-		this.cc = cc;
-		this.subject = subject;
-		this.body = body;
+		this.to = v.getTo();
+		this.bcc = v.getBcc();
+		this.cc = v.getCc();
+		this.subject = v.getSubject();
+		this.body = v.getBody();
 		if (to == null || to.equals(""))
 			throw new IllegalArgumentException("to");
 		this.primitiveEmailAddressCheck(bcc);
