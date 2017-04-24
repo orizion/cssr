@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,6 +40,9 @@ public class UserController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Value("${cssr.mail.resetpassword.subject}")
+    private String resetPasswordSubject;
+    
     @Autowired
     private UserRepository repo;
 
@@ -82,9 +86,11 @@ public class UserController {
         dbuser.setTempToken(tempToken, expiresAt);
         repo.save(dbuser);
         String mailBody = EmailTemplate.getValue("resetPassword", dbuser);
+        String mailSubject = EmailTemplate.getSubject("cssr.mail.resetpassword.subject", 
+                resetPasswordSubject, user);
         EmailView v = new EmailView()
                 .setTo(dbuser.getEmail())
-                .setSubject("Reset password")
+                .setSubject(mailSubject)
                 .setBody(mailBody);
         Email mail = new Email(v);
         emailRepo.save(mail);
