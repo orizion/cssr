@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { FormControl,FormGroup,ControlLabel,Checkbox,Button } from "react-bootstrap";
+import { FormControl,FormGroup,ControlLabel,Checkbox,Button,Nav,NavItem } from "react-bootstrap";
 
 import  Navigo  = require("navigo");
 
@@ -9,6 +9,8 @@ import * as API from "../services/api";
 import { Subscribe } from "./Subscribe";
 import { CreatePresentation } from "./CreatePresentation";
 import { EditPresentation } from "./EditPresentation";
+import { CreateUser } from "./CreateUser";
+import { SubscribeOverview } from "./SubscribeOverview";
 
 
 export interface MainProps {
@@ -16,15 +18,18 @@ export interface MainProps {
 }
 
 export interface MainState {
-  component: JSX.Element;
+  component: JSX.Element,
+  activeKey: any;
 }
 
 export class Main extends React.Component<MainProps,MainState> {
   constructor(props: any){
     super(props);
     this.state = {
-      component: <div>Init State</div>
+      component: <div>Init State</div>,
+      activeKey: "1"
     }
+    this.handleNavigate = this.handleNavigate.bind(this);
   }
   componentDidMount() {
     let router:any  = new Navigo(null , false);
@@ -68,18 +73,40 @@ export class Main extends React.Component<MainProps,MainState> {
            {component:<EditPresentation  />}
          );
       })
+      .on('/createuser',() => {
+         self.setState(
+           {component:<CreateUser  />}
+         );
+      })
+      .on('/subscribeoverview',() => {
+         self.setState(
+           {component:<SubscribeOverview  />}
+         );
+      })
       .resolve();
       router.resolve();
   }
+  handleNavigate(key: any) {
+    this.setState({
+      activeKey: key
+    });
+  }
   render() {
     return (
+
       <div id="main">
-        <Button href="subscribe" data-navigo> Subscribe </Button>
-        <Button href="createpresentation" data-navigo> Create Presentation </Button>
-        <Button href="editpresentation" data-navigo> Edit Presentation </Button>
+        <Nav bsStyle="tabs" activeKey={this.state.activeKey} onSelect={this.handleNavigate}>        
+          <NavItem eventKey="1" href="subscribe" data-navigo> Subscribe </NavItem>
+          <NavItem eventKey="2" href="createpresentation" data-navigo> Create Presentation </NavItem>
+          <NavItem eventKey="3" href="editpresentation" data-navigo> Edit Presentation </NavItem>
+          <NavItem eventKey="4" href="createuser" data-navigo> Create User </NavItem>
+          <NavItem eventKey="5" href="subscribeoverview" data-navigo> Overview </NavItem>
+        </Nav>
+        <br/><br/>
         {this.state.component}
       </div>
 
     )
   }
 }
+

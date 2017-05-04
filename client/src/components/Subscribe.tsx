@@ -22,6 +22,7 @@ export class Subscribe extends React.Component<SubscribeProps, SubscribeState> {
     };
     this.handleChanged = this.handleChanged.bind(this);
   }
+  userAPI = new API.UsercontrollerApi()
   handleChanged(e:any) {
     this.setState({[e.target.name]: e.target.value});
   }

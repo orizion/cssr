@@ -11,7 +11,7 @@ export interface CreateUserProps {
 export interface CreateUserState {
     user: API.User;
 }
-export default class CreateUser extends React.Component<CreateUserProps,CreateUserState> {
+export class CreateUser extends React.Component<CreateUserProps,CreateUserState> {
     constructor(props:CreateUserProps) {
         super(props);
         this.state = {

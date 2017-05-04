@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import ch.fhnw.cssr.domain.EmailView;
 
 @Entity
 @Table(name = "email")

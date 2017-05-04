@@ -31,11 +31,9 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
         this.submit = this.submit.bind(this);
 
         //get token for api calls
-        //This maybe needs to be transferred to the top level Main class if it is used across views
         this.loginPromise = API.UsercontrollerApiFp.loginUsingPOST({creds: {"email": "adrian.ehrsam@students.fhnw.ch",
                 "password": "oij" }})()
             .then((json) => {
-                console.log("The received token as json: " + json)
                 API.defaultHeaders["Authorization"] = "Bearer " + json.token;
                 return json.token;
             })
@@ -54,14 +52,14 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
         return this.loginPromise.then(token => {
             return this.userAPI.getAllUsingGET(input);
         })
-            .then((response) => {
-                let speakers: any = response.map((s) => {
-                    return { label: s.email, value: s.userId };
-                });
-                return speakers;
-            }).then((json) => {
-                return { options: json };
+        .then((response) => {
+            let speakers: any = response.map((s) => {
+                return { label: s.email, value: s.userId };
             });
+            return speakers;
+        }).then((json) => {
+            return { options: json };
+        });
     }
     componentDidMount() {
         //fill options with the existing speakers
@@ -77,10 +75,9 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
     handleDateChanged(moment: any) {
         this.setState({
             presentation: update(this.state.presentation, {
-                dateTime: { $set: moment.toISOString() }
+                dateTime: { $set: moment.toDate() }
             })
         });
-        console.log(this.state);
     }
     handleSelectChanged(e: any) {
         this.setState({
@@ -88,17 +85,19 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
                 speakerId: { $set: e.value }
             })
         });
-
-        console.log(this.state);
     }
     submit(e: any) {
-        e.preventDefault();
-        return this.loginPromise.then(token => {
-            return this.presentationAPI.addPresentationUsingPOST({ 'pres': this.state.presentation });
-        })
+        e.preventDefault();     
+            return this.presentationAPI.addPresentationUsingPOST({ 'pres': this.state.presentation })      
             .then((response) => {
                 this.setState({
-                    presentation: response
+                    presentation: {
+                        dateTime: new Date(),
+                        location: "",
+                        speakerId: 0,
+                        title: "",
+                        abstract: "",
+                    }
                 });
                 console.log(response);
             }).catch((r) => {
@@ -111,7 +110,7 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
                 <FormGroup controlId="formControlsTitle">
                     <ControlLabel>Titel</ControlLabel>
                     <br />
-                    <FormControl type="text" name="title" placeholder=""
+                    <FormControl type="text" name="title" placeholder="" value={this.state.presentation.title}
                         onChange={this.handleChanged} required />
                 </FormGroup>
 
@@ -119,6 +118,7 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
                     <ControlLabel>Abstract</ControlLabel>
                     <br />
                     <FormControl componentClass="textarea" name="abstract" placeholder=""
+                        value={this.state.presentation.abstract}
                         onChange={this.handleChanged} required />
                 </FormGroup>
 
@@ -126,14 +126,14 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
                     <ControlLabel>Datum</ControlLabel>
                     <br />
                     
-                    <Datetime input={true} locale="de"
+                    <Datetime input={true} locale="de" value={this.state.presentation.dateTime}
                         onChange={this.handleDateChanged} />
                 </FormGroup>
 
                 <FormGroup controlId="formControlsLocation">
                     <ControlLabel>Raum</ControlLabel>
                     <br />
-                    <FormControl type="text" name="location" placeholder=""
+                    <FormControl type="text" name="location" placeholder="" value={this.state.presentation.location}
                         onChange={this.handleChanged} required />
                 </FormGroup>
 
@@ -143,8 +143,8 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
                     <Select.Async
                         name="speakerId"
                         value={this.state.presentation.speakerId}
-                        loadOptions={this.getSpeakerList.bind(this)}
-                        onChange={this.handleSelectChanged.bind(this)}
+                        loadOptions={this.getSpeakerList}
+                        onChange={this.handleSelectChanged}
                         searchable={true}
                         clearable={true}
                     />
