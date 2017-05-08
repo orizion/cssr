@@ -32,7 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email);
         if (null == user) {
-            if (email.toLowerCase().endsWith(User.StudentsEmailPostfix)) {
+            if (User.isFhnwEmail(email)) {
                 // TODO: Implement AD Lookup (Domain EDU)
                 // TODO: Find better location to save user, he should have entered the password
                 // already
@@ -40,14 +40,11 @@ public class CustomUserDetailsService implements UserDetailsService {
                 this.userRepository.save(dt.copy());
                 return dt;
             }
-            if (email.toLowerCase().endsWith(User.AdmEmailPostfix)) {
-                // TODO: Implement AD Lookup (Domain ADM)
-
-            }
             throw new UsernameNotFoundException("No user present with email: " + email);
         } else {
-            if (email.toLowerCase().endsWith(User.StudentsEmailPostfix)) {
-                return new StudentUserDetails(user.getUserId(), email);
+            if (User.isFhnwEmail(email)) {
+                return new StudentUserDetails(user.getUserId(), email); 
+                // TODO: Handle other AD Users
             }
 
             Iterable<UserRole> roles = userRolesRepository.findByUserId(user.getUserId());

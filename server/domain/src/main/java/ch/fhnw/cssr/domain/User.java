@@ -11,8 +11,8 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = 10023987L;
 
-    public static final String StudentsEmailPostfix = "@students.fhnw.ch";
-    public static final String AdmEmailPostfix = "@fhnw.ch";
+    public static final String FHNW_DOMAIN = "fhnw.ch";
+    public static final String ACTIVE_DIRECTORY_LOOKUP_PREFIX = "ACTIVE_DIRECTORY_LOOKUP_HACK_PREFIX:::::";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -47,6 +47,9 @@ public class User implements Serializable {
     }
 
     public String getPasswordEnc() {
+        if(isFhnwEmail(email)) {
+            return ACTIVE_DIRECTORY_LOOKUP_PREFIX + email;
+        }
         return passwordEnc;
     }
 
@@ -80,10 +83,8 @@ public class User implements Serializable {
      */
     protected User(long userId, String email, String userName) {
         this.email = email;
-        if (email.endsWith(StudentsEmailPostfix)) {
-            this.passwordEnc = PasswordHandler.STUDENT_PLACEHOLDER_PREFIX;
-        } else if (email.endsWith(AdmEmailPostfix)) {
-            this.passwordEnc = PasswordHandler.ADM_PLACEHOLDER_PREFIX;
+        if (isFhnwEmail(email)) {
+            this.passwordEnc = ACTIVE_DIRECTORY_LOOKUP_PREFIX + email;
         } else {
             throw new IllegalArgumentException("email");
         }
@@ -98,7 +99,7 @@ public class User implements Serializable {
     }
 
     protected User(User copyUser) {
-        if(copyUser == null)
+        if (copyUser == null)
             throw new NullPointerException("copyUser");
         this.userId = new Long(0).equals(copyUser.userId) ? null : copyUser.userId;
         this.email = copyUser.email;
@@ -110,6 +111,15 @@ public class User implements Serializable {
 
     public User copy() {
         return new User(this);
+    }
+
+    public static boolean isFhnwEmail(String email) {
+        return !email.endsWith("@" + FHNW_DOMAIN)
+            && !email.endsWith("." + FHNW_DOMAIN); // A subdomain
+    }
+    
+    public boolean isExtern() {
+        return !isFhnwEmail(email);
     }
 
 }
