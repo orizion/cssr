@@ -1,8 +1,9 @@
 package ch.fhnw.cssr.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import ch.fhnw.cssr.domain.PasswordHandler;
+import ch.fhnw.cssr.domain.User;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 
@@ -16,6 +17,9 @@ public class CustomPasswordEncoder implements PasswordEncoder {
     final int prmR = 2;
     final int prmP = 1;
 
+    @Autowired
+    EwsAuthenticator ewsAuthenticator;
+    
     public CustomPasswordEncoder() {
         argon2 = Argon2Factory.create();
     }
@@ -33,11 +37,10 @@ public class CustomPasswordEncoder implements PasswordEncoder {
      */
     public boolean matches(CharSequence rawPassword, String encodedPassword) {
 
-        if (encodedPassword.startsWith(PasswordHandler.ADM_PLACEHOLDER_PREFIX)) {
-            return true; // TODO: AD Lookup
-        }
-        if (encodedPassword.startsWith(PasswordHandler.STUDENT_PLACEHOLDER_PREFIX)) {
-            return true; // TODO: AD Lookup
+        if (encodedPassword.startsWith(User.ACTIVE_DIRECTORY_LOOKUP_PREFIX)) {
+            String email = encodedPassword.substring(User.ACTIVE_DIRECTORY_LOOKUP_PREFIX.length());
+            return ewsAuthenticator.matchesPassword(email, rawPassword);
+            
         }
 
         String hash = argon2.hash(prmR, prmN, prmP, rawPassword.toString());

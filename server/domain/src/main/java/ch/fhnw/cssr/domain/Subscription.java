@@ -6,66 +6,74 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import io.swagger.annotations.ApiModelProperty;
 
 @Entity
-@Table(name = "subscription",
-    uniqueConstraints=@UniqueConstraint(columnNames={"presentationId", "userId"}, name="UK_user_subs"))
+@Table(name = "subscription", uniqueConstraints = @UniqueConstraint(columnNames = {
+        "presentationId", "userId" }, name = "UK_user_subs"))
 public class Subscription implements Serializable {
-	private static final long serialVersionUID = 10013005L;
+    private static final long serialVersionUID = 10013005L;
 
-	public static final String TYPE_SANDWICH_VEGI = "v";
-	public static final String TYPE_SANDWICH_MEAT = "f";
+    public static final String TYPE_SANDWICH_VEGI = "v";
+    public static final String TYPE_SANDWICH_MEAT = "f";
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long subscriptionId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long subscriptionId;
 
-	private int presentationId;
+    private int presentationId;
 
-	private int userId;
+    private int userId;
 
-	private String sandwichType;
+    private String sandwichType;
 
-	private byte drink; // Currently zero for no drink, one for drink
+    private byte drink; // Currently zero for no drink, one for drink
 
-	public int getPresentationId() {
-		return presentationId;
-	}
+    @ManyToOne
+    private User user;
 
-	public void setPresentationId(int presentationId) {
-		this.presentationId = presentationId;
-	}
+    public int getPresentationId() {
+        return presentationId;
+    }
 
-	public int getUserId() {
-		return userId;
-	}
+    public void setPresentationId(int presentationId) {
+        this.presentationId = presentationId;
+    }
 
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
+    public int getUserId() {
+        return userId;
+    }
 
-	@ApiModelProperty(value = "The type of the sandwich. v for Vegi, f for Meat", allowableValues = "v,f", dataType = "String")
-	public String getSandwichType() {
-		return sandwichType.toString();
-	}
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
-	public void setSandwichType(String sandwichType) {
-		this.sandwichType = sandwichType;
-	}
+    @ApiModelProperty(value = "The type of the sandwich. v for Vegi, f for Meat", allowableValues = "v,f", dataType = "String")
+    public String getSandwichType() {
+        return sandwichType.toString();
+    }
 
-	public byte getDrink() {
-		return drink;
-	}
+    public void setSandwichType(String sandwichType) {
+        this.sandwichType = sandwichType;
+    }
 
-	public void setDrink(byte drink) {
-		this.drink = drink;
-	}
+    public byte getDrink() {
+        return drink;
+    }
 
-	public Long getSubscriptionId() {
-		return subscriptionId;
-	}
+    public void setDrink(byte drink) {
+        this.drink = drink;
+    }
+
+    public Long getSubscriptionId() {
+        return subscriptionId;
+    }
+    
+    public User getUser() {
+        return this.user;
+    }
 }

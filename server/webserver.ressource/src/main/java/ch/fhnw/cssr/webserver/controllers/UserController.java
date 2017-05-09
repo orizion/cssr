@@ -51,7 +51,7 @@ public class UserController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
-
+    
     /**
      * Gets all users in the database.
      * 
@@ -108,6 +108,7 @@ public class UserController {
         if (request.getMethod().toUpperCase().equals("OPTIONS")) {
             return new ResponseEntity<TokenResult>(HttpStatus.OK);
         }
+        
         Authentication auth = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(creds.getEmail(),
                         creds.getPassword(), new ArrayList<GrantedAuthority>()));
