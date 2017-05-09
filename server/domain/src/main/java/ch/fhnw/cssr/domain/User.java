@@ -114,8 +114,8 @@ public class User implements Serializable {
     }
 
     public static boolean isFhnwEmail(String email) {
-        return !email.endsWith("@" + FHNW_DOMAIN)
-            && !email.endsWith("." + FHNW_DOMAIN); // A subdomain
+        return email.endsWith("@" + FHNW_DOMAIN)
+            || email.endsWith("." + FHNW_DOMAIN); // A subdomain
     }
     
     public boolean isExtern() {
