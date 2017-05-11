@@ -87,8 +87,7 @@ public class UserController {
      */
     @RequestMapping(method = RequestMethod.GET)
     public List<User> getAll(
-            @RequestParam(name = "searchString", required = false, defaultValue = "") 
-            String searchString) {
+            @RequestParam(name = "searchString", required = false, defaultValue = "") String searchString) {
         logger.debug("Searching for users");
         ArrayList<User> ls = new ArrayList<>();
         Iterable<User> users = searchString == null || searchString.equals("") ? repo.findAll()
@@ -107,7 +106,7 @@ public class UserController {
     @RequestMapping(method = RequestMethod.POST, path = "me/resetPassword")
     public ResponseEntity<String> resetPassword(Principal user) {
         logger.debug("Resetting password");
-        if(User.isFhnwEmail(user.getName())) {
+        if (User.isFhnwEmail(user.getName())) {
             logger.warn("User cannot reset password. This has to be done in AD");
             return new ResponseEntity<String>(HttpStatus.PRECONDITION_FAILED);
         }
@@ -144,7 +143,7 @@ public class UserController {
                 .authenticate(new UsernamePasswordAuthenticationToken(creds.getEmail(),
                         creds.getPassword(), new ArrayList<GrantedAuthority>()));
         if (!auth.isAuthenticated()) {
-            // TODO: logger.warn("Invalid credentials for user ", creds.getEmail());
+            logger.warn("Invalid credentials for user: {} ", creds.getEmail());
             return new ResponseEntity<TokenResult>(HttpStatus.UNAUTHORIZED);
         }
         TokenResult token = TokenAuthenticationService.getJwtTokenResult(auth.getAuthorities(),
