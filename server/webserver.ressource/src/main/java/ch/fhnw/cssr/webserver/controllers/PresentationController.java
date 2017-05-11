@@ -106,9 +106,13 @@ public class PresentationController {
     		Presentation existing = repo.findOne(pres.getPresentationId());
     		if(existing.getSpeakerId() == ((User)dt).getUserId()) {
     			isPermitted = true;
-    			// TODO: Maybe some more intelligent checking here
-    			pres.setDateTime(existing.getDateTime());
-    			pres.setLocation(pres.getLocation());
+    			// The speaker may not edited date and location
+    			if(!pres.getDateTime().equals(existing.getDateTime())) {
+    				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    			}
+    			if(!pres.getLocation().equals(existing.getLocation())) {
+    				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    			}
     		}
     	}
     	if(!isPermitted) {
