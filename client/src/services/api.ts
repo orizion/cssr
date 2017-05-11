@@ -42,6 +42,27 @@ export interface AccountCredentials {
     "password"?: string;
 }
 
+export interface Email {
+    "bcc"?: string;
+    "body"?: string;
+    "cc"?: string;
+    "emailId"?: number;
+    "error"?: string;
+    "insertedAt"?: LocalTime;
+    "sentDate"?: LocalTime;
+    "subject"?: string;
+    "to"?: string;
+    "tryCount"?: number;
+}
+
+export interface EmailView {
+    "bcc"?: string;
+    "body"?: string;
+    "cc"?: string;
+    "subject"?: string;
+    "to"?: string;
+}
+
 export interface LocalTime {
     "hour"?: number;
     "minute"?: number;
@@ -81,6 +102,7 @@ export interface Subscription {
      */
     "sandwichType"?: SubscriptionSandwichTypeEnum;
     "subscriptionId"?: number;
+    "user"?: User;
     "userId"?: number;
 }
 
@@ -92,9 +114,17 @@ export interface TokenResult {
 export interface User {
     "displayName"?: string;
     "email"?: string;
+    "extern"?: boolean;
     "passwordEnc"?: string;
     "tempToken"?: string;
     "tempTokenExpiresAt"?: LocalTime;
+    "userId"?: number;
+}
+
+export interface UserMeta {
+    "authorities"?: Array<string>;
+    "email"?: string;
+    "extern"?: boolean;
     "userId"?: number;
 }
 
@@ -631,6 +661,151 @@ export const PresentationfilecontrollerApiFactory = function (basePath?: string)
 
 
 /**
+ * PresentationmailcontrollerApi - fetch parameter creator
+ */
+export const PresentationmailcontrollerApiFetchParamCreator = {
+    /** 
+     * getInvitationMailTemplate
+     * @param id id
+     */
+    getInvitationMailTemplateUsingGET(params: {  "id": number; }, options?: any): FetchArgs {
+        // verify required parameter "id" is set
+        if (params["id"] == null) {
+            throw new Error("Missing required parameter id when calling getInvitationMailTemplateUsingGET");
+        }
+        const baseUrl = `/presentation/{id}/invitation/template`
+            .replace(`{${"id"}}`, `${ params["id"] }`);
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "GET" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
+     * sendInvitationMail
+     * @param id id
+     * @param mail mail
+     */
+    sendInvitationMailUsingPOST(params: {  "id": number; "mail": EmailView; }, options?: any): FetchArgs {
+        // verify required parameter "id" is set
+        if (params["id"] == null) {
+            throw new Error("Missing required parameter id when calling sendInvitationMailUsingPOST");
+        }
+        // verify required parameter "mail" is set
+        if (params["mail"] == null) {
+            throw new Error("Missing required parameter mail when calling sendInvitationMailUsingPOST");
+        }
+        const baseUrl = `/presentation/{id}/invitation/send`
+            .replace(`{${"id"}}`, `${ params["id"] }`);
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "POST" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        contentTypeHeader["Content-Type"] = "application/json";
+        if (params["mail"]) {
+            fetchOptions.body = JSON.stringify(params["mail"] || {});
+        }
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+};
+
+/**
+ * PresentationmailcontrollerApi - functional programming interface
+ */
+export const PresentationmailcontrollerApiFp = {
+    /** 
+     * getInvitationMailTemplate
+     * @param id id
+     */
+    getInvitationMailTemplateUsingGET(params: { "id": number;  }, options?: any): (basePath?: string) => Promise<EmailView> {
+        const fetchArgs = PresentationmailcontrollerApiFetchParamCreator.getInvitationMailTemplateUsingGET(params, options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<EmailView>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
+     * sendInvitationMail
+     * @param id id
+     * @param mail mail
+     */
+    sendInvitationMailUsingPOST(params: { "id": number; "mail": EmailView;  }, options?: any): (basePath?: string) => Promise<Email> {
+        const fetchArgs = PresentationmailcontrollerApiFetchParamCreator.sendInvitationMailUsingPOST(params, options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<Email>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+};
+
+/**
+ * PresentationmailcontrollerApi - object-oriented interface
+ */
+export class PresentationmailcontrollerApi extends BaseAPI {
+    /** 
+     * getInvitationMailTemplate
+     * @param id id
+     */
+    getInvitationMailTemplateUsingGET(params: {  "id": number; }, options?: any) {
+        return PresentationmailcontrollerApiFp.getInvitationMailTemplateUsingGET(params, options)(this.basePath);
+    }
+    /** 
+     * sendInvitationMail
+     * @param id id
+     * @param mail mail
+     */
+    sendInvitationMailUsingPOST(params: {  "id": number; "mail": EmailView; }, options?: any) {
+        return PresentationmailcontrollerApiFp.sendInvitationMailUsingPOST(params, options)(this.basePath);
+    }
+};
+
+/**
+ * PresentationmailcontrollerApi - factory interface
+ */
+export const PresentationmailcontrollerApiFactory = function (basePath?: string) {
+    return {
+        /** 
+         * getInvitationMailTemplate
+         * @param id id
+         */
+        getInvitationMailTemplateUsingGET(params: {  "id": number; }, options?: any) {
+            return PresentationmailcontrollerApiFp.getInvitationMailTemplateUsingGET(params, options)(basePath);
+        },
+        /** 
+         * sendInvitationMail
+         * @param id id
+         * @param mail mail
+         */
+        sendInvitationMailUsingPOST(params: {  "id": number; "mail": EmailView; }, options?: any) {
+            return PresentationmailcontrollerApiFp.sendInvitationMailUsingPOST(params, options)(basePath);
+        },
+    };
+};
+
+
+/**
  * SubscriptioncontrollerApi - fetch parameter creator
  */
 export const SubscriptioncontrollerApiFetchParamCreator = {
@@ -1085,6 +1260,23 @@ export const UsercontrollerApiFetchParamCreator = {
         };
     },
     /** 
+     * get
+     */
+    getUsingGET(options?: any): FetchArgs {
+        const baseUrl = `/user/me`;
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "GET" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
      * login
      * @param creds creds
      */
@@ -1150,6 +1342,21 @@ export const UsercontrollerApiFp = {
         };
     },
     /** 
+     * get
+     */
+    getUsingGET(options?: any): (basePath?: string) => Promise<UserMeta> {
+        const fetchArgs = UsercontrollerApiFetchParamCreator.getUsingGET(options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<UserMeta>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
      * login
      * @param creds creds
      */
@@ -1194,6 +1401,12 @@ export class UsercontrollerApi extends BaseAPI {
         return UsercontrollerApiFp.getAllUsingGET(params, options)(this.basePath);
     }
     /** 
+     * get
+     */
+    getUsingGET(options?: any) {
+        return UsercontrollerApiFp.getUsingGET(options)(this.basePath);
+    }
+    /** 
      * login
      * @param creds creds
      */
@@ -1219,6 +1432,12 @@ export const UsercontrollerApiFactory = function (basePath?: string) {
          */
         getAllUsingGET(params: {  "searchString"?: string; }, options?: any) {
             return UsercontrollerApiFp.getAllUsingGET(params, options)(basePath);
+        },
+        /** 
+         * get
+         */
+        getUsingGET(options?: any) {
+            return UsercontrollerApiFp.getUsingGET(options)(basePath);
         },
         /** 
          * login
