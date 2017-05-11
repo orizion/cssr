@@ -107,7 +107,10 @@ public class UserController {
     @RequestMapping(method = RequestMethod.POST, path = "me/resetPassword")
     public ResponseEntity<String> resetPassword(Principal user) {
         logger.debug("Resetting password");
-
+        if(User.isFhnwEmail(user.getName())) {
+            logger.warn("User cannot reset password. This has to be done in AD");
+            return new ResponseEntity<String>(HttpStatus.PRECONDITION_FAILED);
+        }
         User dbuser = repo.findByEmail(user.getName());
         String tempToken = UUID.randomUUID().toString() + "." + UUID.randomUUID().toString();
         LocalTime expiresAt = LocalTime.now().plusHours(10);
@@ -141,6 +144,7 @@ public class UserController {
                 .authenticate(new UsernamePasswordAuthenticationToken(creds.getEmail(),
                         creds.getPassword(), new ArrayList<GrantedAuthority>()));
         if (!auth.isAuthenticated()) {
+            // TODO: logger.warn("Invalid credentials for user ", creds.getEmail());
             return new ResponseEntity<TokenResult>(HttpStatus.UNAUTHORIZED);
         }
         TokenResult token = TokenAuthenticationService.getJwtTokenResult(auth.getAuthorities(),
