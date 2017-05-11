@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ch.fhnw.cssr.domain.Email;
 import ch.fhnw.cssr.domain.EmailView;
 import ch.fhnw.cssr.domain.User;
+import ch.fhnw.cssr.domain.UserAddMeta;
 import ch.fhnw.cssr.domain.UserMeta;
 import ch.fhnw.cssr.domain.repository.EmailRepository;
 import ch.fhnw.cssr.domain.repository.UserRepository;
@@ -54,31 +55,29 @@ public class UserAdminController {
     @Autowired
     private EmailRepository emailRepo;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private UserDetailsService userDetailsService;
-
     /**
-     * Resets the password of the current user by sending a temporary token by mail.
-     * 
-     *            The user
-     * @return The mail of the user
+     * Adds a new extern user. Will fail when given an existing user of an FHNW email. 
+     * @param newUserData The new user
+     * @return The Id of the new user.
      */
     @RequestMapping(method = RequestMethod.POST)
     @PreAuthorize("hasRole('ROLE_ADMIN','ROLE_COORD')")
-    public ResponseEntity<Long> addUser(@RequestBody String email, @RequestBody String displayName) {
+    public ResponseEntity<Long> addUser(@RequestBody UserAddMeta newUserData) {
         logger.debug("Adding user");
-        {
-            User dbuser = repo.findByEmail(email);
+        if (User.isFhnwEmail(newUserData.getEmail())) {
+            // Cannot add such a user, use integrated authentication instead
+            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+        }
+        { // Just encapsulate scope for bug free code :)
+            User dbuser = repo.findByEmail(newUserData.getEmail());
             if (dbuser != null) {
                 return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
             }
         }
         String tempToken = UUID.randomUUID().toString() + "." + UUID.randomUUID().toString();
         LocalTime expiresAt = LocalTime.now().plusHours(10);
-        User user = new User(email, displayName, null, tempToken, expiresAt);
+        User user = new User(newUserData.getEmail(), newUserData.getDisplayName(), null, tempToken,
+                expiresAt);
         repo.save(user);
         String mailBody = EmailTemplate.getValue("inviteuser", user);
         String mailSubject = EmailTemplate.getSubject("cssr.mail.inviteuser.subject",
