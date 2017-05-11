@@ -33,18 +33,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByEmail(email);
         if (null == user) {
             if (User.isFhnwEmail(email)) {
-                // TODO: Implement AD Lookup (Domain EDU)
-                // TODO: Find better location to save user, he should have entered the password
-                // already
                 StudentUserDetails dt = new StudentUserDetails(0, email);
-                this.userRepository.save(dt.copy());
                 return dt;
             }
             throw new UsernameNotFoundException("No user present with email: " + email);
         } else {
             if (User.isFhnwEmail(email)) {
                 return new StudentUserDetails(user.getUserId(), email); 
-                // TODO: Handle other AD Users
             }
 
             Iterable<UserRole> roles = userRolesRepository.findByUserId(user.getUserId());
