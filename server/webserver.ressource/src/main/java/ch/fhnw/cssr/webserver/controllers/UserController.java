@@ -87,7 +87,8 @@ public class UserController {
      */
     @RequestMapping(method = RequestMethod.GET)
     public List<User> getAll(
-            @RequestParam(name = "searchString", required = false, defaultValue = "") String searchString) {
+            @RequestParam(name = "searchString", required = false, defaultValue = "")
+            String searchString) {
         logger.debug("Searching for users");
         ArrayList<User> ls = new ArrayList<>();
         Iterable<User> users = searchString == null || searchString.equals("") ? repo.findAll()
