@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -17,6 +18,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -135,9 +137,12 @@ public class PresentationFileControllerTest {
 
         Presentation p = presentationRepository.findAll().iterator().next();
         String baseUrl = "/presentation/" + p.getPresentationId()  + "/file";
-        PresentationFileMeta file1 = new PresentationFileMeta(0, p.getPresentationId().intValue(),
+        PresentationFileMeta file1 = new PresentationFileMeta(0, 
+                p.getPresentationId().intValue(),
                 PresentationFile.TYPE_PRESENTATION,
-                "http://www.google.ch");
+                "http://www.google.ch",
+                "Google", 
+                null);
         
         // Adds a file link
         MvcResult result = mockMvc.perform(post(baseUrl + "/link")
@@ -147,6 +152,39 @@ public class PresentationFileControllerTest {
                 .content(TestUtils.json(file1)))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.contentLink", is("http://www.google.ch")))
+                .andReturn();
+        
+        // Delete again
+        PresentationFileMeta existing = TestUtils.fromJson(result, PresentationFileMeta.class);
+        mockMvc.perform(delete(baseUrl + "/" + existing.getPresentationFileId())
+                .header("Accept", "application/json")
+                .header("Authorization", header)
+                )
+                .andExpect(status().is2xxSuccessful());
+    }
+    
+
+    @Test
+    public void addFileBinary() throws Exception {
+        String header = TestUtils.getAuthValue(mockMvc, passwordEncoder,
+                "testie2@students.fhnw.ch");
+
+        Presentation p = presentationRepository.findAll().iterator().next();
+        String baseUrl = "/presentation/" + p.getPresentationId()  + "/file";
+        
+        String fullUrl = baseUrl + "/binary?type=" + PresentationFile.TYPE_RESSOURCEN
+                + "&contentType=bla&displayName=somefilename";
+        byte[] b = new byte[20];
+        new Random().nextBytes(b);
+        
+        // Adds a file binary
+        MvcResult result = mockMvc.perform(post(fullUrl)
+                .header("Accept", "application/json")
+                .header("Authorization", header)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .content(b))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$.contentLink", is((String)null)))
                 .andReturn();
         
         // Delete again

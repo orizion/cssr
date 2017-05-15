@@ -81,6 +81,8 @@ export interface Presentation {
 
 export interface PresentationFileMeta {
     "contentLink"?: string;
+    "contentType"?: string;
+    "displayName"?: string;
     "presentationFileId"?: number;
     "presentationId"?: number;
     /**
@@ -392,8 +394,10 @@ export const PresentationfilecontrollerApiFetchParamCreator = {
      * @param presentationId presentationId
      * @param content content
      * @param type type
+     * @param displayName displayName
+     * @param contentType contentType
      */
-    addFileBinaryUsingPOST(params: {  "presentationId": number; "content": string; "type": string; }, options?: any): FetchArgs {
+    addFileBinaryUsingPOST(params: {  "presentationId": number; "content": string; "type": string; "displayName": string; "contentType": string; }, options?: any): FetchArgs {
         // verify required parameter "presentationId" is set
         if (params["presentationId"] == null) {
             throw new Error("Missing required parameter presentationId when calling addFileBinaryUsingPOST");
@@ -406,11 +410,21 @@ export const PresentationfilecontrollerApiFetchParamCreator = {
         if (params["type"] == null) {
             throw new Error("Missing required parameter type when calling addFileBinaryUsingPOST");
         }
+        // verify required parameter "displayName" is set
+        if (params["displayName"] == null) {
+            throw new Error("Missing required parameter displayName when calling addFileBinaryUsingPOST");
+        }
+        // verify required parameter "contentType" is set
+        if (params["contentType"] == null) {
+            throw new Error("Missing required parameter contentType when calling addFileBinaryUsingPOST");
+        }
         const baseUrl = `/presentation/{presentationId}/file/binary`
             .replace(`{${"presentationId"}}`, `${ params["presentationId"] }`);
         let urlObj = url.parse(baseUrl, true);
         urlObj.query = Object.assign({}, urlObj.query, {
             "type": params["type"],
+            "displayName": params["displayName"],
+            "contentType": params["contentType"],
         });
         let fetchOptions: RequestInit = Object.assign({}, { method: "POST" }, options);
 
@@ -489,6 +503,35 @@ export const PresentationfilecontrollerApiFetchParamCreator = {
         };
     },
     /** 
+     * getFile
+     * @param presentationId presentationId
+     * @param fileId fileId
+     */
+    getFileUsingGET(params: {  "presentationId": number; "fileId": number; }, options?: any): FetchArgs {
+        // verify required parameter "presentationId" is set
+        if (params["presentationId"] == null) {
+            throw new Error("Missing required parameter presentationId when calling getFileUsingGET");
+        }
+        // verify required parameter "fileId" is set
+        if (params["fileId"] == null) {
+            throw new Error("Missing required parameter fileId when calling getFileUsingGET");
+        }
+        const baseUrl = `/presentation/{presentationId}/file/{fileId}`
+            .replace(`{${"presentationId"}}`, `${ params["presentationId"] }`)
+            .replace(`{${"fileId"}}`, `${ params["fileId"] }`);
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "GET" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
      * getFiles
      * @param presentationId presentationId
      */
@@ -522,8 +565,10 @@ export const PresentationfilecontrollerApiFp = {
      * @param presentationId presentationId
      * @param content content
      * @param type type
+     * @param displayName displayName
+     * @param contentType contentType
      */
-    addFileBinaryUsingPOST(params: { "presentationId": number; "content": string; "type": string;  }, options?: any): (basePath?: string) => Promise<PresentationFileMeta> {
+    addFileBinaryUsingPOST(params: { "presentationId": number; "content": string; "type": string; "displayName": string; "contentType": string;  }, options?: any): (basePath?: string) => Promise<PresentationFileMeta> {
         const fetchArgs = PresentationfilecontrollerApiFetchParamCreator.addFileBinaryUsingPOST(params, options);
         return (basePath: string = BASE_PATH) => {
             return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
@@ -570,6 +615,23 @@ export const PresentationfilecontrollerApiFp = {
         };
     },
     /** 
+     * getFile
+     * @param presentationId presentationId
+     * @param fileId fileId
+     */
+    getFileUsingGET(params: { "presentationId": number; "fileId": number;  }, options?: any): (basePath?: string) => Promise<any> {
+        const fetchArgs = PresentationfilecontrollerApiFetchParamCreator.getFileUsingGET(params, options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return response;
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
      * getFiles
      * @param presentationId presentationId
      */
@@ -596,8 +658,10 @@ export class PresentationfilecontrollerApi extends BaseAPI {
      * @param presentationId presentationId
      * @param content content
      * @param type type
+     * @param displayName displayName
+     * @param contentType contentType
      */
-    addFileBinaryUsingPOST(params: {  "presentationId": number; "content": string; "type": string; }, options?: any) {
+    addFileBinaryUsingPOST(params: {  "presentationId": number; "content": string; "type": string; "displayName": string; "contentType": string; }, options?: any) {
         return PresentationfilecontrollerApiFp.addFileBinaryUsingPOST(params, options)(this.basePath);
     }
     /** 
@@ -615,6 +679,14 @@ export class PresentationfilecontrollerApi extends BaseAPI {
      */
     deleteFileUsingDELETE(params: {  "presentationId": number; "fileId": number; }, options?: any) {
         return PresentationfilecontrollerApiFp.deleteFileUsingDELETE(params, options)(this.basePath);
+    }
+    /** 
+     * getFile
+     * @param presentationId presentationId
+     * @param fileId fileId
+     */
+    getFileUsingGET(params: {  "presentationId": number; "fileId": number; }, options?: any) {
+        return PresentationfilecontrollerApiFp.getFileUsingGET(params, options)(this.basePath);
     }
     /** 
      * getFiles
@@ -635,8 +707,10 @@ export const PresentationfilecontrollerApiFactory = function (basePath?: string)
          * @param presentationId presentationId
          * @param content content
          * @param type type
+         * @param displayName displayName
+         * @param contentType contentType
          */
-        addFileBinaryUsingPOST(params: {  "presentationId": number; "content": string; "type": string; }, options?: any) {
+        addFileBinaryUsingPOST(params: {  "presentationId": number; "content": string; "type": string; "displayName": string; "contentType": string; }, options?: any) {
             return PresentationfilecontrollerApiFp.addFileBinaryUsingPOST(params, options)(basePath);
         },
         /** 
@@ -654,6 +728,14 @@ export const PresentationfilecontrollerApiFactory = function (basePath?: string)
          */
         deleteFileUsingDELETE(params: {  "presentationId": number; "fileId": number; }, options?: any) {
             return PresentationfilecontrollerApiFp.deleteFileUsingDELETE(params, options)(basePath);
+        },
+        /** 
+         * getFile
+         * @param presentationId presentationId
+         * @param fileId fileId
+         */
+        getFileUsingGET(params: {  "presentationId": number; "fileId": number; }, options?: any) {
+            return PresentationfilecontrollerApiFp.getFileUsingGET(params, options)(basePath);
         },
         /** 
          * getFiles
@@ -1253,7 +1335,7 @@ export const UseradmincontrollerApiFetchParamCreator = {
         if (params["newUserData"] == null) {
             throw new Error("Missing required parameter newUserData when calling addUserUsingPOST");
         }
-        const baseUrl = `/admin`;
+        const baseUrl = `/admin/user`;
         let urlObj = url.parse(baseUrl, true);
         let fetchOptions: RequestInit = Object.assign({}, { method: "POST" }, options);
 
@@ -1279,7 +1361,7 @@ export const UseradmincontrollerApiFetchParamCreator = {
         if (params["userData"] == null) {
             throw new Error("Missing required parameter userData when calling modifyUserUsingPUT");
         }
-        const baseUrl = `/admin`;
+        const baseUrl = `/admin/user`;
         let urlObj = url.parse(baseUrl, true);
         let fetchOptions: RequestInit = Object.assign({}, { method: "PUT" }, options);
 
@@ -1405,6 +1487,23 @@ export const UsercontrollerApiFetchParamCreator = {
         };
     },
     /** 
+     * getTemporaryToken
+     */
+    getTemporaryTokenUsingPOST(options?: any): FetchArgs {
+        const baseUrl = `/user/me/tempToken`;
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "POST" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
      * get
      */
     getUsingGET(options?: any): FetchArgs {
@@ -1487,6 +1586,21 @@ export const UsercontrollerApiFp = {
         };
     },
     /** 
+     * getTemporaryToken
+     */
+    getTemporaryTokenUsingPOST(options?: any): (basePath?: string) => Promise<string> {
+        const fetchArgs = UsercontrollerApiFetchParamCreator.getTemporaryTokenUsingPOST(options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<string>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
      * get
      */
     getUsingGET(options?: any): (basePath?: string) => Promise<UserMeta> {
@@ -1546,6 +1660,12 @@ export class UsercontrollerApi extends BaseAPI {
         return UsercontrollerApiFp.getAllUsingGET(params, options)(this.basePath);
     }
     /** 
+     * getTemporaryToken
+     */
+    getTemporaryTokenUsingPOST(options?: any) {
+        return UsercontrollerApiFp.getTemporaryTokenUsingPOST(options)(this.basePath);
+    }
+    /** 
      * get
      */
     getUsingGET(options?: any) {
@@ -1577,6 +1697,12 @@ export const UsercontrollerApiFactory = function (basePath?: string) {
          */
         getAllUsingGET(params: {  "searchString"?: string; }, options?: any) {
             return UsercontrollerApiFp.getAllUsingGET(params, options)(basePath);
+        },
+        /** 
+         * getTemporaryToken
+         */
+        getTemporaryTokenUsingPOST(options?: any) {
+            return UsercontrollerApiFp.getTemporaryTokenUsingPOST(options)(basePath);
         },
         /** 
          * get

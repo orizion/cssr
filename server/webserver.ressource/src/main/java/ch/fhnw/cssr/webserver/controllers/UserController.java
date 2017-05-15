@@ -103,6 +103,21 @@ public class UserController {
         return ls;
     }
 
+    /** 
+     * Get a temporary token for the user.
+     * @param user The user logged in.
+     * @return A Token that can be used as ?temptoken= parameter
+     */
+    @RequestMapping(method = RequestMethod.POST, path = "me/tempToken")
+    public ResponseEntity<String> getTemporaryToken(Principal user) {
+        User dbuser = repo.findByEmail(user.getName());
+        String tempToken = UUID.randomUUID().toString() + "." + UUID.randomUUID().toString();
+        LocalTime expiresAt = LocalTime.now().plusHours(10);
+        dbuser.setTempToken(tempToken, expiresAt);
+        repo.save(dbuser);
+        return new ResponseEntity<String>(tempToken, HttpStatus.OK);
+    }
+    
     /**
      * Resets the password of the current user by sending a temporary token by mail.
      * 
