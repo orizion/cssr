@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Primary;
 
 import ch.fhnw.cssr.security.CustomPasswordEncoder;
 import ch.fhnw.cssr.security.EwsAuthenticator;
+import ch.fhnw.cssr.webserver.utils.UserUtils;
 
 @SpringBootApplication
 public class App {
@@ -26,6 +27,13 @@ public class App {
     @Primary
     public EwsAuthenticator ewsAuthenticator() {
         return new EwsAuthenticator();
+    }
+    
+
+    @Bean 
+    @Primary
+    public UserUtils userUtils() {
+        return new UserUtils();
     }
 
 }

@@ -3,6 +3,7 @@ package ch.fhnw.cssr.webserver.controllers;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -46,7 +47,9 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.fhnw.cssr.domain.Presentation;
+import ch.fhnw.cssr.domain.Role;
 import ch.fhnw.cssr.domain.User;
+import ch.fhnw.cssr.domain.UserAddMeta;
 import ch.fhnw.cssr.domain.repository.EmailRepository;
 import ch.fhnw.cssr.domain.repository.PresentationFileRepository;
 import ch.fhnw.cssr.domain.repository.PresentationRepository;
@@ -105,7 +108,7 @@ public class PresentationControllerTest {
         presentationRepository.deleteAll();
         
         User testUser = new User(1000, "testie2@students.fhnw.ch", "Testie").copy();
-        
+        testUser.setRoleId(Role.ROLE_COORD);
         userRepository.save(testUser);
         User speaker = new User(0, "speakie@students.fhnw.ch", "Speakie").copy();
         userRepository.save(speaker);
@@ -162,5 +165,46 @@ public class PresentationControllerTest {
                 .andExpect(jsonPath("$[0].abstract", is("test abstract")))
                 .andExpect(jsonPath("$[0].location", is("here")))
                 .andExpect(jsonPath("$.length()", is(1)));
+    }
+    
+
+    @Test
+    public void addPresentation() throws Exception {
+        String header = TestUtils.getAuthValue(mockMvc, passwordEncoder, 
+                "testie2@students.fhnw.ch");
+        
+
+        // Add user
+        MvcResult result = mockMvc.perform(post("/admin/user").header("Accept", "application/json")
+                .header("Authorization", header)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtils.json(
+                        new UserAddMeta("speakie2@students.fhnw.ch", "2nd Speaker")))
+                )
+            .andExpect(status().isOk())
+            .andReturn();
+        
+        // Get User id
+        Long id = new Long(result.getResponse().getContentAsString());
+        
+        // Construct pres
+        Presentation p2 = new Presentation();
+        p2.setAbstract("test abstract 2");
+        p2.setDateTime(LocalDateTime.now().plusDays(54));
+        p2.setLocation("there 2");
+        p2.setSpeakerId(id);
+        p2.setTitle("Test title 222");
+        
+        // Save it 
+        mockMvc.perform(post("/presentation").header("Accept", "application/json")
+                    .header("Authorization", header)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(TestUtils.json(p2))
+                    )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.abstract", is("test abstract 2")))
+                .andExpect(jsonPath("$.location", is("there 2")))
+                .andExpect(jsonPath("$.title", is("Test title 222")));
+
     }
 }

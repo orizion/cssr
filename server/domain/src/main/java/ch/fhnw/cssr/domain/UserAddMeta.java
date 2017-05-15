@@ -4,7 +4,11 @@ public class UserAddMeta {
 
     private String email;
     private String displayName;
-    
+
+    public UserAddMeta() {
+
+    }
+
     public UserAddMeta(String email, String displayName) {
         super();
         this.email = email;
@@ -26,5 +30,5 @@ public class UserAddMeta {
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
-    
+
 }

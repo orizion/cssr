@@ -28,7 +28,7 @@ import ch.fhnw.cssr.security.CustomUserDetailsService;
 import ch.fhnw.cssr.webserver.utils.UserUtils;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/admin/user")
 public class UserAdminController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -84,7 +84,7 @@ public class UserAdminController {
      * @return The Id of the new user.
      */
     @RequestMapping(method = RequestMethod.POST)
-    @PreAuthorize("hasRole('ROLE_ADMIN','ROLE_COORD')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_COORD')")
     public ResponseEntity<Long> addUser(@RequestBody UserAddMeta newUserData) {
         logger.debug("Adding user");
         

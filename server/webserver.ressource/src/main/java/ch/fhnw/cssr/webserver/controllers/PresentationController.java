@@ -133,9 +133,9 @@ public class PresentationController {
      * @return The new presentation with id.
      */
     @RequestMapping(method = RequestMethod.POST)
-    @PreAuthorize("hasRole('ROLE_ADMIN','ROLE_COORD')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_COORD')")
     public ResponseEntity<Presentation> addPresentation(@RequestBody Presentation pres) {
-        if (pres.getPresentationId() != null) {
+        if (pres.getPresentationId() != null && pres.getPresentationId() != Integer.valueOf(0)) {
             logger.warn("Presentation Id is not null, use PUT instead");
             return new ResponseEntity<Presentation>(HttpStatus.PRECONDITION_FAILED);
         }
