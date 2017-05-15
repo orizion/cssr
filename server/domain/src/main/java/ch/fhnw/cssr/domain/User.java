@@ -34,6 +34,59 @@ public class User implements Serializable {
     @Column(name = "tempTokenExpiresAt")
     private LocalTime tempTokenExpiresAt;
 
+    @Column(name = "userRoleId")
+    private Integer userRoleId;
+
+    public User() {
+
+    }
+
+    /**
+     * This is a constructor for students or other AD Users only
+     */
+    public User(long userId, String email, String userName) {
+        this.email = email;
+        if (isFhnwEmail(email)) {
+            this.passwordEnc = ACTIVE_DIRECTORY_LOOKUP_PREFIX + email;
+        } else {
+            throw new IllegalArgumentException("email");
+        }
+    }
+
+    public User(String email, String displayName, String passwordEnc, String tempToken,
+            LocalTime tempTokenExpiresAt) {
+        this.displayName = displayName;
+        this.passwordEnc = passwordEnc;
+        this.tempToken = tempToken;
+        this.tempTokenExpiresAt = tempTokenExpiresAt;
+    }
+
+    protected User(User copyUser) {
+        if (copyUser == null)
+            throw new NullPointerException("copyUser");
+        this.userId = new Long(0).equals(copyUser.userId) ? null : copyUser.userId;
+        this.email = copyUser.email;
+        this.passwordEnc = copyUser.passwordEnc;
+        this.tempToken = copyUser.tempToken;
+        this.tempTokenExpiresAt = copyUser.tempTokenExpiresAt;
+        this.displayName = copyUser.displayName;
+        this.userRoleId = copyUser.userRoleId;
+    }
+
+    public User copy() {
+        return new User(this);
+    }
+
+    public static boolean isFhnwEmail(String email) {
+        return email.endsWith("@" + FHNW_DOMAIN) || email.endsWith("." + FHNW_DOMAIN); // A
+                                                                                       // subdomain
+    }
+
+    public boolean isExtern() {
+        return !isFhnwEmail(email);
+    }
+
+
     public Long getUserId() {
         return userId;
     }
@@ -46,8 +99,17 @@ public class User implements Serializable {
         this.displayName = displayName;
     }
 
+    public Integer getRoleId() {
+        return this.userRoleId;
+    }
+
+    public void setRoleId(Integer roleId) {
+        this.userRoleId = roleId;
+    }
+
+    
     public String getPasswordEnc() {
-        if(isFhnwEmail(email)) {
+        if (isFhnwEmail(email)) {
             return ACTIVE_DIRECTORY_LOOKUP_PREFIX + email;
         }
         return passwordEnc;
@@ -74,52 +136,5 @@ public class User implements Serializable {
         return tempTokenExpiresAt;
     }
 
-    public User() {
-
-    }
-
-    /**
-     * This is a constructor for students or other AD Users only
-     */
-    protected User(long userId, String email, String userName) {
-        this.email = email;
-        if (isFhnwEmail(email)) {
-            this.passwordEnc = ACTIVE_DIRECTORY_LOOKUP_PREFIX + email;
-        } else {
-            throw new IllegalArgumentException("email");
-        }
-    }
-
-    public User(String email, String displayName, String passwordEnc, String tempToken,
-            LocalTime tempTokenExpiresAt) {
-        this.displayName = displayName;
-        this.passwordEnc = passwordEnc;
-        this.tempToken = tempToken;
-        this.tempTokenExpiresAt = tempTokenExpiresAt;
-    }
-
-    protected User(User copyUser) {
-        if (copyUser == null)
-            throw new NullPointerException("copyUser");
-        this.userId = new Long(0).equals(copyUser.userId) ? null : copyUser.userId;
-        this.email = copyUser.email;
-        this.passwordEnc = copyUser.passwordEnc;
-        this.tempToken = copyUser.tempToken;
-        this.tempTokenExpiresAt = copyUser.tempTokenExpiresAt;
-        this.displayName = copyUser.displayName;
-    }
-
-    public User copy() {
-        return new User(this);
-    }
-
-    public static boolean isFhnwEmail(String email) {
-        return email.endsWith("@" + FHNW_DOMAIN)
-            || email.endsWith("." + FHNW_DOMAIN); // A subdomain
-    }
     
-    public boolean isExtern() {
-        return !isFhnwEmail(email);
-    }
-
 }

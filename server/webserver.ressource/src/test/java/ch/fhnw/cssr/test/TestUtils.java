@@ -5,12 +5,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.IOException;
 
+import org.mockito.Mockito;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ch.fhnw.cssr.domain.User;
 import ch.fhnw.cssr.security.jwt.AccountCredentials;
 import ch.fhnw.cssr.security.jwt.TokenResult;
 
@@ -20,29 +23,35 @@ public class TestUtils {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(value);
     }
-    
+
     public static <T> T fromJson(String content, Class<T> contentClass) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(content, contentClass);
     }
-    
-    
+
     /**
      * Gets the Authorization header to be used on requests.
-     * @param mockMvc The MockMvc of the test
-     * @param email The email of the user
+     * 
+     * @param mockMvc
+     *            The MockMvc of the test
+     * @param email
+     *            The email of the user
      * @return The Value to be put in the Authorization header
-     * @throws Exception Throws a test exception.
+     * @throws Exception
+     *             Throws a test exception.
      */
-    public static String getAuthValue(MockMvc mockMvc, String email) throws Exception {
+    public static String getAuthValue(MockMvc mockMvc, PasswordEncoder passwordEncoderMock,
+            String email) throws Exception {
         String password = email + "PASSWORD"; // Just a convention 4 testing
-        
+        Mockito.when(
+                passwordEncoderMock.matches(password, User.ACTIVE_DIRECTORY_LOOKUP_PREFIX + email))
+                .thenReturn(true);
+
         String json = json(new AccountCredentials(email, password));
-        MvcResult res = mockMvc.perform(post("/login").content(json))
-            .andExpect(status().isOk())
-            .andReturn();
+        MvcResult res = mockMvc.perform(post("/login").content(json)).andExpect(status().isOk())
+                .andReturn();
         String content = res.getResponse().getContentAsString();
-        
+
         TokenResult tokenRes = fromJson(content, TokenResult.class);
         return "Bearer " + tokenRes.getToken();
     }

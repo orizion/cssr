@@ -1,9 +1,8 @@
 package ch.fhnw.cssr.security;
 
 import ch.fhnw.cssr.domain.User;
-
+import edu.emory.mathcs.backport.java.util.Collections;
 import java.util.Collection;
-import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -12,28 +11,26 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class CustomUserDetails extends ch.fhnw.cssr.domain.User implements UserDetails {
 
     private static final long serialVersionUID = 1L;
-    private List<Integer> userRoles;
 
-    public CustomUserDetails(User user, List<Integer> userRoles) {
+    public CustomUserDetails(User user) {
         super(user);
-        this.userRoles = userRoles;
     }
 
+    public static CustomUserDetails createFhnw(String email) {
+        return new CustomUserDetails(new User(0, email, email));
+    }
+    
     /**
      * Gets the roles of a user.
      */
+    @SuppressWarnings("unchecked")
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        String roles = "";
-        boolean first = true;
-        for (int roleId : this.userRoles) {
-            if (first) {
-                first = false;
-            } else {
-                roles += ",";
-            }
-            roles += ch.fhnw.cssr.domain.UserRole.getRoleName(roleId);
+        Integer roleId = super.getRoleId();
+        if (roleId == null) {
+            return (Collection<? extends GrantedAuthority>)Collections.emptyList();
         }
-        return AuthorityUtils.commaSeparatedStringToAuthorityList(roles);
+        String roleName = ch.fhnw.cssr.domain.Role.getDefaultRoleName(roleId.intValue());
+        return AuthorityUtils.commaSeparatedStringToAuthorityList(roleName);
     }
 
     public boolean isAccountNonExpired() {
