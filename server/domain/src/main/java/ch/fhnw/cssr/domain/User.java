@@ -1,7 +1,7 @@
 package ch.fhnw.cssr.domain;
 
 import java.io.Serializable;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 import javax.persistence.*;
 
@@ -32,7 +32,7 @@ public class User implements Serializable {
     private String tempToken;
 
     @Column(name = "tempTokenExpiresAt")
-    private LocalTime tempTokenExpiresAt;
+    private LocalDateTime tempTokenExpiresAt;
 
     @Column(name = "userRoleId")
     private Integer userRoleId;
@@ -54,7 +54,7 @@ public class User implements Serializable {
     }
 
     public User(String email, String displayName, String passwordEnc, String tempToken,
-            LocalTime tempTokenExpiresAt) {
+            LocalDateTime tempTokenExpiresAt) {
         this.displayName = displayName;
         this.passwordEnc = passwordEnc;
         this.tempToken = tempToken;
@@ -127,12 +127,13 @@ public class User implements Serializable {
         return tempToken;
     }
 
-    public void setTempToken(String tempToken, LocalTime expiresAt) {
+    public void setTempToken(String tempToken, LocalDateTime expiresAt) {
+        
         this.tempToken = tempToken;
         this.tempTokenExpiresAt = expiresAt;
     }
 
-    public LocalTime getTempTokenExpiresAt() {
+    public LocalDateTime getTempTokenExpiresAt() {
         return tempTokenExpiresAt;
     }
 

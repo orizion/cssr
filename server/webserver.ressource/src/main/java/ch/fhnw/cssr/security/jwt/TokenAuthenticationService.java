@@ -11,8 +11,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import ch.fhnw.cssr.domain.User;
+import ch.fhnw.cssr.domain.repository.UserRepository;
+import ch.fhnw.cssr.security.CustomUserDetails;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +27,7 @@ import java.util.List;
 import java.util.Collection;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class TokenAuthenticationService {
     static final long EXPIRATIONTIME = 3_600_000; // 60 Minutes
@@ -47,6 +53,9 @@ public class TokenAuthenticationService {
         TokenAuthenticationService.Secret = secret;
 
         JwtBuilder builder = Jwts.builder();
+        Claims s = new DefaultClaims();
+        s.setSubject("invalidsubject");
+        builder.setClaims(s);
         String jwtToken = builder.signWith(Algorithm, Secret).compact();
         TokenAuthenticationService.JwtHeader = jwtToken.substring(0, jwtToken.indexOf("."));
     }
@@ -86,7 +95,8 @@ public class TokenAuthenticationService {
         mapper.writeValue(res.getWriter(), getJwtTokenResult(authorities, username));
     }
 
-    static Authentication getAuthentication(HttpServletRequest request) {
+    static Authentication getAuthentication(HttpServletRequest request,
+            UserRepository userRepository) {
         String token = request.getHeader(HEADER_STRING);
         if (token != null) {
             // parse the token.
@@ -104,9 +114,19 @@ public class TokenAuthenticationService {
 
             return user != null ? new UsernamePasswordAuthenticationToken(user, null, roles) : null;
         }
-        String tempToken = request.getParameter("tempToken");
+        String tempToken = request.getMethod().equals("GET") ? request.getParameter("tempToken")
+                : null;
         if (tempToken != null) {
-            // TODO: Evaluate it
+            User us = userRepository.findByTempToken(tempToken);
+            if (us == null) {
+                return null;
+            }
+            if (us.getTempTokenExpiresAt().compareTo(LocalDateTime.now()) < 0) {
+                return null;
+            }
+            CustomUserDetails dt = new CustomUserDetails(us);
+            return new UsernamePasswordAuthenticationToken(dt.getUsername(), null,
+                    dt.getAuthorities()); 
         }
         if (request.getCookies() != null && request.getCookies().length > 0) {
             // TODO: We should validate the cookies here and accept a cookie from the AAI Proxy

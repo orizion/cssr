@@ -1,6 +1,6 @@
 package ch.fhnw.cssr.mailer;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -56,7 +56,7 @@ public class MailSender {
 	public void sendAll() {
 		Iterable<Email> mails = emailRepo.findNotSent();
 		for (Email mail : mails) {
-			if (mail.getInsertedAt().plusHours(MAX_HOURS_TOSEND).compareTo(LocalTime.now()) < 0) {
+			if (mail.getInsertedAt().plusHours(MAX_HOURS_TOSEND).compareTo(LocalDateTime.now()) < 0) {
 				mail.setError(DEPRECATED_ERROR);
 				emailRepo.save(mail);
 			} else {
@@ -112,7 +112,7 @@ public class MailSender {
 			// Send message
 			transport.sendMessage(message, message.getAllRecipients());
 			System.out.println("Sent message successfully....");
-			mail.setSentDate(LocalTime.now());
+			mail.setSentDate(LocalDateTime.now());
 			mail.setTryCount(mail.getTryCount() + 1);
 			
 		} catch (Exception ex) {

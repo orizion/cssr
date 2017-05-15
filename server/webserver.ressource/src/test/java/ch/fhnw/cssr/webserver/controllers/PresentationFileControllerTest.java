@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.http.entity.ContentType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,6 +44,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultHandler;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
@@ -136,33 +138,24 @@ public class PresentationFileControllerTest {
                 "testie2@students.fhnw.ch");
 
         Presentation p = presentationRepository.findAll().iterator().next();
-        String baseUrl = "/presentation/" + p.getPresentationId()  + "/file";
-        PresentationFileMeta file1 = new PresentationFileMeta(0, 
-                p.getPresentationId().intValue(),
-                PresentationFile.TYPE_PRESENTATION,
-                "http://www.google.ch",
-                "Google", 
-                null);
-        
+        String baseUrl = "/presentation/" + p.getPresentationId() + "/file";
+        PresentationFileMeta file1 = new PresentationFileMeta(0, p.getPresentationId().intValue(),
+                PresentationFile.TYPE_PRESENTATION, "http://www.google.ch", "Google", null);
+
         // Adds a file link
-        MvcResult result = mockMvc.perform(post(baseUrl + "/link")
-                .header("Accept", "application/json")
-                .header("Authorization", header)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(TestUtils.json(file1)))
+        MvcResult result = mockMvc
+                .perform(post(baseUrl + "/link").header("Accept", "application/json")
+                        .header("Authorization", header).contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtils.json(file1)))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.contentLink", is("http://www.google.ch")))
-                .andReturn();
-        
+                .andExpect(jsonPath("$.contentLink", is("http://www.google.ch"))).andReturn();
+
         // Delete again
         PresentationFileMeta existing = TestUtils.fromJson(result, PresentationFileMeta.class);
         mockMvc.perform(delete(baseUrl + "/" + existing.getPresentationFileId())
-                .header("Accept", "application/json")
-                .header("Authorization", header)
-                )
+                .header("Accept", "application/json").header("Authorization", header))
                 .andExpect(status().is2xxSuccessful());
     }
-    
 
     @Test
     public void addFileBinary() throws Exception {
@@ -170,29 +163,48 @@ public class PresentationFileControllerTest {
                 "testie2@students.fhnw.ch");
 
         Presentation p = presentationRepository.findAll().iterator().next();
-        String baseUrl = "/presentation/" + p.getPresentationId()  + "/file";
-        
+        String baseUrl = "/presentation/" + p.getPresentationId() + "/file";
+
         String fullUrl = baseUrl + "/binary?type=" + PresentationFile.TYPE_RESSOURCEN
-                + "&contentType=bla&displayName=somefilename";
+                + "&contentType=application/bla&displayName=somefilename";
         byte[] b = new byte[20];
         new Random().nextBytes(b);
-        
+
         // Adds a file binary
-        MvcResult result = mockMvc.perform(post(fullUrl)
-                .header("Accept", "application/json")
-                .header("Authorization", header)
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .content(b))
+        MvcResult result = mockMvc
+                .perform(post(fullUrl).header("Accept", "application/json")
+                        .header("Authorization", header)
+                        .contentType(MediaType.APPLICATION_OCTET_STREAM).content(b))
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.contentLink", is((String)null)))
-                .andReturn();
-        
-        // Delete again
+                .andExpect(jsonPath("$.contentLink", is((String) null))).andReturn();
+
         PresentationFileMeta existing = TestUtils.fromJson(result, PresentationFileMeta.class);
-        mockMvc.perform(delete(baseUrl + "/" + existing.getPresentationFileId())
+
+        
+
+        // Get temptoken
+        MvcResult tokenResult = mockMvc.perform(
+                get("/user/me/tempToken")
                 .header("Accept", "application/json")
-                .header("Authorization", header)
-                )
+                .header("Authorization", header))
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+        String tempTokenStr = TestUtils.fromJson(tokenResult, String.class);
+        
+        String fullUrlGet = "/presentation/" + p.getPresentationId() + "/file/"
+                + existing.getPresentationFileId() 
+                + "?tempToken=" + tempTokenStr;
+        
+        // Get it 
+        mockMvc.perform(
+                get(fullUrlGet).header("Accept", "application/json"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/bla"))
+                .andExpect(MockMvcResultMatchers.content().bytes(b));
+
+        // Delete again
+        mockMvc.perform(delete(baseUrl + "/" + existing.getPresentationFileId())
+                .header("Accept", "application/json").header("Authorization", header))
                 .andExpect(status().is2xxSuccessful());
     }
 }

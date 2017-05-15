@@ -42,13 +42,17 @@ public class PresentationFileController {
      * @param presentationId The presentationId.
      * @param fileId The fileId.
      * @param response The response.
+     * @param tempToken In order to be authenticated without a header, use this parameter 
+     *     You can get it from user/me/tempToken
      * @throws IOException Throws if it is a link that is invalid
      */
     @RequestMapping(method = RequestMethod.GET, path = "{fileId}")
     public void getFile(@PathVariable(name = "presentationId", required = true) int presentationId,
             @PathVariable(name = "fileId", required = true) long fileId,
+            @RequestParam(name = "tempToken", required = false) String tempToken,
             HttpServletResponse response) throws IOException {
         logger.debug("Getting presentationfile {}", fileId);
+        logger.debug("Temp token used: {}", tempToken);
         PresentationFile file = fileRepo.findOne(fileId);
         if (file == null) {
             logger.warn("File not found");
@@ -76,10 +80,8 @@ public class PresentationFileController {
     @RequestMapping(method = RequestMethod.DELETE, path = "{fileId}")
     public ResponseEntity<PresentationFileMeta> deleteFile(
             @PathVariable(name = "presentationId", required = true) int presentationId,
-            @PathVariable(name = "fileId", required = true) long fileId,
-            @PathVariable(name = "tempToken", required = true) String tempToken) {
+            @PathVariable(name = "fileId", required = true) long fileId) {
         PresentationFileMeta file = fileRepo.findOneMeta(fileId);
-        logger.debug("Temp token used: {}", tempToken);
         if (file == null) {
             logger.warn("Could not find file with id {}", fileId);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -46,8 +46,9 @@ public class PresentationFile implements Serializable {
 		this.displayName = displayName;
 	}
 	
-	public PresentationFile(int presentationId, String type, byte[] content, String contentType,
-	        String displayName) {
+	public PresentationFile(int presentationId, String type, byte[] content,
+	        String displayName,
+	        String contentType) {
 		this.presentationId = presentationId;
 		this.type = type;
 		this.content = content;

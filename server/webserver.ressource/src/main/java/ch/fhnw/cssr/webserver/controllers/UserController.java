@@ -1,7 +1,7 @@
 package ch.fhnw.cssr.webserver.controllers;
 
 import java.security.Principal;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -108,11 +108,11 @@ public class UserController {
      * @param user The user logged in.
      * @return A Token that can be used as ?temptoken= parameter
      */
-    @RequestMapping(method = RequestMethod.POST, path = "me/tempToken")
+    @RequestMapping(method = RequestMethod.GET, path = "me/tempToken")
     public ResponseEntity<String> getTemporaryToken(Principal user) {
         User dbuser = repo.findByEmail(user.getName());
         String tempToken = UUID.randomUUID().toString() + "." + UUID.randomUUID().toString();
-        LocalTime expiresAt = LocalTime.now().plusHours(10);
+        LocalDateTime expiresAt = LocalDateTime.now().plusHours(10);
         dbuser.setTempToken(tempToken, expiresAt);
         repo.save(dbuser);
         return new ResponseEntity<String>(tempToken, HttpStatus.OK);
@@ -134,7 +134,7 @@ public class UserController {
         }
         User dbuser = repo.findByEmail(user.getName());
         String tempToken = UUID.randomUUID().toString() + "." + UUID.randomUUID().toString();
-        LocalTime expiresAt = LocalTime.now().plusHours(10);
+        LocalDateTime expiresAt = LocalDateTime.now().plusHours(10);
         dbuser.setTempToken(tempToken, expiresAt);
         repo.save(dbuser);
         String mailBody = EmailTemplate.getValue("resetPassword", dbuser);

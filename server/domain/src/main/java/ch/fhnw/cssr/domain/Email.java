@@ -1,7 +1,7 @@
 package ch.fhnw.cssr.domain;
 
 import java.io.Serializable;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,13 +29,13 @@ public class Email implements Serializable {
 
 	private String body;
 
-	private LocalTime sentDate;
+	private LocalDateTime sentDate;
 
 	private int tryCount = 0;
 
 	private String error;
 
-	private LocalTime insertedAt;
+	private LocalDateTime insertedAt;
 
 	public String getTo() {
 		return to;
@@ -77,11 +77,11 @@ public class Email implements Serializable {
 		this.body = body;
 	}
 
-	public LocalTime getSentDate() {
+	public LocalDateTime getSentDate() {
 		return sentDate;
 	}
 
-	public void setSentDate(LocalTime sentDate) {
+	public void setSentDate(LocalDateTime sentDate) {
 		this.sentDate = sentDate;
 	}
 
@@ -101,7 +101,7 @@ public class Email implements Serializable {
 		this.error = error;
 	}
 
-	public LocalTime getInsertedAt() {
+	public LocalDateTime getInsertedAt() {
 		return insertedAt;
 	}
 
@@ -111,7 +111,7 @@ public class Email implements Serializable {
 
 	private Email() {
 		// 4 JPA
-		this.insertedAt = LocalTime.now();
+		this.insertedAt = LocalDateTime.now();
 	}
 
 	public Email(EmailView v) {

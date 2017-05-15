@@ -28,6 +28,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     
     @Autowired
     private PasswordEncoder customPasswordEncoder;
+    
+    @Autowired
+    private AuthenticationFilter authFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -42,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(new LoginFilter("/login", authenticationManager()),
                         UsernamePasswordAuthenticationFilter.class)
                 // And filter other requests to check the presence of JWT in header
-                .addFilterBefore(new AuthenticationFilter(),
+                .addFilterBefore(authFilter,
                         UsernamePasswordAuthenticationFilter.class);
     }
 

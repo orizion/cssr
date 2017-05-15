@@ -53,6 +53,9 @@ public class TestUtils {
      * @throws IOException Invalid Json.
      */
     public static <T> T fromJson(String content, Class<T> contentClass) throws IOException {
+        if (contentClass == String.class && !content.startsWith("\"")) {
+            return (T)content; // Hack for jackson?? 
+        }
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);

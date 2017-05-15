@@ -1,7 +1,7 @@
 package ch.fhnw.cssr.webserver.controllers;
 
 import java.security.Principal;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -102,7 +102,7 @@ public class UserAdminController {
             }
         }
         String tempToken = UUID.randomUUID().toString() + "." + UUID.randomUUID().toString();
-        LocalTime expiresAt = LocalTime.now().plusHours(10);
+        LocalDateTime expiresAt = LocalDateTime.now().plusHours(10);
         User user = new User(newUserData.getEmail(), newUserData.getDisplayName(), null, tempToken,
                 expiresAt);
         repo.save(user);
