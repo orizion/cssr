@@ -39,6 +39,7 @@ import ch.fhnw.cssr.security.CustomUserDetailsService;
 import ch.fhnw.cssr.security.jwt.AccountCredentials;
 import ch.fhnw.cssr.security.jwt.TokenAuthenticationService;
 import ch.fhnw.cssr.security.jwt.TokenResult;
+import ch.fhnw.cssr.webserver.utils.UserUtils;
 
 @RestController
 @RequestMapping("/user")
@@ -52,6 +53,9 @@ public class UserController {
     @Autowired
     private UserRepository repo;
 
+    @Autowired
+    private UserUtils userUtils;
+    
     @Autowired
     private EmailRepository emailRepo;
 
@@ -151,7 +155,7 @@ public class UserController {
         }
         // Make the user persistent
         if (User.isFhnwEmail(creds.getEmail())) {
-            CustomUserDetailsService.assureCreated(userDetailsService, repo, creds.getEmail());   
+            userUtils.assureCreated(creds.getEmail());   
         }        
         TokenResult token = TokenAuthenticationService.getJwtTokenResult(auth.getAuthorities(),
                 auth.getName());
