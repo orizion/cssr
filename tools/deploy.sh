@@ -1,6 +1,6 @@
 set -e
 
-cd server/domain
+cd ../server/domain
 mvn install
 cd ../mailer
 mvn package
