@@ -52,8 +52,8 @@ import ch.fhnw.cssr.domain.repository.PresentationFileRepository;
 import ch.fhnw.cssr.domain.repository.PresentationRepository;
 import ch.fhnw.cssr.domain.repository.SubscriptionRepository;
 import ch.fhnw.cssr.domain.repository.UserRepository;
-import ch.fhnw.cssr.domain.repository.UserRolesRepository;
-import ch.fhnw.cssr.security.StudentUserDetails;
+import ch.fhnw.cssr.security.CustomPasswordEncoder;
+import ch.fhnw.cssr.security.EwsAuthenticator;
 import ch.fhnw.cssr.security.jwt.AccountCredentials;
 import ch.fhnw.cssr.security.jwt.TokenResult;
 import ch.fhnw.cssr.test.TestUtils;
@@ -81,8 +81,7 @@ public class PresentationControllerTest {
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private UserRolesRepository userRolesRepository;
+    
 
     @Autowired
     private PresentationFileRepository presentationFileRepository;
@@ -93,6 +92,10 @@ public class PresentationControllerTest {
     @MockBean
     private EmailRepository emailRepository;
 
+    @MockBean
+    private CustomPasswordEncoder passwordEncoder;
+
+    
     /**
      * Sets up the mocks.
      */
@@ -101,10 +104,10 @@ public class PresentationControllerTest {
         userRepository.deleteAll();
         presentationRepository.deleteAll();
         
-        User testUser = new StudentUserDetails(1000, "testie2@students.fhnw.ch").copy();
+        User testUser = new User(1000, "testie2@students.fhnw.ch", "Testie").copy();
         
         userRepository.save(testUser);
-        User speaker = new StudentUserDetails(0, "speakie@students.fhnw.ch").copy();
+        User speaker = new User(0, "speakie@students.fhnw.ch", "Speakie").copy();
         userRepository.save(speaker);
 
         Presentation p = new Presentation();
@@ -134,7 +137,8 @@ public class PresentationControllerTest {
 
     @Test
     public void findAllPresentations() throws Exception {
-        String header = TestUtils.getAuthValue(mockMvc, "testie2@students.fhnw.ch");        
+        String header = TestUtils.getAuthValue(mockMvc, passwordEncoder, 
+                "testie2@students.fhnw.ch");        
 
         mockMvc.perform(get("/presentation?futureOnly=false").header("Accept", "application/json")
                 .header("Authorization", header))
@@ -149,7 +153,8 @@ public class PresentationControllerTest {
     
     @Test
     public void findFuturePresentations() throws Exception {
-        String header = TestUtils.getAuthValue(mockMvc, "testie2@students.fhnw.ch");
+        String header = TestUtils.getAuthValue(mockMvc, passwordEncoder, 
+                "testie2@students.fhnw.ch");
         
         mockMvc.perform(get("/presentation?futureOnly=true").header("Accept", "application/json")
                     .header("Authorization", header))

@@ -56,7 +56,7 @@ public class PresentationMailController {
      * @return The Email that would be sent
      */
     @RequestMapping(method = RequestMethod.GET, path = "{id}/invitation/template")
-    @PreAuthorize("hasRole('ROLE_ADMIN', 'ROLE_SGL')")
+    @PreAuthorize("hasRole('ROLE_ADMIN', 'ROLE_SGL', 'ROLE_COORD')")
     public ResponseEntity<EmailView> getInvitationMailTemplate(
             @PathVariable(name = "id", required = true) Integer id) {
         Presentation resp = repo.findOne(id);
@@ -91,7 +91,7 @@ public class PresentationMailController {
      * @return The presentation that a mail was sent for.
      */
     @RequestMapping(method = RequestMethod.POST, path = "{id}/invitation/send")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SGL')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SGL', 'ROLE_COORD')")
     public ResponseEntity<Email> sendInvitationMail(
             @PathVariable(name = "id", required = true) Integer id, @RequestBody EmailView mail) {
         Email dbmail = new Email(mail);

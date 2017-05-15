@@ -1,5 +1,6 @@
 package ch.fhnw.cssr.webserver.controllers;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ch.fhnw.cssr.domain.Email;
 import ch.fhnw.cssr.domain.Presentation;
+import ch.fhnw.cssr.domain.User;
 import ch.fhnw.cssr.domain.repository.EmailRepository;
 import ch.fhnw.cssr.domain.repository.PresentationRepository;
 import ch.fhnw.cssr.mailutils.EmailTemplate;
@@ -30,15 +34,18 @@ import io.swagger.annotations.ApiResponses;
 public class PresentationController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    
+
     @Autowired
     private PresentationRepository repo;
 
+    @Autowired
+    private UserDetailsService userDetails;
 
-    
     /**
      * Gets all presentations that are optionally always in the future.
-     * @param futureOnly True to only get future presentations.
+     * 
+     * @param futureOnly
+     *            True to only get future presentations.
      * @return A List of presentations.
      */
     @RequestMapping(method = RequestMethod.GET)
@@ -66,8 +73,7 @@ public class PresentationController {
      * @return A presentation, or 404 if not found
      */
     @RequestMapping(method = RequestMethod.GET, path = "{id}")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Gets data about a presentation"),
+    @ApiResponses(value = { @ApiResponse(code = 201, message = "Gets data about a presentation"),
             @ApiResponse(code = 404, message = "Presentation not found in database") })
     public ResponseEntity<Presentation> getSingle(
             @PathVariable(name = "id", required = true) Integer id) {
@@ -87,10 +93,30 @@ public class PresentationController {
      * @return The modified presentation as seen on the database.
      */
     @RequestMapping(method = RequestMethod.PUT)
-    public ResponseEntity<Presentation> modifyPresentation(@RequestBody Presentation pres) {
+    public ResponseEntity<Presentation> modifyPresentation(@RequestBody Presentation pres,
+            Principal user) {
         if (pres.getPresentationId() == null) {
             logger.warn("Presentation Id is null, use POST instead");
             return new ResponseEntity<Presentation>(HttpStatus.PRECONDITION_FAILED);
+        }
+        UserDetails dt = userDetails.loadUserByUsername(user.getName());
+        boolean isPermitted = dt.getAuthorities().stream().map(a -> a.getAuthority())
+                .anyMatch(p -> p.equals("ROLE_COORD") || p.equals("ROLE_ADMIN"));
+        if (!isPermitted && dt instanceof User) {
+            Presentation existing = repo.findOne(pres.getPresentationId());
+            if (existing.getSpeakerId() == ((User) dt).getUserId()) {
+                isPermitted = true;
+                // The speaker may not edited date and location
+                if (!pres.getDateTime().equals(existing.getDateTime())) {
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
+                if (!pres.getLocation().equals(existing.getLocation())) {
+                    return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                }
+            }
+        }
+        if (!isPermitted) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         repo.save(pres);
         return new ResponseEntity<Presentation>(pres, HttpStatus.OK);
@@ -104,6 +130,7 @@ public class PresentationController {
      * @return The new presentation with id.
      */
     @RequestMapping(method = RequestMethod.POST)
+    @PreAuthorize("hasRole('ROLE_ADMIN','ROLE_COORD')")
     public ResponseEntity<Presentation> addPresentation(@RequestBody Presentation pres) {
         if (pres.getPresentationId() != null) {
             logger.warn("Presentation Id is not null, use PUT instead");
@@ -112,5 +139,5 @@ public class PresentationController {
         repo.save(pres);
         return new ResponseEntity<Presentation>(pres, HttpStatus.CREATED);
     }
-    
+
 }

@@ -8,21 +8,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import ch.fhnw.cssr.domain.User;
-import ch.fhnw.cssr.domain.UserRole;
+import ch.fhnw.cssr.domain.Role;
 import ch.fhnw.cssr.domain.repository.UserRepository;
-import ch.fhnw.cssr.domain.repository.UserRolesRepository;
 
 @Service("customUserDetailsService")
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final UserRolesRepository userRolesRepository;
 
     @Autowired
-    public CustomUserDetailsService(UserRepository userRepository,
-            UserRolesRepository userRolesRepository) {
+    public CustomUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.userRolesRepository = userRolesRepository;
     }
 
     /**
@@ -33,21 +29,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByEmail(email);
         if (null == user) {
             if (User.isFhnwEmail(email)) {
-                StudentUserDetails dt = new StudentUserDetails(0, email);
+                UserDetails dt = CustomUserDetails.createFhnw(email);
                 return dt;
             }
             throw new UsernameNotFoundException("No user present with email: " + email);
         } else {
-            if (User.isFhnwEmail(email)) {
-                return new StudentUserDetails(user.getUserId(), email); 
-            }
-
-            Iterable<UserRole> roles = userRolesRepository.findByUserId(user.getUserId());
-            List<Integer> userRoles = new ArrayList<Integer>();
-            for (UserRole ur : roles) {
-                userRoles.add(ur.getRoleId());
-            }
-            return new CustomUserDetails(user, userRoles);
+            return new CustomUserDetails(user);
         }
     }
 }
