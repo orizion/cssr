@@ -34,6 +34,8 @@ import ch.fhnw.cssr.domain.UserMeta;
 import ch.fhnw.cssr.domain.repository.EmailRepository;
 import ch.fhnw.cssr.domain.repository.UserRepository;
 import ch.fhnw.cssr.mailutils.EmailTemplate;
+import ch.fhnw.cssr.security.CustomUserDetails;
+import ch.fhnw.cssr.security.CustomUserDetailsService;
 import ch.fhnw.cssr.security.jwt.AccountCredentials;
 import ch.fhnw.cssr.security.jwt.TokenAuthenticationService;
 import ch.fhnw.cssr.security.jwt.TokenResult;
@@ -147,6 +149,10 @@ public class UserController {
             logger.warn("Invalid credentials for user: {} ", creds.getEmail());
             return new ResponseEntity<TokenResult>(HttpStatus.UNAUTHORIZED);
         }
+        // Make the user persistent
+        if (User.isFhnwEmail(creds.getEmail())) {
+            CustomUserDetailsService.assureCreated(userDetailsService, repo, creds.getEmail());   
+        }        
         TokenResult token = TokenAuthenticationService.getJwtTokenResult(auth.getAuthorities(),
                 auth.getName());
         return new ResponseEntity<TokenResult>(token, HttpStatus.OK);

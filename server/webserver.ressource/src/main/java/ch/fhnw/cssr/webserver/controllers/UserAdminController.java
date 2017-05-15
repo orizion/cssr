@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,6 +23,7 @@ import ch.fhnw.cssr.domain.UserAddMeta;
 import ch.fhnw.cssr.domain.repository.EmailRepository;
 import ch.fhnw.cssr.domain.repository.UserRepository;
 import ch.fhnw.cssr.mailutils.EmailTemplate;
+import ch.fhnw.cssr.security.CustomUserDetailsService;
 
 @RestController
 @RequestMapping("/admin")
@@ -36,11 +38,44 @@ public class UserAdminController {
     private UserRepository repo;
 
     @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Autowired
     private EmailRepository emailRepo;
 
     /**
-     * Adds a new extern user. Will fail when given an existing user of an FHNW email. 
-     * @param newUserData The new user
+     * Modifies an existing user by setting the display name and or the roleId
+     * @param userData The user to be modified. Must have a user id
+     * @return Returns the modified user
+     */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(method = RequestMethod.PUT)
+    public ResponseEntity<User> modifyUser(@RequestBody User userData) {
+        logger.debug("Modifing user");
+        if (userData.getUserId() == null || userData.getUserId() == 0) {
+            logger.warn("User id not set, use POST instead");
+            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+        }
+        User existingUser = repo.findOne(userData.getUserId());
+        if (existingUser == null) {
+            logger.error("User not found: {}", userData.getUserId());
+            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+        }
+        if (!existingUser.getEmail().equals(userData.getEmail())) {
+            logger.error("Email not matching", userData.getUserId());
+            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+        }
+        existingUser.setDisplayName(userData.getDisplayName());
+        existingUser.setRoleId(userData.getRoleId());
+        repo.save(existingUser);
+        return new ResponseEntity<User>(existingUser, HttpStatus.OK);
+    }
+
+    /**
+     * Adds a new extern user. Will fail when given an existing user of an FHNW email.
+     * 
+     * @param newUserData
+     *            The new user
      * @return The Id of the new user.
      */
     @RequestMapping(method = RequestMethod.POST)
@@ -48,10 +83,13 @@ public class UserAdminController {
     public ResponseEntity<Long> addUser(@RequestBody UserAddMeta newUserData) {
         logger.debug("Adding user");
         if (User.isFhnwEmail(newUserData.getEmail())) {
-            // Cannot add such a user, use integrated authentication instead
-            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-        }
-        { // Just encapsulate scope for bug free code :)
+            // We just make the user persistent.
+            CustomUserDetailsService.assureCreated(userDetailsService, repo,
+                    newUserData.getEmail());
+            User dbuser = repo.findByEmail(newUserData.getEmail());
+            return new ResponseEntity<>(dbuser.getUserId(), HttpStatus.OK);
+
+        } else {
             // This is actually check in DB as well, but we prefer being sure here
             User dbuser = repo.findByEmail(newUserData.getEmail());
             if (dbuser != null) {

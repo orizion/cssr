@@ -116,9 +116,15 @@ export interface User {
     "email"?: string;
     "extern"?: boolean;
     "passwordEnc"?: string;
+    "roleId"?: number;
     "tempToken"?: string;
     "tempTokenExpiresAt"?: LocalTime;
     "userId"?: number;
+}
+
+export interface UserAddMeta {
+    "displayName"?: string;
+    "email"?: string;
 }
 
 export interface UserMeta {
@@ -1229,6 +1235,145 @@ export const TestcontrollerApiFactory = function (basePath?: string) {
          */
         getUserUsingGET(options?: any) {
             return TestcontrollerApiFp.getUserUsingGET(options)(basePath);
+        },
+    };
+};
+
+
+/**
+ * UseradmincontrollerApi - fetch parameter creator
+ */
+export const UseradmincontrollerApiFetchParamCreator = {
+    /** 
+     * addUser
+     * @param newUserData newUserData
+     */
+    addUserUsingPOST(params: {  "newUserData": UserAddMeta; }, options?: any): FetchArgs {
+        // verify required parameter "newUserData" is set
+        if (params["newUserData"] == null) {
+            throw new Error("Missing required parameter newUserData when calling addUserUsingPOST");
+        }
+        const baseUrl = `/admin`;
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "POST" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        contentTypeHeader["Content-Type"] = "application/json";
+        if (params["newUserData"]) {
+            fetchOptions.body = JSON.stringify(params["newUserData"] || {});
+        }
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
+     * modifyUser
+     * @param userData userData
+     */
+    modifyUserUsingPUT(params: {  "userData": User; }, options?: any): FetchArgs {
+        // verify required parameter "userData" is set
+        if (params["userData"] == null) {
+            throw new Error("Missing required parameter userData when calling modifyUserUsingPUT");
+        }
+        const baseUrl = `/admin`;
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "PUT" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        contentTypeHeader["Content-Type"] = "application/json";
+        if (params["userData"]) {
+            fetchOptions.body = JSON.stringify(params["userData"] || {});
+        }
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+};
+
+/**
+ * UseradmincontrollerApi - functional programming interface
+ */
+export const UseradmincontrollerApiFp = {
+    /** 
+     * addUser
+     * @param newUserData newUserData
+     */
+    addUserUsingPOST(params: { "newUserData": UserAddMeta;  }, options?: any): (basePath?: string) => Promise<number> {
+        const fetchArgs = UseradmincontrollerApiFetchParamCreator.addUserUsingPOST(params, options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<number>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
+     * modifyUser
+     * @param userData userData
+     */
+    modifyUserUsingPUT(params: { "userData": User;  }, options?: any): (basePath?: string) => Promise<User> {
+        const fetchArgs = UseradmincontrollerApiFetchParamCreator.modifyUserUsingPUT(params, options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<User>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+};
+
+/**
+ * UseradmincontrollerApi - object-oriented interface
+ */
+export class UseradmincontrollerApi extends BaseAPI {
+    /** 
+     * addUser
+     * @param newUserData newUserData
+     */
+    addUserUsingPOST(params: {  "newUserData": UserAddMeta; }, options?: any) {
+        return UseradmincontrollerApiFp.addUserUsingPOST(params, options)(this.basePath);
+    }
+    /** 
+     * modifyUser
+     * @param userData userData
+     */
+    modifyUserUsingPUT(params: {  "userData": User; }, options?: any) {
+        return UseradmincontrollerApiFp.modifyUserUsingPUT(params, options)(this.basePath);
+    }
+};
+
+/**
+ * UseradmincontrollerApi - factory interface
+ */
+export const UseradmincontrollerApiFactory = function (basePath?: string) {
+    return {
+        /** 
+         * addUser
+         * @param newUserData newUserData
+         */
+        addUserUsingPOST(params: {  "newUserData": UserAddMeta; }, options?: any) {
+            return UseradmincontrollerApiFp.addUserUsingPOST(params, options)(basePath);
+        },
+        /** 
+         * modifyUser
+         * @param userData userData
+         */
+        modifyUserUsingPUT(params: {  "userData": User; }, options?: any) {
+            return UseradmincontrollerApiFp.modifyUserUsingPUT(params, options)(basePath);
         },
     };
 };

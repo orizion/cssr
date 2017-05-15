@@ -33,28 +33,34 @@ public class TokenAuthenticationService {
 
     static SignatureAlgorithm Algorithm = SignatureAlgorithm.HS512;
     static String Secret = "ThisIsASecret";
-    
+
     /**
      * Initialize this class with some meaningful parameters.
-     * @param algo The Signature algorithm, such as HS412
-     * @param secret The secret key
+     * 
+     * @param algo
+     *            The Signature algorithm, such as HS412
+     * @param secret
+     *            The secret key
      */
     public static void initialize(SignatureAlgorithm algo, String secret) {
         TokenAuthenticationService.Algorithm = algo;
         TokenAuthenticationService.Secret = secret;
-        
+
         JwtBuilder builder = Jwts.builder();
         String jwtToken = builder.signWith(Algorithm, Secret).compact();
-        TokenAuthenticationService.JwtHeader =  jwtToken.substring(0, jwtToken.indexOf("."));
+        TokenAuthenticationService.JwtHeader = jwtToken.substring(0, jwtToken.indexOf("."));
     }
-    
+
     /**
      * Gets the JWT Token for the given user.
-     * @param authorities The roles for the user
-     * @param username The username
+     * 
+     * @param authorities
+     *            The roles for the user
+     * @param username
+     *            The username
      * @return The jwt token result
      */
-    public static TokenResult getJwtTokenResult(Collection<? extends GrantedAuthority> authorities, 
+    public static TokenResult getJwtTokenResult(Collection<? extends GrantedAuthority> authorities,
             String username) {
         Claims s = new DefaultClaims();
         String rolesStr = String.join(",", AuthorityUtils.authorityListToSet(authorities));
@@ -65,12 +71,12 @@ public class TokenAuthenticationService {
         JwtBuilder builder = Jwts.builder();
         builder.setClaims(s);
         String jwtToken = builder.signWith(Algorithm, Secret).compact();
-        
+
         // Remove headers, as this is often a cause for weak security
         jwtToken = jwtToken.substring(jwtToken.indexOf('.') + 1);
         return new TokenResult(jwtToken);
     }
-    
+
     static void addAuthentication(HttpServletResponse res,
             Collection<? extends GrantedAuthority> authorities, String username)
             throws IOException {
@@ -97,6 +103,9 @@ public class TokenAuthenticationService {
             String user = jwtBody.getSubject();
 
             return user != null ? new UsernamePasswordAuthenticationToken(user, null, roles) : null;
+        }
+        if (request.getCookies() != null && request.getCookies().length > 0) {
+            // TODO: We should validate the cookies here and accept a cookie from the AAI Proxy
         }
         return null;
     }

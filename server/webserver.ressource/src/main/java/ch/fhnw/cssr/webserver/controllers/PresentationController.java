@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ch.fhnw.cssr.domain.Email;
 import ch.fhnw.cssr.domain.Presentation;
+import ch.fhnw.cssr.domain.Role;
 import ch.fhnw.cssr.domain.User;
 import ch.fhnw.cssr.domain.repository.EmailRepository;
 import ch.fhnw.cssr.domain.repository.PresentationRepository;
@@ -100,8 +101,10 @@ public class PresentationController {
             return new ResponseEntity<Presentation>(HttpStatus.PRECONDITION_FAILED);
         }
         UserDetails dt = userDetails.loadUserByUsername(user.getName());
+        String roleCoord = Role.getDefaultRoleName(Role.ROLE_COORD);
+        String roleAdmin = Role.getDefaultRoleName(Role.ROLE_ADMIN);
         boolean isPermitted = dt.getAuthorities().stream().map(a -> a.getAuthority())
-                .anyMatch(p -> p.equals("ROLE_COORD") || p.equals("ROLE_ADMIN"));
+                .anyMatch(p -> p.equals(roleCoord) || p.equals(roleAdmin));
         if (!isPermitted && dt instanceof User) {
             Presentation existing = repo.findOne(pres.getPresentationId());
             if (existing.getSpeakerId() == ((User) dt).getUserId()) {
