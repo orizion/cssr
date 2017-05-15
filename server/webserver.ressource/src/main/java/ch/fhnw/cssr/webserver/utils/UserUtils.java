@@ -53,7 +53,7 @@ public class UserUtils {
         UserDetails dt = userDetailsService.loadUserByUsername(email);
         if (dt instanceof CustomUserDetails) {
             User us = ((CustomUserDetails) dt).copy();
-            if (us.getUserId() == 0 || us.getUserId() == null) {
+            if (us.getUserId() == null || us.getUserId() == Long.valueOf(0)) {
                 repo.save(us); // Save user persistently if not already done
                 return true;
             }

@@ -196,7 +196,8 @@ public class PresentationControllerTest {
         p2.setTitle("Test title 222");
         
         // Save it 
-        mockMvc.perform(post("/presentation").header("Accept", "application/json")
+        MvcResult presentationResult = mockMvc.perform(post("/presentation")
+                .header("Accept", "application/json")
                     .header("Authorization", header)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(TestUtils.json(p2))
@@ -204,7 +205,22 @@ public class PresentationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.abstract", is("test abstract 2")))
                 .andExpect(jsonPath("$.location", is("there 2")))
-                .andExpect(jsonPath("$.title", is("Test title 222")));
+                .andExpect(jsonPath("$.title", is("Test title 222")))
+                .andReturn();
 
+        Presentation existing = TestUtils.fromJson(
+                presentationResult.getResponse().getContentAsString(),
+                Presentation.class);
+        existing.setTitle("test title 123");
+        
+        mockMvc.perform(put("/presentation")
+                .header("Accept", "application/json")
+                    .header("Authorization", header)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(TestUtils.json(existing))
+                    )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title", is("Test title 123")))
+                .andExpect(jsonPath("$.presentationId", is(existing.getPresentationId())));   
     }
 }
