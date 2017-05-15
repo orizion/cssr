@@ -114,7 +114,11 @@ public class PresentationFileController {
         PresentationFile rfile = new PresentationFile(file.getPresentationId(), file.getType(),
                 file.getContentLink());
         fileRepo.save(rfile);
-        return new ResponseEntity<PresentationFileMeta>(file, HttpStatus.CREATED);
+        PresentationFileMeta nfile = new PresentationFileMeta(rfile.getPresentationFileId(),
+                rfile.getPresentationId(), 
+                rfile.getType(), 
+                rfile.getContentLink());
+        return new ResponseEntity<PresentationFileMeta>(nfile, HttpStatus.CREATED);
     }
 
 }

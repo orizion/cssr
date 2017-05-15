@@ -47,6 +47,8 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.fhnw.cssr.domain.Presentation;
+import ch.fhnw.cssr.domain.PresentationFile;
+import ch.fhnw.cssr.domain.PresentationFileMeta;
 import ch.fhnw.cssr.domain.Role;
 import ch.fhnw.cssr.domain.User;
 import ch.fhnw.cssr.domain.UserAddMeta;
@@ -71,7 +73,7 @@ import ch.fhnw.cssr.webserver.App;
 @AutoConfigureTestEntityManager
 @AutoConfigureTestDatabase(replace = Replace.ANY)
 @AutoConfigureMockMvc
-public class PresentationControllerTest {
+public class PresentationFileControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -84,7 +86,6 @@ public class PresentationControllerTest {
 
     @Autowired
     private UserRepository userRepository;
-    
 
     @Autowired
     private PresentationFileRepository presentationFileRepository;
@@ -98,7 +99,6 @@ public class PresentationControllerTest {
     @MockBean
     private CustomPasswordEncoder passwordEncoder;
 
-    
     /**
      * Sets up the mocks.
      */
@@ -106,7 +106,7 @@ public class PresentationControllerTest {
     public void setUp() {
         userRepository.deleteAll();
         presentationRepository.deleteAll();
-        
+
         User testUser = new User(1000, "testie2@students.fhnw.ch", "Testie").copy();
         testUser.setRoleId(Role.ROLE_COORD);
         userRepository.save(testUser);
@@ -119,108 +119,42 @@ public class PresentationControllerTest {
         p.setLocation("here");
         p.setSpeakerId(speaker.getUserId());
         p.setTitle("Test title 2");
-        
-        Presentation p2 = new Presentation();
-        p2.setAbstract("test abstract yesterday");
-        p2.setDateTime(LocalDateTime.now().minusDays(3));
-        p2.setLocation("there");
-        p2.setSpeakerId(speaker.getUserId());
-        p2.setTitle("Test title 2");
 
         presentationRepository.save(p);
-        presentationRepository.save(p2);
-
     }
 
     @Test
     public void contexLoads() throws Exception {
         assertNotNull(presentationRepository);
     }
-    
 
     @Test
-    public void findAllPresentations() throws Exception {
-        String header = TestUtils.getAuthValue(mockMvc, passwordEncoder, 
-                "testie2@students.fhnw.ch");        
-
-        mockMvc.perform(get("/presentation?futureOnly=false").header("Accept", "application/json")
-                .header("Authorization", header))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].abstract", is("test abstract")))
-                .andExpect(jsonPath("$[0].location", is("here")))
-                .andExpect(jsonPath("$[1].abstract", is("test abstract yesterday")))
-                .andExpect(jsonPath("$[1].location", is("there")))
-                .andExpect(jsonPath("$.length()", is(2)));
-        
-    }
-    
-    @Test
-    public void findFuturePresentations() throws Exception {
-        String header = TestUtils.getAuthValue(mockMvc, passwordEncoder, 
+    public void addFileByLink() throws Exception {
+        String header = TestUtils.getAuthValue(mockMvc, passwordEncoder,
                 "testie2@students.fhnw.ch");
-        
-        mockMvc.perform(get("/presentation?futureOnly=true").header("Accept", "application/json")
-                    .header("Authorization", header))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].abstract", is("test abstract")))
-                .andExpect(jsonPath("$[0].location", is("here")))
-                .andExpect(jsonPath("$.length()", is(1)));
-    }
-    
 
-    @Test
-    public void addPresentation() throws Exception {
-        String header = TestUtils.getAuthValue(mockMvc, passwordEncoder, 
-                "testie2@students.fhnw.ch");
+        Presentation p = presentationRepository.findAll().iterator().next();
+        String baseUrl = "/presentation/" + p.getPresentationId()  + "/file";
+        PresentationFileMeta file1 = new PresentationFileMeta(0, p.getPresentationId().intValue(),
+                PresentationFile.TYPE_PRESENTATION,
+                "http://www.google.ch");
         
-
-        // Add user
-        MvcResult result = mockMvc.perform(post("/admin/user").header("Accept", "application/json")
+        // Adds a file link
+        MvcResult result = mockMvc.perform(post(baseUrl + "/link")
+                .header("Accept", "application/json")
                 .header("Authorization", header)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(TestUtils.json(
-                        new UserAddMeta("speakie2@students.fhnw.ch", "2nd Speaker")))
-                )
-            .andExpect(status().isOk())
-            .andReturn();
-        
-        // Get User id
-        Long id = new Long(result.getResponse().getContentAsString());
-        
-        // Construct pres
-        Presentation p2 = new Presentation();
-        p2.setAbstract("test abstract 2");
-        p2.setDateTime(LocalDateTime.now().plusDays(54));
-        p2.setLocation("there 2");
-        p2.setSpeakerId(id);
-        p2.setTitle("Test title 222");
-        
-        // Save it 
-        MvcResult presentationResult = mockMvc.perform(post("/presentation")
-                .header("Accept", "application/json")
-                    .header("Authorization", header)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtils.json(p2))
-                    )
-                .andExpect(status().is(201))
-                .andExpect(jsonPath("$.abstract", is("test abstract 2")))
-                .andExpect(jsonPath("$.location", is("there 2")))
-                .andExpect(jsonPath("$.title", is("Test title 222")))
+                .content(TestUtils.json(file1)))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$.contentLink", is("http://www.google.ch")))
                 .andReturn();
-
-        Presentation existing = TestUtils.fromJson(
-                presentationResult.getResponse().getContentAsString(),
-                Presentation.class);
-        existing.setTitle("test title 123");
         
-        mockMvc.perform(put("/presentation")
+        // Delete again
+        PresentationFileMeta existing = TestUtils.fromJson(result, PresentationFileMeta.class);
+        mockMvc.perform(delete(baseUrl + "/" + existing.getPresentationFileId())
                 .header("Accept", "application/json")
-                    .header("Authorization", header)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtils.json(existing))
-                    )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title", is("test title 123")))
-                .andExpect(jsonPath("$.presentationId", is(existing.getPresentationId())));   
+                .header("Authorization", header)
+                )
+                .andExpect(status().is2xxSuccessful());
     }
 }

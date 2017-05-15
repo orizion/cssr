@@ -33,6 +33,17 @@ public class TestUtils {
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         return mapper.writeValueAsString(value);
     }
+    
+    /**
+     * Deserializes an object from JSON.  
+     * @param content The content of an MvcRequest.
+     * @param contentClass The class of the result
+     * @return The deserialized object.
+     * @throws IOException Invalid Json.
+     */
+    public static <T> T fromJson(MvcResult content, Class<T> contentClass) throws IOException {
+        return fromJson(content.getResponse().getContentAsString(), contentClass);
+    }
 
     /**
      * Deserializes an object from JSON.  

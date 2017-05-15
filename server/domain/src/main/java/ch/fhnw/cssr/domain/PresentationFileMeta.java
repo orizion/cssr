@@ -15,14 +15,18 @@ public class PresentationFileMeta implements Serializable {
 	private static final long serialVersionUID = 10013002L;
 
 	@Id
-	private final long presentationFileId;
+	private long presentationFileId;
 
-	private final int presentationId;
+	private int presentationId;
 
-	private final String type;
+	private String type;
 
-	private final String contentLink;
+	private String contentLink;
 
+	public PresentationFileMeta() {
+	    
+	}
+	
 	public PresentationFileMeta(long presentationFileId, int presentationId, String type, String contentLink) {
 		this.presentationFileId = presentationFileId;
 		this.presentationId = presentationId;
