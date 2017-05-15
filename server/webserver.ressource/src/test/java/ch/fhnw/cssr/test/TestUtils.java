@@ -12,6 +12,8 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import ch.fhnw.cssr.domain.User;
 import ch.fhnw.cssr.security.jwt.AccountCredentials;
@@ -19,13 +21,30 @@ import ch.fhnw.cssr.security.jwt.TokenResult;
 
 public class TestUtils {
 
+    /**
+     * Serializes an object as JSON.
+     * @param value The object to be serializes.
+     * @return The Json
+     * @throws JsonProcessingException Error if not possible.
+     */
     public static String json(Object value) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         return mapper.writeValueAsString(value);
     }
 
+    /**
+     * Deserializes an object from JSON.  
+     * @param content The content itself.
+     * @param contentClass The class of the result
+     * @return The deserialized object.
+     * @throws IOException Invalid Json.
+     */
     public static <T> T fromJson(String content, Class<T> contentClass) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         return mapper.readValue(content, contentClass);
     }
 

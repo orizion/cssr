@@ -202,7 +202,10 @@ public class PresentationControllerTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(TestUtils.json(p2))
                     )
-                .andExpect(status().isOk())
+                .andDo(r -> {
+                    System.out.println(r.getResponse().getContentAsString());
+                })
+                .andExpect(status().is(201))
                 .andExpect(jsonPath("$.abstract", is("test abstract 2")))
                 .andExpect(jsonPath("$.location", is("there 2")))
                 .andExpect(jsonPath("$.title", is("Test title 222")))
@@ -220,7 +223,7 @@ public class PresentationControllerTest {
                     .content(TestUtils.json(existing))
                     )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title", is("Test title 123")))
+                .andExpect(jsonPath("$.title", is("test title 123")))
                 .andExpect(jsonPath("$.presentationId", is(existing.getPresentationId())));   
     }
 }
