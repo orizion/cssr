@@ -40,27 +40,4 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
     }
 
-    /**
-     * Creates a FHNW user if it does not exist.
-     * 
-     * @param email
-     *            The email address
-     * @param repo
-     *            The user repository.
-     */
-    public static boolean assureCreated(UserDetailsService service, UserRepository repo,
-            String email) {
-        if (!User.isFhnwEmail(email)) {
-            throw new IllegalArgumentException("Must be an fhnw email");
-        }
-        UserDetails dt = service.loadUserByUsername(email);
-        if (dt instanceof CustomUserDetails) {
-            User us = ((CustomUserDetails) dt).copy();
-            if (us.getUserId() == 0 || us.getUserId() == null) {
-                repo.save(us); // Save user persistently if not already done
-                return true;
-            }
-        }
-        return false;
-    }
 }

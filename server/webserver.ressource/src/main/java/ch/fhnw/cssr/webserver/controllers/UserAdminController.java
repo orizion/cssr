@@ -1,5 +1,6 @@
 package ch.fhnw.cssr.webserver.controllers;
 
+import java.security.Principal;
 import java.time.LocalTime;
 import java.util.UUID;
 
@@ -24,6 +25,7 @@ import ch.fhnw.cssr.domain.repository.EmailRepository;
 import ch.fhnw.cssr.domain.repository.UserRepository;
 import ch.fhnw.cssr.mailutils.EmailTemplate;
 import ch.fhnw.cssr.security.CustomUserDetailsService;
+import ch.fhnw.cssr.webserver.utils.UserUtils;
 
 @RestController
 @RequestMapping("/admin")
@@ -36,6 +38,9 @@ public class UserAdminController {
 
     @Autowired
     private UserRepository repo;
+    
+    @Autowired
+    private UserUtils userUtils;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -82,10 +87,10 @@ public class UserAdminController {
     @PreAuthorize("hasRole('ROLE_ADMIN','ROLE_COORD')")
     public ResponseEntity<Long> addUser(@RequestBody UserAddMeta newUserData) {
         logger.debug("Adding user");
+        
         if (User.isFhnwEmail(newUserData.getEmail())) {
             // We just make the user persistent.
-            CustomUserDetailsService.assureCreated(userDetailsService, repo,
-                    newUserData.getEmail());
+            userUtils.assureCreated(newUserData.getEmail());
             User dbuser = repo.findByEmail(newUserData.getEmail());
             return new ResponseEntity<>(dbuser.getUserId(), HttpStatus.OK);
 
