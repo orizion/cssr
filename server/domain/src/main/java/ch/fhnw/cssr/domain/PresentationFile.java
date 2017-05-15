@@ -29,21 +29,30 @@ public class PresentationFile implements Serializable {
 	private byte[] content;
 
 	private String contentLink;
+	
+	private String displayName;
+	
+	private String contentType;
 
 	private PresentationFile() {
 		// Not used currently
 	}
 
-	public PresentationFile(int presentationId, String type, String contentLink) {
+	public PresentationFile(int presentationId, String type, String contentLink,
+	        String displayName) {
 		this.presentationId = presentationId;
 		this.type = type;
 		this.contentLink = contentLink;
+		this.displayName = displayName;
 	}
 	
-	public PresentationFile(int presentationId, String type, byte[] content) {
+	public PresentationFile(int presentationId, String type, byte[] content, String contentType,
+	        String displayName) {
 		this.presentationId = presentationId;
 		this.type = type;
 		this.content = content;
+		this.contentType = contentType;
+		this.displayName = displayName;
 	}
 
 	public int getPresentationId() {
@@ -53,7 +62,24 @@ public class PresentationFile implements Serializable {
 	public void setPresentationId(int presentationId) {
 		this.presentationId = presentationId;
 	}
+	
 
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+    
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+    
 	@ApiModelProperty(value = "The type of the file. f for Presentation, r for Ressource", allowableValues = "f,r")
 	public String getType() {
 		return type;
@@ -90,6 +116,6 @@ public class PresentationFile implements Serializable {
 	}
 	
 	public PresentationFileMeta getAsMeta(){
-		return new PresentationFileMeta(presentationFileId, presentationId, type, contentLink);
+		return new PresentationFileMeta(presentationFileId, presentationId, type, contentLink, displayName, contentType);
 	}
 }

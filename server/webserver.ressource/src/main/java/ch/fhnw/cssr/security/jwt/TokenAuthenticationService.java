@@ -104,6 +104,10 @@ public class TokenAuthenticationService {
 
             return user != null ? new UsernamePasswordAuthenticationToken(user, null, roles) : null;
         }
+        String tempToken = request.getParameter("tempToken");
+        if (tempToken != null) {
+            // TODO: Evaluate it
+        }
         if (request.getCookies() != null && request.getCookies().length > 0) {
             // TODO: We should validate the cookies here and accept a cookie from the AAI Proxy
         }
