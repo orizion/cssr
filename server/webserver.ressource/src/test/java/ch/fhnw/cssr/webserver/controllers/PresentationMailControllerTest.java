@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -17,7 +18,10 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
+import org.apache.http.entity.ContentType;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,12 +45,16 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultHandler;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ch.fhnw.cssr.domain.EmailView;
 import ch.fhnw.cssr.domain.Presentation;
+import ch.fhnw.cssr.domain.PresentationFile;
+import ch.fhnw.cssr.domain.PresentationFileMeta;
 import ch.fhnw.cssr.domain.Role;
 import ch.fhnw.cssr.domain.User;
 import ch.fhnw.cssr.domain.UserAddMeta;
@@ -71,7 +79,7 @@ import ch.fhnw.cssr.webserver.App;
 @AutoConfigureTestEntityManager
 @AutoConfigureTestDatabase(replace = Replace.ANY)
 @AutoConfigureMockMvc
-public class PresentationControllerTest {
+public class PresentationMailControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -84,7 +92,6 @@ public class PresentationControllerTest {
 
     @Autowired
     private UserRepository userRepository;
-    
 
     @Autowired
     private PresentationFileRepository presentationFileRepository;
@@ -98,7 +105,6 @@ public class PresentationControllerTest {
     @MockBean
     private CustomPasswordEncoder passwordEncoder;
 
-    
     /**
      * Sets up the mocks.
      */
@@ -106,121 +112,76 @@ public class PresentationControllerTest {
     public void setUp() {
         userRepository.deleteAll();
         presentationRepository.deleteAll();
-        
+
         User testUser = new User(1000, "testie2@students.fhnw.ch", "Testie").copy();
         testUser.setRoleId(Role.ROLE_COORD);
         userRepository.save(testUser);
-        User speaker = new User(0, "speakie@students.fhnw.ch", "Speakie").copy();
-        userRepository.save(speaker);
 
         Presentation p = new Presentation();
         p.setAbstract("test abstract");
         p.setDateTime(LocalDateTime.now().plusDays(3));
         p.setLocation("here");
-        p.setSpeakerId(speaker.getUserId());
+        p.setSpeakerId(testUser.getUserId());
         p.setTitle("Test title 2");
-        
-        Presentation p2 = new Presentation();
-        p2.setAbstract("test abstract yesterday");
-        p2.setDateTime(LocalDateTime.now().minusDays(3));
-        p2.setLocation("there");
-        p2.setSpeakerId(speaker.getUserId());
-        p2.setTitle("Test title 2");
 
         presentationRepository.save(p);
-        presentationRepository.save(p2);
-
     }
 
     @Test
     public void contexLoads() throws Exception {
         assertNotNull(presentationRepository);
     }
-    
 
     @Test
-    public void findAllPresentations() throws Exception {
-        String header = TestUtils.getAuthValue(mockMvc, passwordEncoder, 
-                "testie2@students.fhnw.ch");        
-
-        mockMvc.perform(get("/presentation?futureOnly=false").header("Accept", "application/json")
-                .header("Authorization", header))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].abstract", is("test abstract")))
-                .andExpect(jsonPath("$[0].location", is("here")))
-                .andExpect(jsonPath("$[1].abstract", is("test abstract yesterday")))
-                .andExpect(jsonPath("$[1].location", is("there")))
-                .andExpect(jsonPath("$.length()", is(2)));
-        
-    }
-    
-    @Test
-    public void findFuturePresentations() throws Exception {
-        String header = TestUtils.getAuthValue(mockMvc, passwordEncoder, 
+    public void getMailTemplate() throws Exception {
+        String header = TestUtils.getAuthValue(mockMvc, passwordEncoder,
                 "testie2@students.fhnw.ch");
-        
-        mockMvc.perform(get("/presentation?futureOnly=true").header("Accept", "application/json")
-                    .header("Authorization", header))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].abstract", is("test abstract")))
-                .andExpect(jsonPath("$[0].location", is("here")))
-                .andExpect(jsonPath("$.length()", is(1)));
-    }
-    
 
-    @Test
-    public void addPresentation() throws Exception {
-        String header = TestUtils.getAuthValue(mockMvc, passwordEncoder, 
-                "testie2@students.fhnw.ch");
+        Presentation p = presentationRepository.findAll().iterator().next();
+        String templateUrl = "/presentation/" + p.getPresentationId() + "/invitation/template";
         
-
-        // Add user
-        MvcResult result = mockMvc.perform(post("/admin/user").header("Accept", "application/json")
-                .header("Authorization", header)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(TestUtils.json(
-                        new UserAddMeta("speakie2@students.fhnw.ch", "2nd Speaker")))
-                )
-            .andExpect(status().isOk())
-            .andReturn();
         
-        // Get User id
-        Long id = new Long(result.getResponse().getContentAsString());
-        
-        // Construct pres
-        Presentation p2 = new Presentation();
-        p2.setAbstract("test abstract 2");
-        p2.setDateTime(LocalDateTime.now().plusDays(54));
-        p2.setLocation("there 2");
-        p2.setSpeakerId(id);
-        p2.setTitle("Test title 222");
-        
-        // Save it 
-        MvcResult presentationResult = mockMvc.perform(post("/presentation")
-                .header("Accept", "application/json")
-                    .header("Authorization", header)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtils.json(p2))
-                    )
+        mockMvc
+                .perform(get(templateUrl).header("Accept", "application/json")
+                        .header("Authorization", header)
+                        )
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.abstract", is("test abstract 2")))
-                .andExpect(jsonPath("$.location", is("there 2")))
-                .andExpect(jsonPath("$.title", is("Test title 222")))
-                .andReturn();
-
-        Presentation existing = TestUtils.fromJson(
-                presentationResult.getResponse().getContentAsString(),
-                Presentation.class);
-        existing.setTitle("test title 123");
-        
-        mockMvc.perform(put("/presentation")
-                .header("Accept", "application/json")
-                    .header("Authorization", header)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtils.json(existing))
-                    )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title", is("test title 123")))
-                .andExpect(jsonPath("$.presentationId", is(existing.getPresentationId())));   
+                .andExpect(jsonPath("$.subject", Matchers.notNullValue()))
+                .andExpect(jsonPath("$.body", Matchers.notNullValue()))
+                .andDo(r -> {
+                    EmailView ev = TestUtils.fromJson(r.getResponse().getContentAsString(), 
+                            EmailView.class);
+                    System.out.println(ev.getBody());
+                });
     }
+
+    @Test
+    public void saveMailTemplate() throws Exception {
+        
+        EmailView toSave = new EmailView();
+        toSave.setBcc("hans@heiri.ch");
+        toSave.setBody("aosdfijwoeifjoij");
+        toSave.setCc("cc@cc.cc");
+        toSave.setSubject("oijoij");
+        toSave.setTo("asdofijweofij@oaisdjfaoij.oih");
+        
+        Presentation p = presentationRepository.findAll().iterator().next();
+        String url = "/presentation/" + p.getPresentationId() + "/invitation/send";
+
+        String header = TestUtils.getAuthValue(mockMvc, passwordEncoder,
+                "testie2@students.fhnw.ch");
+
+        
+        mockMvc
+                .perform(post(url).header("Accept", "application/json")
+                        .header("Authorization", header)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtils.json(toSave))
+                        )
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$.emailId", Matchers.notNullValue()))
+                .andExpect(jsonPath("$.subject", is("oijoij")))
+                ;
+    }
+
 }

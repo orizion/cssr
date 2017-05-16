@@ -29,6 +29,7 @@
         <h2.version>1.4.194</h2.version>
         <cssr-domain.version>0.0.1-SNAPSHOT</cssr-domain.version>
         <ews.version>2.0</ews.version>
+        <jmustache.version>1.13</jmustache.version>
     </properties>
     <dependencies>
         <dependency>
@@ -124,12 +125,13 @@
             <artifactId>commons-io</artifactId>
             <version>${commons-io.version}</version>
         </dependency>
-        <!-- Mail generation -->
+        <!-- https://mvnrepository.com/artifact/com.samskivert/jmustache -->
         <dependency>
-            <groupId>com.github.spullara.mustache.java</groupId>
-            <artifactId>compiler</artifactId>
-            <version>${mustache.version}</version>
+            <groupId>com.samskivert</groupId>
+            <artifactId>jmustache</artifactId>
+            <version>${jmustache.version}</version>
         </dependency>
+                
         <!-- Java 8 Dates & Times 4 Json -->
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>

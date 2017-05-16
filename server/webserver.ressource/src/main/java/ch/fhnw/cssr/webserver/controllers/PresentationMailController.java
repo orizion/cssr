@@ -1,7 +1,10 @@
 package ch.fhnw.cssr.webserver.controllers;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -44,7 +47,7 @@ public class PresentationMailController {
 
     @Value("${cssr.mail.invitation.subject}")
     private String invitationSubject;
-
+    
     @Autowired
     private EmailRepository emailRepo;
 
@@ -56,7 +59,7 @@ public class PresentationMailController {
      * @return The Email that would be sent
      */
     @RequestMapping(method = RequestMethod.GET, path = "{id}/invitation/template")
-    @PreAuthorize("hasRole('ROLE_ADMIN', 'ROLE_SGL', 'ROLE_COORD')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SGL', 'ROLE_COORD')")
     public ResponseEntity<EmailView> getInvitationMailTemplate(
             @PathVariable(name = "id", required = true) Integer id) {
         Presentation resp = repo.findOne(id);
@@ -64,7 +67,18 @@ public class PresentationMailController {
             logger.warn("Presentation not found");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        String mailBody = EmailTemplate.getValue("sendInvitation", resp);
+        Map<String, String> templateValues = new HashMap<String,String>();
+        templateValues.put("title", resp.getTitle());
+        templateValues.put("location", resp.getLocation());
+        templateValues.put("presentationId", resp.getPresentationId().toString());
+        templateValues.put("date", 
+                resp.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
+        templateValues.put("time", 
+                resp.getDateTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+        templateValues.put("subsdeadline", 
+                resp.getDeadline().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
+        
+        String mailBody = EmailTemplate.getValue("sendInvitation", templateValues);
         String mailSubject = EmailTemplate.getSubject("cssr.mail.invitation.subject",
                 invitationSubject, resp);
         String to = invitationTarget;
@@ -96,6 +110,6 @@ public class PresentationMailController {
             @PathVariable(name = "id", required = true) Integer id, @RequestBody EmailView mail) {
         Email dbmail = new Email(mail);
         emailRepo.save(dbmail);
-        return new ResponseEntity<Email>(dbmail, HttpStatus.FOUND);
+        return new ResponseEntity<Email>(dbmail, HttpStatus.CREATED);
     }
 }

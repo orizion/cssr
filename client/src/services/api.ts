@@ -48,8 +48,8 @@ export interface Email {
     "cc"?: string;
     "emailId"?: number;
     "error"?: string;
-    "insertedAt"?: LocalTime;
-    "sentDate"?: LocalTime;
+    "insertedAt"?: Date;
+    "sentDate"?: Date;
     "subject"?: string;
     "to"?: string;
     "tryCount"?: number;
@@ -63,16 +63,10 @@ export interface EmailView {
     "to"?: string;
 }
 
-export interface LocalTime {
-    "hour"?: number;
-    "minute"?: number;
-    "nano"?: number;
-    "second"?: number;
-}
-
 export interface Presentation {
     "abstract"?: string;
     "dateTime"?: Date;
+    "deadline"?: Date;
     "location"?: string;
     "presentationId"?: number;
     "speakerId"?: number;
@@ -120,7 +114,7 @@ export interface User {
     "passwordEnc"?: string;
     "roleId"?: number;
     "tempToken"?: string;
-    "tempTokenExpiresAt"?: LocalTime;
+    "tempTokenExpiresAt"?: Date;
     "userId"?: number;
 }
 
@@ -506,8 +500,9 @@ export const PresentationfilecontrollerApiFetchParamCreator = {
      * getFile
      * @param presentationId presentationId
      * @param fileId fileId
+     * @param tempToken tempToken
      */
-    getFileUsingGET(params: {  "presentationId": number; "fileId": number; }, options?: any): FetchArgs {
+    getFileUsingGET(params: {  "presentationId": number; "fileId": number; "tempToken"?: string; }, options?: any): FetchArgs {
         // verify required parameter "presentationId" is set
         if (params["presentationId"] == null) {
             throw new Error("Missing required parameter presentationId when calling getFileUsingGET");
@@ -520,6 +515,9 @@ export const PresentationfilecontrollerApiFetchParamCreator = {
             .replace(`{${"presentationId"}}`, `${ params["presentationId"] }`)
             .replace(`{${"fileId"}}`, `${ params["fileId"] }`);
         let urlObj = url.parse(baseUrl, true);
+        urlObj.query = Object.assign({}, urlObj.query, {
+            "tempToken": params["tempToken"],
+        });
         let fetchOptions: RequestInit = Object.assign({}, { method: "GET" }, options);
 
         let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
@@ -618,8 +616,9 @@ export const PresentationfilecontrollerApiFp = {
      * getFile
      * @param presentationId presentationId
      * @param fileId fileId
+     * @param tempToken tempToken
      */
-    getFileUsingGET(params: { "presentationId": number; "fileId": number;  }, options?: any): (basePath?: string) => Promise<any> {
+    getFileUsingGET(params: { "presentationId": number; "fileId": number; "tempToken"?: string;  }, options?: any): (basePath?: string) => Promise<any> {
         const fetchArgs = PresentationfilecontrollerApiFetchParamCreator.getFileUsingGET(params, options);
         return (basePath: string = BASE_PATH) => {
             return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
@@ -684,8 +683,9 @@ export class PresentationfilecontrollerApi extends BaseAPI {
      * getFile
      * @param presentationId presentationId
      * @param fileId fileId
+     * @param tempToken tempToken
      */
-    getFileUsingGET(params: {  "presentationId": number; "fileId": number; }, options?: any) {
+    getFileUsingGET(params: {  "presentationId": number; "fileId": number; "tempToken"?: string; }, options?: any) {
         return PresentationfilecontrollerApiFp.getFileUsingGET(params, options)(this.basePath);
     }
     /** 
@@ -733,8 +733,9 @@ export const PresentationfilecontrollerApiFactory = function (basePath?: string)
          * getFile
          * @param presentationId presentationId
          * @param fileId fileId
+         * @param tempToken tempToken
          */
-        getFileUsingGET(params: {  "presentationId": number; "fileId": number; }, options?: any) {
+        getFileUsingGET(params: {  "presentationId": number; "fileId": number; "tempToken"?: string; }, options?: any) {
             return PresentationfilecontrollerApiFp.getFileUsingGET(params, options)(basePath);
         },
         /** 
@@ -1489,10 +1490,10 @@ export const UsercontrollerApiFetchParamCreator = {
     /** 
      * getTemporaryToken
      */
-    getTemporaryTokenUsingPOST(options?: any): FetchArgs {
+    getTemporaryTokenUsingGET(options?: any): FetchArgs {
         const baseUrl = `/user/me/tempToken`;
         let urlObj = url.parse(baseUrl, true);
-        let fetchOptions: RequestInit = Object.assign({}, { method: "POST" }, options);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "GET" }, options);
 
         let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
         if (contentTypeHeader) {
@@ -1588,8 +1589,8 @@ export const UsercontrollerApiFp = {
     /** 
      * getTemporaryToken
      */
-    getTemporaryTokenUsingPOST(options?: any): (basePath?: string) => Promise<string> {
-        const fetchArgs = UsercontrollerApiFetchParamCreator.getTemporaryTokenUsingPOST(options);
+    getTemporaryTokenUsingGET(options?: any): (basePath?: string) => Promise<string> {
+        const fetchArgs = UsercontrollerApiFetchParamCreator.getTemporaryTokenUsingGET(options);
         return (basePath: string = BASE_PATH) => {
             return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
                 if (response.status >= 200 && response.status < 300) {
@@ -1662,8 +1663,8 @@ export class UsercontrollerApi extends BaseAPI {
     /** 
      * getTemporaryToken
      */
-    getTemporaryTokenUsingPOST(options?: any) {
-        return UsercontrollerApiFp.getTemporaryTokenUsingPOST(options)(this.basePath);
+    getTemporaryTokenUsingGET(options?: any) {
+        return UsercontrollerApiFp.getTemporaryTokenUsingGET(options)(this.basePath);
     }
     /** 
      * get
@@ -1701,8 +1702,8 @@ export const UsercontrollerApiFactory = function (basePath?: string) {
         /** 
          * getTemporaryToken
          */
-        getTemporaryTokenUsingPOST(options?: any) {
-            return UsercontrollerApiFp.getTemporaryTokenUsingPOST(options)(basePath);
+        getTemporaryTokenUsingGET(options?: any) {
+            return UsercontrollerApiFp.getTemporaryTokenUsingGET(options)(basePath);
         },
         /** 
          * get

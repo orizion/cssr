@@ -23,31 +23,34 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class AuthenticationFilter extends GenericFilterBean {
 
     private volatile String algorithm;
-    
+
     private volatile String secret;
-    
-    private final UserRepository userRepository; 
-    
+
+    private final UserRepository userRepository;
+
     /**
      * Creates a new filter.
-     * @param userRepo Using the UserRepo for temp tokens
-     * @param algorithm The specified algorithm
-     * @param secret The given secret
+     * 
+     * @param userRepo
+     *            Using the UserRepo for temp tokens
+     * @param algorithm
+     *            The specified algorithm
+     * @param secret
+     *            The given secret
      */
-    public AuthenticationFilter(UserRepository userRepo, 
-            String algorithm,
-            String secret) {
+    public AuthenticationFilter(UserRepository userRepo, String algorithm, String secret) {
         this.userRepository = userRepo;
         this.algorithm = algorithm;
         this.secret = secret;
     }
-    
+
     @Override
     protected void initFilterBean() throws ServletException {
         super.initFilterBean();
-        SignatureAlgorithm algo = SignatureAlgorithm.forName(algorithm);
-        TokenAuthenticationService.initialize(algo, secret);
-        
+        if (algorithm != null) {
+            SignatureAlgorithm algo = SignatureAlgorithm.forName(algorithm);
+            TokenAuthenticationService.initialize(algo, secret);
+        }
         // This class should not store these values
         this.secret = null;
         this.algorithm = null;
