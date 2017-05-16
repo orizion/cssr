@@ -1,6 +1,8 @@
 package ch.fhnw.cssr.webserver.controllers;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -101,7 +103,9 @@ public class UserAdminController {
         User user = new User(newUserData.getEmail(), newUserData.getDisplayName(), null, tempToken,
                 expiresAt);
         repo.save(user);
-        String mailBody = EmailTemplate.getValue("inviteuser", user);
+        Map<String, Object> values = new HashMap<String, Object>();
+        values.put("u", user);
+        String mailBody = EmailTemplate.getValue("inviteuser", values);
         String mailSubject = EmailTemplate.getSubject("cssr.mail.inviteuser.subject",
                 inviteUserSubject, user);
         EmailView v = new EmailView().setTo(user.getEmail()).setSubject(mailSubject)

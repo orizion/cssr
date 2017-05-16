@@ -33,6 +33,7 @@ import ch.fhnw.cssr.domain.Presentation;
 import ch.fhnw.cssr.domain.Role;
 import ch.fhnw.cssr.domain.Subscription;
 import ch.fhnw.cssr.domain.User;
+import ch.fhnw.cssr.domain.UserAddMeta;
 import ch.fhnw.cssr.domain.repository.EmailRepository;
 import ch.fhnw.cssr.domain.repository.PresentationFileRepository;
 import ch.fhnw.cssr.domain.repository.PresentationRepository;
@@ -85,18 +86,10 @@ public class UserAdminControllerTest {
         userRepository.deleteAll();
         presentationRepository.deleteAll();
 
-        User testUser = new User(1000, "testie2@students.fhnw.ch", "Testie").copy();
-        testUser.setRoleId(Role.ROLE_COORD);
+        User testUser = new User(1001, "admin@students.fhnw.ch", "Testie").copy();
+        testUser.setRoleId(Role.ROLE_ADMIN);
         userRepository.save(testUser);
 
-        Presentation p = new Presentation();
-        p.setAbstract("test abstract");
-        p.setDateTime(LocalDateTime.now().plusDays(3));
-        p.setLocation("here");
-        p.setSpeakerId(testUser.getUserId());
-        p.setTitle("Test title 2");
-
-        presentationRepository.save(p);
     }
 
     @Test
@@ -105,50 +98,23 @@ public class UserAdminControllerTest {
     }
 
     @Test
-    public void addSubscription() throws Exception {
-
-        Presentation p = presentationRepository.findAll().iterator().next();
-        
-        Subscription subs = new Subscription();
-        subs.setDrink((byte) 1);
-        subs.setPresentationId(p.getPresentationId());
-        subs.setSandwichType(Subscription.TYPE_SANDWICH_MEAT);
-        subs.setUserId(0);
-        
+    public void addUser() throws Exception {
         String header = TestUtils.getAuthValue(mockMvc, passwordEncoder,
-                "testie2@students.fhnw.ch");
+                "admin@students.fhnw.ch");
 
-        
-        String baseUrl = "/presentation/" + p.getPresentationId() + "/subscription";
-
-        mockMvc
-                .perform(post(baseUrl).header("Accept", "application/json")
-                        .header("Authorization", header).contentType(MediaType.APPLICATION_JSON)
-                        .content(TestUtils.json(subs)))
-                .andExpect(status().is2xxSuccessful()).andExpect(jsonPath("$.drink", is(1)))
-                .andExpect(jsonPath("$.sandwichType", is(Subscription.TYPE_SANDWICH_MEAT)))
-                .andExpect(jsonPath("$.userId", Matchers.not(0)));
-
-        List<Subscription> subscriptionsDb =
-                subscriptionRepository.findByPresentationId(p.getPresentationId());
-        assertTrue(subscriptionsDb.size() > 0);
-        
-        Subscription existing = subscriptionsDb.get(0);
-        existing.setSandwichType(Subscription.TYPE_SANDWICH_VEGI);
-        mockMvc
-                .perform(put(baseUrl).header("Accept", "application/json")
-                        .header("Authorization", header).contentType(MediaType.APPLICATION_JSON)
-                        .content(TestUtils.json(existing)))
-                .andExpect(status().is2xxSuccessful()).andExpect(jsonPath("$.drink", is(1)))
-                .andExpect(jsonPath("$.sandwichType", is(Subscription.TYPE_SANDWICH_VEGI)))
-                .andExpect(jsonPath("$.userId", Matchers.not(0)));
-        
+        UserAddMeta newUser = new UserAddMeta();
+        newUser.setDisplayName("Hansli Test");
+        newUser.setEmail("hansli@irgendwas.ch");
         
         mockMvc
-        .perform(delete(baseUrl + "/" + existing.getSubscriptionId())
-                .header("Accept", "application/json")
-                .header("Authorization", header))
+                .perform(post("/admin/user")
+                        .header("Accept", "application/json")
+                        .header("Authorization", header)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtils.json(newUser)))
                 .andExpect(status().is2xxSuccessful());
+        
+        
     }
 
 }

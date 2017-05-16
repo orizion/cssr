@@ -60,6 +60,7 @@ public class User implements Serializable {
 
     public User(String email, String displayName, String passwordEnc, String tempToken,
             LocalDateTime tempTokenExpiresAt) {
+        this.email = email;
         this.displayName = displayName;
         this.passwordEnc = passwordEnc;
         this.tempToken = tempToken;
