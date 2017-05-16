@@ -90,6 +90,12 @@ export interface Principal {
     "name"?: string;
 }
 
+export interface ResetPasswordParameters {
+    "isOldPasswordTempToken"?: boolean;
+    "newPassword"?: string;
+    "oldPassword"?: string;
+}
+
 export interface Subscription {
     "drink"?: string;
     "presentationId"?: number;
@@ -1549,9 +1555,35 @@ export const UsercontrollerApiFetchParamCreator = {
     },
     /** 
      * resetPassword
+     * @param resetPwdParameter resetPwdParameter
      */
-    resetPasswordUsingPOST(options?: any): FetchArgs {
-        const baseUrl = `/user/me/resetPassword`;
+    resetPasswordUsingPUT(params: {  "resetPwdParameter": ResetPasswordParameters; }, options?: any): FetchArgs {
+        // verify required parameter "resetPwdParameter" is set
+        if (params["resetPwdParameter"] == null) {
+            throw new Error("Missing required parameter resetPwdParameter when calling resetPasswordUsingPUT");
+        }
+        const baseUrl = `/user/me/password`;
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "PUT" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        contentTypeHeader["Content-Type"] = "application/json";
+        if (params["resetPwdParameter"]) {
+            fetchOptions.body = JSON.stringify(params["resetPwdParameter"] || {});
+        }
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
+     * sendResetPasswordMail
+     */
+    sendResetPasswordMailUsingPOST(options?: any): FetchArgs {
+        const baseUrl = `/user/me/sendResetPassword`;
         let urlObj = url.parse(baseUrl, true);
         let fetchOptions: RequestInit = Object.assign({}, { method: "POST" }, options);
 
@@ -1634,9 +1666,25 @@ export const UsercontrollerApiFp = {
     },
     /** 
      * resetPassword
+     * @param resetPwdParameter resetPwdParameter
      */
-    resetPasswordUsingPOST(options?: any): (basePath?: string) => Promise<string> {
-        const fetchArgs = UsercontrollerApiFetchParamCreator.resetPasswordUsingPOST(options);
+    resetPasswordUsingPUT(params: { "resetPwdParameter": ResetPasswordParameters;  }, options?: any): (basePath?: string) => Promise<boolean> {
+        const fetchArgs = UsercontrollerApiFetchParamCreator.resetPasswordUsingPUT(params, options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<boolean>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
+     * sendResetPasswordMail
+     */
+    sendResetPasswordMailUsingPOST(options?: any): (basePath?: string) => Promise<string> {
+        const fetchArgs = UsercontrollerApiFetchParamCreator.sendResetPasswordMailUsingPOST(options);
         return (basePath: string = BASE_PATH) => {
             return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
                 if (response.status >= 200 && response.status < 300) {
@@ -1681,9 +1729,16 @@ export class UsercontrollerApi extends BaseAPI {
     }
     /** 
      * resetPassword
+     * @param resetPwdParameter resetPwdParameter
      */
-    resetPasswordUsingPOST(options?: any) {
-        return UsercontrollerApiFp.resetPasswordUsingPOST(options)(this.basePath);
+    resetPasswordUsingPUT(params: {  "resetPwdParameter": ResetPasswordParameters; }, options?: any) {
+        return UsercontrollerApiFp.resetPasswordUsingPUT(params, options)(this.basePath);
+    }
+    /** 
+     * sendResetPasswordMail
+     */
+    sendResetPasswordMailUsingPOST(options?: any) {
+        return UsercontrollerApiFp.sendResetPasswordMailUsingPOST(options)(this.basePath);
     }
 };
 
@@ -1720,9 +1775,16 @@ export const UsercontrollerApiFactory = function (basePath?: string) {
         },
         /** 
          * resetPassword
+         * @param resetPwdParameter resetPwdParameter
          */
-        resetPasswordUsingPOST(options?: any) {
-            return UsercontrollerApiFp.resetPasswordUsingPOST(options)(basePath);
+        resetPasswordUsingPUT(params: {  "resetPwdParameter": ResetPasswordParameters; }, options?: any) {
+            return UsercontrollerApiFp.resetPasswordUsingPUT(params, options)(basePath);
+        },
+        /** 
+         * sendResetPasswordMail
+         */
+        sendResetPasswordMailUsingPOST(options?: any) {
+            return UsercontrollerApiFp.sendResetPasswordMailUsingPOST(options)(basePath);
         },
     };
 };

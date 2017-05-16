@@ -20,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,6 +37,7 @@ import ch.fhnw.cssr.mailutils.EmailTemplate;
 import ch.fhnw.cssr.security.jwt.AccountCredentials;
 import ch.fhnw.cssr.security.jwt.TokenAuthenticationService;
 import ch.fhnw.cssr.security.jwt.TokenResult;
+import ch.fhnw.cssr.webserver.utils.ResetPasswordParameters;
 import ch.fhnw.cssr.webserver.utils.UserUtils;
 
 @RestController
@@ -52,7 +54,7 @@ public class UserController {
 
     @Autowired
     private UserUtils userUtils;
-    
+
     @Autowired
     private EmailRepository emailRepo;
 
@@ -61,6 +63,9 @@ public class UserController {
 
     @Autowired
     private UserDetailsService userDetailsService;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     /**
      * Gets details of the current user.
@@ -100,9 +105,11 @@ public class UserController {
         return ls;
     }
 
-    /** 
+    /**
      * Get a temporary token for the user.
-     * @param user The user logged in.
+     * 
+     * @param user
+     *            The user logged in.
      * @return A Token that can be used as ?temptoken= parameter
      */
     @RequestMapping(method = RequestMethod.GET, path = "me/tempToken")
@@ -114,7 +121,47 @@ public class UserController {
         repo.save(dbuser);
         return new ResponseEntity<String>(tempToken, HttpStatus.OK);
     }
-    
+
+    /**
+     * Sets the password for the currently logged in user.
+     * @param user The user.
+     * @param resetPwdParameter The reset password parameters
+     * @return Returns false if the password does not match and true if it worked.
+     */
+    @RequestMapping(method = RequestMethod.PUT, path = "me/password")
+    public ResponseEntity<Boolean> resetPassword(Principal user,
+            @RequestBody ResetPasswordParameters resetPwdParameter) {
+
+        String email;
+        if (resetPwdParameter.isOldPasswordTempToken()) {
+            User us = repo.findByTempToken(resetPwdParameter.getOldPassword());
+            if (us == null) {
+                return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+            }
+            if (us.getTempTokenExpiresAt().compareTo(LocalDateTime.now()) < 0) {
+                return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+            }
+            email = us.getEmail();
+        } else if (user == null) {
+            logger.warn("User not logged in and no temp token");
+            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
+        } else {
+            email = user.getName();
+            Authentication auth = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(email,
+                            resetPwdParameter.getOldPassword(), new ArrayList<GrantedAuthority>()));
+            if (!auth.isAuthenticated()) {
+                logger.warn("Old password not matching");
+                return new ResponseEntity<Boolean>(false, HttpStatus.PRECONDITION_FAILED);   
+            }
+        }
+        String newPassword = this.passwordEncoder.encode(resetPwdParameter.getNewPassword());
+        User us = repo.findByEmail(email);
+        us.setPasswordEnc(newPassword);
+        repo.save(us);
+        return new ResponseEntity<Boolean>(true, HttpStatus.PRECONDITION_FAILED);
+    }
+
     /**
      * Resets the password of the current user by sending a temporary token by mail.
      * 
@@ -122,8 +169,8 @@ public class UserController {
      *            The user
      * @return The mail of the user
      */
-    @RequestMapping(method = RequestMethod.POST, path = "me/resetPassword")
-    public ResponseEntity<String> resetPassword(Principal user) {
+    @RequestMapping(method = RequestMethod.POST, path = "me/sendResetPassword")
+    public ResponseEntity<String> sendResetPasswordMail(Principal user) {
         logger.debug("Resetting password");
         if (User.isFhnwEmail(user.getName())) {
             logger.warn("User cannot reset password. This has to be done in AD");
@@ -167,8 +214,8 @@ public class UserController {
         }
         // Make the user persistent
         if (User.isFhnwEmail(creds.getEmail())) {
-            userUtils.assureCreated(creds.getEmail());   
-        }        
+            userUtils.assureCreated(creds.getEmail());
+        }
         TokenResult token = TokenAuthenticationService.getJwtTokenResult(auth.getAuthorities(),
                 auth.getName());
         return new ResponseEntity<TokenResult>(token, HttpStatus.OK);
