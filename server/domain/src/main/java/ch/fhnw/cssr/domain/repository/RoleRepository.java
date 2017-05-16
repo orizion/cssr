@@ -1,6 +1,7 @@
 package ch.fhnw.cssr.domain.repository;
 
 import org.springframework.stereotype.Repository;
+
 import ch.fhnw.cssr.domain.Role;
 
 @Repository

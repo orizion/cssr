@@ -52,6 +52,7 @@ public class TestUtils {
      * @return The deserialized object.
      * @throws IOException Invalid Json.
      */
+    @SuppressWarnings("unchecked")
     public static <T> T fromJson(String content, Class<T> contentClass) throws IOException {
         if (contentClass == String.class && !content.startsWith("\"")) {
             return (T)content; // Hack for jackson?? 

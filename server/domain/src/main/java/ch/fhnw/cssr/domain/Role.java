@@ -1,11 +1,11 @@
 package ch.fhnw.cssr.domain;
 
 import java.io.Serializable;
-import java.time.LocalTime;
 
-import javax.persistence.*;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "roles")

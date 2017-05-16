@@ -34,8 +34,8 @@ public class PresentationFile implements Serializable {
 	
 	private String contentType;
 
-	private PresentationFile() {
-		// Not used currently
+	public PresentationFile() {
+		// Not used currently, but here for spring :)
 	}
 
 	public PresentationFile(int presentationId, String type, String contentLink,
