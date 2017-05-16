@@ -4,14 +4,14 @@ public class ResetPasswordParameters {
 
     private String oldPassword;
     private String newPassword;
-    private boolean isOldPasswordTempToken;
+    private boolean oldPasswordTempToken;
     
     public boolean isOldPasswordTempToken() {
-        return isOldPasswordTempToken;
+        return oldPasswordTempToken;
     }
 
-    public void setIsOldPasswordTempToken(boolean isOldPasswordTempToken) {
-        this.isOldPasswordTempToken = isOldPasswordTempToken;
+    public void setOldPasswordTempToken(boolean oldPasswordTempToken) {
+        this.oldPasswordTempToken = oldPasswordTempToken;
     }
 
     public String getOldPassword() {

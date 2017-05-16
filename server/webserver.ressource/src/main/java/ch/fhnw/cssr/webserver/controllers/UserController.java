@@ -3,7 +3,9 @@ package ch.fhnw.cssr.webserver.controllers;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +20,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -124,14 +127,13 @@ public class UserController {
 
     /**
      * Sets the password for the currently logged in user.
-     * @param user The user.
      * @param resetPwdParameter The reset password parameters
      * @return Returns false if the password does not match and true if it worked.
      */
     @RequestMapping(method = RequestMethod.PUT, path = "me/password")
-    public ResponseEntity<Boolean> resetPassword(Principal user,
+    public ResponseEntity<Boolean> resetPassword(
             @RequestBody ResetPasswordParameters resetPwdParameter) {
-
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email;
         if (resetPwdParameter.isOldPasswordTempToken()) {
             User us = repo.findByTempToken(resetPwdParameter.getOldPassword());
@@ -142,15 +144,15 @@ public class UserController {
                 return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
             }
             email = us.getEmail();
-        } else if (user == null) {
+        } else if (auth == null) {
             logger.warn("User not logged in and no temp token");
             return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         } else {
-            email = user.getName();
-            Authentication auth = authenticationManager
+            email = auth.getName();
+            Authentication auth2 = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(email,
                             resetPwdParameter.getOldPassword(), new ArrayList<GrantedAuthority>()));
-            if (!auth.isAuthenticated()) {
+            if (!auth2.isAuthenticated()) {
                 logger.warn("Old password not matching");
                 return new ResponseEntity<Boolean>(false, HttpStatus.PRECONDITION_FAILED);   
             }
@@ -159,7 +161,7 @@ public class UserController {
         User us = repo.findByEmail(email);
         us.setPasswordEnc(newPassword);
         repo.save(us);
-        return new ResponseEntity<Boolean>(true, HttpStatus.PRECONDITION_FAILED);
+        return new ResponseEntity<Boolean>(true, HttpStatus.OK);
     }
 
     /**
@@ -181,7 +183,9 @@ public class UserController {
         LocalDateTime expiresAt = LocalDateTime.now().plusHours(10);
         dbuser.setTempToken(tempToken, expiresAt);
         repo.save(dbuser);
-        String mailBody = EmailTemplate.getValue("resetPassword", dbuser);
+        Map<String, Object> values = new HashMap<String, Object>();
+        values.put("u", dbuser);
+        String mailBody = EmailTemplate.getValue("resetPassword", values);
         String mailSubject = EmailTemplate.getSubject("cssr.mail.resetpassword.subject",
                 resetPasswordSubject, user);
         EmailView v = new EmailView().setTo(dbuser.getEmail()).setSubject(mailSubject)
