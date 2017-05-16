@@ -27,7 +27,7 @@ public class Subscription implements Serializable {
 
     private int presentationId;
 
-    private int userId;
+    private long userId;
 
     private String sandwichType;
 
@@ -44,11 +44,11 @@ public class Subscription implements Serializable {
         this.presentationId = presentationId;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 

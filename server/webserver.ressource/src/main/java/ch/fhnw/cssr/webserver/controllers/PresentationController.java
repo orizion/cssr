@@ -7,7 +7,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,13 +19,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import ch.fhnw.cssr.domain.Email;
 import ch.fhnw.cssr.domain.Presentation;
 import ch.fhnw.cssr.domain.Role;
 import ch.fhnw.cssr.domain.User;
-import ch.fhnw.cssr.domain.repository.EmailRepository;
 import ch.fhnw.cssr.domain.repository.PresentationRepository;
-import ch.fhnw.cssr.mailutils.EmailTemplate;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 

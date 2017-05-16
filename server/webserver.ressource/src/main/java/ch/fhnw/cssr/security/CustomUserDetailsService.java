@@ -1,16 +1,12 @@
 package ch.fhnw.cssr.security;
 
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
 import ch.fhnw.cssr.domain.User;
-import ch.fhnw.cssr.domain.Role;
 import ch.fhnw.cssr.domain.repository.UserRepository;
 
 @Service("customUserDetailsService")

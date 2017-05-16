@@ -3,7 +3,6 @@ package ch.fhnw.cssr.webserver.controllers;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -24,7 +23,6 @@ import ch.fhnw.cssr.domain.Email;
 import ch.fhnw.cssr.domain.EmailView;
 import ch.fhnw.cssr.domain.Presentation;
 import ch.fhnw.cssr.domain.Subscription;
-import ch.fhnw.cssr.domain.User;
 import ch.fhnw.cssr.domain.repository.EmailRepository;
 import ch.fhnw.cssr.domain.repository.PresentationRepository;
 import ch.fhnw.cssr.domain.repository.SubscriptionRepository;

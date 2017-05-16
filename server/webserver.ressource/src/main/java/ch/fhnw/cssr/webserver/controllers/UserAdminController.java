@@ -1,6 +1,5 @@
 package ch.fhnw.cssr.webserver.controllers;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,7 +22,6 @@ import ch.fhnw.cssr.domain.UserAddMeta;
 import ch.fhnw.cssr.domain.repository.EmailRepository;
 import ch.fhnw.cssr.domain.repository.UserRepository;
 import ch.fhnw.cssr.mailutils.EmailTemplate;
-import ch.fhnw.cssr.security.CustomUserDetailsService;
 import ch.fhnw.cssr.webserver.utils.UserUtils;
 
 @RestController
@@ -42,8 +39,6 @@ public class UserAdminController {
     @Autowired
     private UserUtils userUtils;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
 
     @Autowired
     private EmailRepository emailRepo;

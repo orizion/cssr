@@ -1,14 +1,11 @@
 package ch.fhnw.cssr.mailutils;
 
-import com.samskivert.mustache.Mustache;
-import com.samskivert.mustache.Template;
-
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.Map;
 import java.util.Scanner;
+
+import com.samskivert.mustache.Mustache;
+import com.samskivert.mustache.Template;
 
 /**
  * A simple utility class for rendering mustache templates.

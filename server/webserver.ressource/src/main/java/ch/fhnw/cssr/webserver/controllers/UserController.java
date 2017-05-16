@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,8 +33,6 @@ import ch.fhnw.cssr.domain.UserMeta;
 import ch.fhnw.cssr.domain.repository.EmailRepository;
 import ch.fhnw.cssr.domain.repository.UserRepository;
 import ch.fhnw.cssr.mailutils.EmailTemplate;
-import ch.fhnw.cssr.security.CustomUserDetails;
-import ch.fhnw.cssr.security.CustomUserDetailsService;
 import ch.fhnw.cssr.security.jwt.AccountCredentials;
 import ch.fhnw.cssr.security.jwt.TokenAuthenticationService;
 import ch.fhnw.cssr.security.jwt.TokenResult;

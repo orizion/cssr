@@ -1,12 +1,13 @@
 package ch.fhnw.cssr.security;
 
-import ch.fhnw.cssr.domain.User;
-import edu.emory.mathcs.backport.java.util.Collections;
 import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import ch.fhnw.cssr.domain.User;
+import edu.emory.mathcs.backport.java.util.Collections;
 
 public class CustomUserDetails extends ch.fhnw.cssr.domain.User implements UserDetails {
 

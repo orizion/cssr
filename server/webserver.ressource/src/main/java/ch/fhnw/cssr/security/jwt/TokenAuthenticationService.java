@@ -1,33 +1,30 @@
 package ch.fhnw.cssr.security.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.impl.DefaultClaims;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.fhnw.cssr.domain.User;
 import ch.fhnw.cssr.domain.repository.UserRepository;
 import ch.fhnw.cssr.security.CustomUserDetails;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Collection;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.impl.DefaultClaims;
 
 public class TokenAuthenticationService {
     static final long EXPIRATIONTIME = 3_600_000; // 60 Minutes

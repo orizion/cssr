@@ -2,12 +2,15 @@ package ch.fhnw.cssr.webserver.controllers;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.junit.Assert.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -26,9 +29,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import ch.fhnw.cssr.domain.EmailView;
 import ch.fhnw.cssr.domain.Presentation;
 import ch.fhnw.cssr.domain.Role;
+import ch.fhnw.cssr.domain.Subscription;
 import ch.fhnw.cssr.domain.User;
 import ch.fhnw.cssr.domain.repository.EmailRepository;
 import ch.fhnw.cssr.domain.repository.PresentationFileRepository;
@@ -48,7 +51,7 @@ import ch.fhnw.cssr.test.TestUtils;
 @AutoConfigureTestDatabase(replace = Replace.ANY)
 @AutoConfigureMockMvc
 @SuppressWarnings("unused")
-public class PresentationMailControllerTest {
+public class SubscriptionControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -102,55 +105,50 @@ public class PresentationMailControllerTest {
     }
 
     @Test
-    public void getMailTemplate() throws Exception {
-        String header = TestUtils.getAuthValue(mockMvc, passwordEncoder,
-                "testie2@students.fhnw.ch");
+    public void addSubscription() throws Exception {
 
         Presentation p = presentationRepository.findAll().iterator().next();
-        String templateUrl = "/presentation/" + p.getPresentationId() + "/invitation/template";
         
+        Subscription subs = new Subscription();
+        subs.setDrink((byte) 1);
+        subs.setPresentationId(p.getPresentationId());
+        subs.setSandwichType(Subscription.TYPE_SANDWICH_MEAT);
+        subs.setUserId(0);
         
-        mockMvc
-                .perform(get(templateUrl).header("Accept", "application/json")
-                        .header("Authorization", header)
-                        )
-                .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.subject", Matchers.notNullValue()))
-                .andExpect(jsonPath("$.body", Matchers.notNullValue()))
-                .andDo(r -> {
-                    EmailView ev = TestUtils.fromJson(r.getResponse().getContentAsString(), 
-                            EmailView.class);
-                    System.out.println(ev.getBody());
-                });
-    }
-
-    @Test
-    public void saveMailTemplate() throws Exception {
-        
-        EmailView toSave = new EmailView();
-        toSave.setBcc("hans@heiri.ch");
-        toSave.setBody("aosdfijwoeifjoij");
-        toSave.setCc("cc@cc.cc");
-        toSave.setSubject("oijoij");
-        toSave.setTo("asdofijweofij@oaisdjfaoij.oih");
-        
-        Presentation p = presentationRepository.findAll().iterator().next();
-        String url = "/presentation/" + p.getPresentationId() + "/invitation/send";
-
         String header = TestUtils.getAuthValue(mockMvc, passwordEncoder,
                 "testie2@students.fhnw.ch");
 
         
+        String baseUrl = "/presentation/" + p.getPresentationId() + "/subscription";
+
         mockMvc
-                .perform(post(url).header("Accept", "application/json")
-                        .header("Authorization", header)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(TestUtils.json(toSave))
-                        )
-                .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.emailId", Matchers.notNullValue()))
-                .andExpect(jsonPath("$.subject", is("oijoij")))
-                ;
+                .perform(post(baseUrl).header("Accept", "application/json")
+                        .header("Authorization", header).contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtils.json(subs)))
+                .andExpect(status().is2xxSuccessful()).andExpect(jsonPath("$.drink", is(1)))
+                .andExpect(jsonPath("$.sandwichType", is(Subscription.TYPE_SANDWICH_MEAT)))
+                .andExpect(jsonPath("$.userId", Matchers.not(0)));
+
+        List<Subscription> subscriptionsDb =
+                subscriptionRepository.findByPresentationId(p.getPresentationId());
+        assertTrue(subscriptionsDb.size() > 0);
+        
+        Subscription existing = subscriptionsDb.get(0);
+        existing.setSandwichType(Subscription.TYPE_SANDWICH_VEGI);
+        mockMvc
+                .perform(put(baseUrl).header("Accept", "application/json")
+                        .header("Authorization", header).contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtils.json(existing)))
+                .andExpect(status().is2xxSuccessful()).andExpect(jsonPath("$.drink", is(1)))
+                .andExpect(jsonPath("$.sandwichType", is(Subscription.TYPE_SANDWICH_VEGI)))
+                .andExpect(jsonPath("$.userId", Matchers.not(0)));
+        
+        
+        mockMvc
+        .perform(delete(baseUrl + "/" + existing.getSubscriptionId())
+                .header("Accept", "application/json")
+                .header("Authorization", header))
+                .andExpect(status().is2xxSuccessful());
     }
 
 }

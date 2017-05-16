@@ -2,49 +2,30 @@ package ch.fhnw.cssr.webserver.controllers;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultHandler;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.fhnw.cssr.domain.Presentation;
 import ch.fhnw.cssr.domain.Role;
@@ -56,11 +37,7 @@ import ch.fhnw.cssr.domain.repository.PresentationRepository;
 import ch.fhnw.cssr.domain.repository.SubscriptionRepository;
 import ch.fhnw.cssr.domain.repository.UserRepository;
 import ch.fhnw.cssr.security.CustomPasswordEncoder;
-import ch.fhnw.cssr.security.EwsAuthenticator;
-import ch.fhnw.cssr.security.jwt.AccountCredentials;
-import ch.fhnw.cssr.security.jwt.TokenResult;
 import ch.fhnw.cssr.test.TestUtils;
-import ch.fhnw.cssr.webserver.App;
 
 /**
  * Unit test for simple App.
@@ -71,6 +48,7 @@ import ch.fhnw.cssr.webserver.App;
 @AutoConfigureTestEntityManager
 @AutoConfigureTestDatabase(replace = Replace.ANY)
 @AutoConfigureMockMvc
+@SuppressWarnings("unused")
 public class PresentationControllerTest {
 
     @Autowired
