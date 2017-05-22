@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -27,13 +28,12 @@ public class Subscription implements Serializable {
 
     private int presentationId;
 
-    private long userId;
-
     private String sandwichType;
 
     private byte drink; // Currently zero for no drink, one for drink
 
     @ManyToOne
+    @JoinColumn(name = "userId", nullable = true) /* Null means currrent user */
     private User user;
 
     public int getPresentationId() {
@@ -44,12 +44,9 @@ public class Subscription implements Serializable {
         this.presentationId = presentationId;
     }
 
-    public long getUserId() {
-        return userId;
-    }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @ApiModelProperty(value = "The type of the sandwich. v for Vegi, f for Meat", allowableValues = "v,f", dataType = "String")
@@ -72,7 +69,7 @@ public class Subscription implements Serializable {
     public Long getSubscriptionId() {
         return subscriptionId;
     }
-    
+
     public User getUser() {
         return this.user;
     }

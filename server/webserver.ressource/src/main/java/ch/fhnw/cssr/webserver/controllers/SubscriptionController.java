@@ -35,11 +35,21 @@ public class SubscriptionController {
     @Autowired
     private UserUtils userUtils;
 
+    /** 
+     * Gets the subscriptions for a presentation.
+     * @param presentationId The id of the presentation.
+     * @return The subscriptions
+     */
     @RequestMapping(method = RequestMethod.GET)
     public List<Subscription> getSubscriptions(
             @PathVariable(name = "presentationId", required = true) int presentationId) {
         logger.debug("Getting subscriptions of {}", presentationId);
-        return subscriptionRepo.findByPresentationId(presentationId);
+        List<Subscription> subs = subscriptionRepo.findByPresentationId(presentationId);
+        subs.forEach(c -> { // Delete private data
+            c.getUser().setPasswordEnc(null);
+            c.getUser().setTempToken(null, null);
+        });
+        return subs;
     }
 
     /**
@@ -86,7 +96,7 @@ public class SubscriptionController {
         Subscription existingSubscription = subscriptionRepo.findOne(
                 subscription.getSubscriptionId());
         
-        if (existingSubscription.getUserId() != subscription.getUserId()) {
+        if (existingSubscription.getUser().getUserId() != subscription.getUser().getUserId()) {
             logger.warn("UserId must not be changed");
             return new ResponseEntity<Subscription>(HttpStatus.PRECONDITION_FAILED);
         }
@@ -118,11 +128,11 @@ public class SubscriptionController {
         if (User.isFhnwEmail(user.getName())) {
             userUtils.assureCreated(user.getName());
         }
-        long userId = userRepo.findByEmail(user.getName()).getUserId();
+        User dbuser = userRepo.findByEmail(user.getName());
 
-        if (subscription.getUserId() == 0) {
-            subscription.setUserId(userId);
-        } else if (subscription.getUserId() != userId) {
+        if (subscription.getUser() == null) {
+            subscription.setUser(dbuser);
+        } else if (subscription.getUser().getUserId() != dbuser.getUserId()) {
             logger.warn("can only subscript oneself");
             return new ResponseEntity<Subscription>(HttpStatus.PRECONDITION_FAILED);
         }

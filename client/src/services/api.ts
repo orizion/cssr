@@ -91,9 +91,9 @@ export interface Principal {
 }
 
 export interface ResetPasswordParameters {
-    "isOldPasswordTempToken"?: boolean;
     "newPassword"?: string;
     "oldPassword"?: string;
+    "oldPasswordTempToken"?: boolean;
 }
 
 export interface Subscription {
@@ -105,7 +105,6 @@ export interface Subscription {
     "sandwichType"?: SubscriptionSandwichTypeEnum;
     "subscriptionId"?: number;
     "user"?: User;
-    "userId"?: number;
 }
 
 export type SubscriptionSandwichTypeEnum = "v" | "f";

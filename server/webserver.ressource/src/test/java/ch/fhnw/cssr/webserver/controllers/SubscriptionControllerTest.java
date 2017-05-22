@@ -113,7 +113,7 @@ public class SubscriptionControllerTest {
         subs.setDrink((byte) 1);
         subs.setPresentationId(p.getPresentationId());
         subs.setSandwichType(Subscription.TYPE_SANDWICH_MEAT);
-        subs.setUserId(0);
+        subs.setUser(null);
         
         String header = TestUtils.getAuthValue(mockMvc, passwordEncoder,
                 "testie2@students.fhnw.ch");
@@ -127,7 +127,7 @@ public class SubscriptionControllerTest {
                         .content(TestUtils.json(subs)))
                 .andExpect(status().is2xxSuccessful()).andExpect(jsonPath("$.drink", is(1)))
                 .andExpect(jsonPath("$.sandwichType", is(Subscription.TYPE_SANDWICH_MEAT)))
-                .andExpect(jsonPath("$.userId", Matchers.not(0)));
+                ;
 
         List<Subscription> subscriptionsDb =
                 subscriptionRepository.findByPresentationId(p.getPresentationId());
@@ -140,8 +140,7 @@ public class SubscriptionControllerTest {
                         .header("Authorization", header).contentType(MediaType.APPLICATION_JSON)
                         .content(TestUtils.json(existing)))
                 .andExpect(status().is2xxSuccessful()).andExpect(jsonPath("$.drink", is(1)))
-                .andExpect(jsonPath("$.sandwichType", is(Subscription.TYPE_SANDWICH_VEGI)))
-                .andExpect(jsonPath("$.userId", Matchers.not(0)));
+                .andExpect(jsonPath("$.sandwichType", is(Subscription.TYPE_SANDWICH_VEGI)));
         
         
         mockMvc
