@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClassDiagram>
+    <Class name="ch.fhnw.cssr.security.jwt.TokenAuthenticationService"
+        x="521" y="452">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Communication destinationClassName="ch.fhnw.cssr.security.CustomUserDetails"/>
+    </Class>
+    <Class name="ch.fhnw.cssr.webserver.utils.UserUtils" x="383" y="1337">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="ch.fhnw.cssr.security.jwt.AccountCredentials" x="116" y="375">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="ch.fhnw.cssr.webserver.WebConfig" x="713" y="674">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="ch.fhnw.cssr.security.CustomUserDetailsService" x="544" y="168">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Communication destinationClassName="ch.fhnw.cssr.security.CustomUserDetails"/>
+    </Class>
+    <Class name="ch.fhnw.cssr.webserver.controllers.UserController"
+        x="901" y="1105">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="ch.fhnw.cssr.webserver.utils.UserUtils"
+            endpointName="userUtils" kind="Simple"/>
+        <Communication destinationClassName="ch.fhnw.cssr.security.jwt.TokenAuthenticationService"/>
+        <Communication destinationClassName="ch.fhnw.cssr.webserver.utils.UserUtils"/>
+        <Communication destinationClassName="ch.fhnw.cssr.mailutils.EmailTemplate"/>
+        <Communication destinationClassName="ch.fhnw.cssr.webserver.utils.ResetPasswordParameters"/>
+    </Class>
+    <Class name="ch.fhnw.cssr.security.EwsAuthenticator" x="521" y="257">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="ch.fhnw.cssr.security.jwt.AuthenticationFilter" x="117" y="457">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Communication destinationClassName="ch.fhnw.cssr.security.jwt.TokenAuthenticationService"/>
+    </Class>
+    <Class name="ch.fhnw.cssr.webserver.App" x="115" y="653">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class
+        name="ch.fhnw.cssr.webserver.controllers.PresentationController"
+        x="113" y="899">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class
+        name="ch.fhnw.cssr.webserver.controllers.PresentationFileController"
+        x="626" y="897">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="ch.fhnw.cssr.webserver.controllers.UserAdminController"
+        x="568" y="1045">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="ch.fhnw.cssr.webserver.utils.UserUtils"
+            endpointName="userUtils" kind="Simple"/>
+        <Communication destinationClassName="ch.fhnw.cssr.webserver.utils.UserUtils"/>
+        <Communication destinationClassName="ch.fhnw.cssr.mailutils.EmailTemplate"/>
+    </Class>
+    <Class name="ch.fhnw.cssr.webserver.utils.ResetPasswordParameters"
+        x="140" y="1336">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class
+        name="ch.fhnw.cssr.webserver.controllers.PresentationMailController"
+        x="1039" y="901">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Communication destinationClassName="ch.fhnw.cssr.mailutils.EmailTemplate"/>
+    </Class>
+    <Class name="ch.fhnw.cssr.security.jwt.LoginFilter" x="259" y="377">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Communication destinationClassName="ch.fhnw.cssr.security.jwt.TokenAuthenticationService"/>
+    </Class>
+    <Class name="ch.fhnw.cssr.security.CustomUserDetails" x="444" y="118">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="ch.fhnw.cssr.mailutils.EmailTemplate" x="108" y="26">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="ch.fhnw.cssr.webserver.WebSecurityConfig" x="118" y="777">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="ch.fhnw.cssr.security.jwt.AuthenticationFilter"
+            endpointName="authFilter" kind="Simple"/>
+    </Class>
+    <Class name="ch.fhnw.cssr.security.CustomPasswordEncoder" x="109" y="108">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="ch.fhnw.cssr.security.EwsAuthenticator"
+            endpointName="ewsAuthenticator" kind="Simple"/>
+        <Communication destinationClassName="ch.fhnw.cssr.security.EwsAuthenticator"/>
+    </Class>
+    <Class name="ch.fhnw.cssr.webserver.SwaggerConfig" x="555" y="666">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="ch.fhnw.cssr.security.jwt.TokenResult" x="524" y="497">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class
+        name="ch.fhnw.cssr.webserver.controllers.SubscriptionController"
+        x="114" y="1048">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="ch.fhnw.cssr.webserver.utils.UserUtils"
+            endpointName="userUtils" kind="Simple"/>
+        <Communication destinationClassName="ch.fhnw.cssr.webserver.utils.UserUtils"/>
+    </Class>
+</ClassDiagram>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PackageAnalysis>
+    <Package name="ch.fhnw.cssr.webserver.utils" x="265" y="188">
+        <DependencyLink destination="ch.fhnw.cssr.security"/>
+    </Package>
+    <Package name="ch.fhnw.cssr.webserver.controllers" x="241" y="295">
+        <DependencyLink destination="ch.fhnw.cssr.security.jwt"/>
+        <DependencyLink destination="ch.fhnw.cssr.webserver.utils"/>
+        <DependencyLink destination="ch.fhnw.cssr.mailutils"/>
+    </Package>
+    <Package name="ch.fhnw.cssr.webserver" x="264" y="67">
+        <DependencyLink destination="ch.fhnw.cssr.security.jwt"/>
+        <DependencyLink destination="ch.fhnw.cssr.security"/>
+        <DependencyLink destination="ch.fhnw.cssr.webserver.utils"/>
+    </Package>
+    <Package name="ch.fhnw.cssr.security.jwt" x="602" y="110">
+        <DependencyLink destination="ch.fhnw.cssr.security"/>
+    </Package>
+    <Package name="ch.fhnw.cssr.security" x="605" y="205"/>
+    <Package name="ch.fhnw.cssr.mailutils" x="699" y="292"/>
+</PackageAnalysis>
