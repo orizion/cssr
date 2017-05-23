@@ -4,12 +4,10 @@ import * as moment from 'moment';
 import * as API from "../services/api";
 
 interface SubscribeOverviewProps {
-
 }
 interface SubscribeOverviewState {
     presentations: API.Presentation[]
 }
-
 
 export class SubscribeOverview extends React.Component<SubscribeOverviewProps,SubscribeOverviewState> {
     constructor(props: SubscribeOverviewProps) {
@@ -17,43 +15,54 @@ export class SubscribeOverview extends React.Component<SubscribeOverviewProps,Su
         this.state = {
             presentations: [],
         }
-    }
-    presentationAPI = new API.PresentationcontrollerApi()
-    test() {
-        this.presentationAPI.findAllUsingGET({"futureOnly":true}).then((pres) => {
+        API.defaultHeaders["Authorization"] = "Bearer " + localStorage.token;
+
+        this.presentationAPI.findAllUsingGET({"futureOnly":true}).then((pres) => { 
+            this.rows = pres.map((pres) =>
+                        <div style={this.flexItem} key={pres.presentationId}>
+                            {this.createPresentationJumbo(pres)}
+                        </div>       
+            );
             this.setState({
                 presentations : pres
-            });
-        });
-        return(
-            <Grid>
-                <Row className="show-grid">
-                    {this.state.presentations.forEach((pres) =>{
-                        <Col xs={12} md={8}>
-                            { this.createPresentationJumbo(pres) }
-                        </Col>
-                    })}
-                </Row>
-            </Grid>
-        );
+            });            
+     });
+     
     }
+   
+    presentationAPI = new API.PresentationcontrollerApi();
+
+    rows:any[];
+    flexItem = {
+        flexDirection: 'row',
+        marginRight:"10px",
+        padding:"10px",
+    }
+    flexContainer = {
+        display: 'flex',
+
+    }    
     createPresentationJumbo(presentation: API.Presentation) {
+        let url = "/subscribe/"+presentation.presentationId;
         return(
             <Jumbotron>
-                <h3>{presentation.title}</h3>
+                <h2>{presentation.title}</h2>
                 <p>
-                    Zimmer: {presentation.location}
-                    Uhrzeit: {moment(presentation.dateTime).format("dd.mm.yy hh:mm")}
-                    {presentation.abstract}
+                    Zimmer: {presentation.location} <br/>
+                    Uhrzeit: {moment(presentation.dateTime).format("DD.MM.YY hh:mm")} <br/>
                 </p>
-                <p><Button bsStyle="primary">Einschreiben</Button></p>
+                <p>
+                    {presentation.abstract}
+                    {presentation.presentationId}
+                </p>
+                <p><Button bsStyle="primary" href={url} data-navigo>Einschreiben</Button></p>
             </Jumbotron>
         );
     }
-    render() {
+    render() {    
         return(
-            <div>
-             {this.test}
+            <div style={this.flexContainer}>
+             {this.rows}
             </div>
         );
     }

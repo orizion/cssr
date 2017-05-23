@@ -1,26 +1,47 @@
 import * as React from "react";
+import Select = require('react-select');
+import update = require('react-addons-update');
+import * as API from "../services/api";
 
-import { FormControl,FormGroup,ControlLabel,Checkbox,Button } from "react-bootstrap";
+import { FormControl,FormGroup,ControlLabel,Checkbox,Button, Row, Col, } from "react-bootstrap";
 
 export interface EditPresentationProps {
-  
 }
 export interface EditPresentationState {
-  title:string; abstract:string;
+  presentation:API.Presentation,
+  files: API.PresentationFileMeta[],
 }
 
 export class EditPresentation extends React.Component<EditPresentationProps, EditPresentationState> {
   constructor(props: EditPresentationProps){
     super(props);
     this.state = {
-      title:"",
-      abstract:""
+      presentation: {
+
+      },
+      files: []
     };
+    API.defaultHeaders["Authorization"] = "Bearer " + localStorage.token;
     this.handleChanged = this.handleChanged.bind(this);
   }
   handleChanged(e:any) {
     this.setState({[e.target.name]: e.target.value});
     console.log(this.state);
+  }
+  fileTypes = [
+    {value:"f",label:"Präsentation"},
+    {value:"r",label:"Ressource"}
+  ];
+  storageTypes = [
+    {value:"f",label:"Datei"},
+    {value:"l",label:"Link"}
+  ];
+  handleSelectChanged(e: any) {
+        this.setState({
+            files: update(this.state.files, {
+               files : { $set: e.value }
+            })
+        });
   }
   submit(){
     /*fetch(this.props.apiUrl)
@@ -53,17 +74,26 @@ export class EditPresentation extends React.Component<EditPresentationProps, Edi
         </FormGroup>
 
         <FormGroup controlId="formControlsDateTime">
-          <ControlLabel>Datum</ControlLabel>
+          <Row>
+            <Col xs={6} md={6}>
+              <ControlLabel>Datum</ControlLabel>
+            </Col>
+            <Col xs={6} md={6}>
+              <ControlLabel>Raum</ControlLabel>
+            </Col>
+          </Row>
+          
+          <Row>
+            <Col xs={6} md={6}>
+              <FormControl type="date" name="datetime" placeholder="yyyy.mm.dd"
+                          onChange={this.handleChanged} readOnly/>
+            </Col>
+            <Col xs={6} md={6}>
+              <FormControl type="text" name="location" placeholder=""
+                          onChange={this.handleChanged} readOnly/>
+            </Col>
+          </Row>
           <br/>
-          <FormControl type="date" name="datetime" placeholder="yyyy.mm.dd"
-              onChange={this.handleChanged} readOnly/>
-        </FormGroup>
-
-        <FormGroup controlId="formControlsLocation">
-          <ControlLabel>Raum</ControlLabel>
-          <br/>
-          <FormControl type="text" name="location" placeholder=""
-              onChange={this.handleChanged} readOnly/>
         </FormGroup>
 
         <FormGroup controlId="formControlsSpeakerEmail">
@@ -72,6 +102,54 @@ export class EditPresentation extends React.Component<EditPresentationProps, Edi
           <FormControl type="email" name="speaker_email"
               onChange={this.handleChanged} readOnly/>
         </FormGroup>
+
+        <FormGroup controlId="formControlsType">
+          <Row>
+            <Col xs={6} md={6}>
+              <ControlLabel>Datei ablegen als </ControlLabel>
+            </Col>
+
+            <Col xs={6} md={6}>
+                <ControlLabel>Dateityp</ControlLabel>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={6} md={6}>
+              <Select name="storageType"     
+                  value="l"          
+                  options={this.storageTypes}
+                  onChange={this.handleSelectChanged}
+                  clearable={false}
+              />
+            </Col>
+
+            <Col xs={6} md={6}>
+              <Select name="fileType"     
+                  value="f"          
+                  options={this.fileTypes}
+                  onChange={this.handleSelectChanged}
+                  clearable={false}
+              />
+            </Col>
+          </Row>                   
+        </FormGroup>
+
+        {true &&
+          <FormGroup controlId="formControlsAbstract">
+            <ControlLabel>Test</ControlLabel>
+            <br/>
+            <FormControl componentClass="textarea" name="abstract" placeholder=""
+                onChange={this.handleChanged} required/>
+          </FormGroup>
+        }
+        { true &&
+          <FormGroup controlId="formControlsAbstract">
+            <ControlLabel>Abstract</ControlLabel>
+            <br/>
+            <FormControl componentClass="textarea" name="abstract" placeholder=""
+               onChange={this.handleChanged} required/>
+          </FormGroup>
+        }
 
         <Button type="submit" bsStyle="primary" onClick={this.submit}>
           Senden

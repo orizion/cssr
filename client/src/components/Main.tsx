@@ -1,65 +1,81 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { FormControl,FormGroup,ControlLabel,Checkbox,Button,Nav,NavItem } from "react-bootstrap";
-
+import { FormControl,FormGroup,ControlLabel,Checkbox,Button,Nav,NavItem,Popover } from "react-bootstrap";
 import  Navigo  = require("navigo");
+import { translate } from 'react-i18next';
 
 import * as API from "../services/api";
-
-import { Subscribe } from "./Subscribe";
 import { CreatePresentation } from "./CreatePresentation";
-import { EditPresentation } from "./EditPresentation";
 import { CreateUser } from "./CreateUser";
+import { EditPresentation } from "./EditPresentation";
+import { Login } from "./Login";
+import { SendInvitation } from "./SendInvitation";
+import { Subscribe } from "./Subscribe";
 import { SubscribeOverview } from "./SubscribeOverview";
 
-
-export interface MainProps {
-  apiUrl:string;
-}
+import PropTypes from 'prop-types';
 
 export interface MainState {
   component: JSX.Element,
+  userMeta: API.UserMeta,
   activeKey: any;
+  language: String;
 }
 
-export class Main extends React.Component<MainProps,MainState> {
+@translate(['main', 'common'], { wait: true })
+export class Main extends React.Component<any,MainState> {
   constructor(props: any){
     super(props);
     this.state = {
-      component: <div>Init State</div>,
-      activeKey: "1"
+      component: <Login  userMetaFunction={this.setUserInformation}/>,
+      activeKey: "1",
+      userMeta : "",
+      language:  "en"
     }
+    this.i18n.changeLanguage("en");
     this.handleNavigate = this.handleNavigate.bind(this);
+    this.handleLangChange = this.handleLangChange.bind(this);
+    this.setUserInformation = this.setUserInformation.bind(this);
+  }
+  i18n=this.props.i18n;
+  userAPI = new API.UsercontrollerApi();
+  
+  setUserInformation(_userMeta:API.UserMeta) {
+    API.defaultHeaders["Authorization"] = "Bearer " + localStorage.token;
+    this.setState({
+      userMeta: _userMeta
+    });
+  }
+
+  handleLangChange() {
+    console.log(this.state.language);
+    if(this.state.language == "en") {
+      this.i18n.changeLanguage("de");
+      this.setState({language: "de"});
+    }else {
+      this.i18n.changeLanguage("en");
+      this.setState({language: "en"});
+    }
+    
   }
   componentDidMount() {
     let router:any  = new Navigo(null , false);
     let self:Main = this;
       router
-      .on('/subscribe/:id',(params:any,query:string) => {
-        console.log("It succeeded");
-        let presentationAPI: API.PresentationcontrollerApi  = new API.PresentationcontrollerApi();
-        presentationAPI.getSingleUsingGET({"id":params.id})
-        .then((response: API.Presentation)=> {
-          console.log("It succeeded");
-          self.setState(
-           {component:<Subscribe presentation={response}/>}
+      .on('/login',() => {
+        self.setState(
+           {component:<Login  userMetaFunction={this.setUserInformation}/>}
+        );
+      })
+      .on('/subscribe/:id',(params:any,query:string) => {       
+         self.setState(
+           {component:<Subscribe presentationId={params.id} />}
          );
-        }).catch((err) => {
-          console.log("No Presentation found");
-        });
-         
       })//Only for testing
       .on('/subscribe',() => {
         self.setState(
            {
-            component:<Subscribe presentation={{
-              title:"",
-              presentationId:1,
-              abstract:"",
-              dateTime: new Date(),
-              location:"",
-              speakerId:1
-            }}/>
+            component:<Subscribe presentationId={1} />
           }
         );
       })
@@ -70,17 +86,22 @@ export class Main extends React.Component<MainProps,MainState> {
       })
       .on('/editpresentation', () => {
          self.setState(
-           {component:<EditPresentation  />}
+           {component:<EditPresentation />}
          );
       })
       .on('/createuser',() => {
          self.setState(
-           {component:<CreateUser  />}
+           {component:<CreateUser />}
          );
       })
-      .on('/subscribeoverview',() => {
+      .on('/overview',() => {
          self.setState(
            {component:<SubscribeOverview  />}
+         );
+      })
+      .on('/sendinvitation',() => {
+         self.setState(
+           {component:<SendInvitation  />}
          );
       })
       .resolve();
@@ -92,21 +113,47 @@ export class Main extends React.Component<MainProps,MainState> {
     });
   }
   render() {
+    let t = this.props.t;    
+    let authorities:Array<String> = this.state.userMeta.authorities || new Array<String>();
     return (
-
-      <div id="main">
-        <Nav bsStyle="tabs" activeKey={this.state.activeKey} onSelect={this.handleNavigate}>        
-          <NavItem eventKey="1" href="subscribe" data-navigo> Subscribe </NavItem>
-          <NavItem eventKey="2" href="createpresentation" data-navigo> Create Presentation </NavItem>
-          <NavItem eventKey="3" href="editpresentation" data-navigo> Edit Presentation </NavItem>
-          <NavItem eventKey="4" href="createuser" data-navigo> Create User </NavItem>
-          <NavItem eventKey="5" href="subscribeoverview" data-navigo> Overview </NavItem>
-        </Nav>
-        <br/><br/>
-        {this.state.component}
+         <div>
+            <Nav bsStyle="tabs" activeKey={this.state.activeKey} onSelect={this.handleNavigate}>        
+            {  authorities.indexOf("Role_Coord") !=-1 &&
+               <NavItem eventKey="2" href="createpresentation" data-navigo> 
+                {t('createPresentation')}  
+              </NavItem> 
+            }
+            
+            { authorities.indexOf("Role_Coord")  != -1 && 
+              <NavItem eventKey="3" href="editpresentation" data-navigo> Edit Presentation </NavItem>
+            }
+            { authorities.indexOf("Role_Admin")  != -1 && 
+              <NavItem eventKey="4" href="createuser" data-navigo> Create User </NavItem>
+            }
+              <NavItem eventKey="5" href="overview" data-navigo> Overview </NavItem>
+              <NavItem eventKey="6" href="subscribe" data-navigo>               
+                {t('subscribe')}
+              </NavItem>
+            { authorities.indexOf("Role_Coord")  != -1 || authorities.indexOf("Role_SGL")  != -1 && 
+              <NavItem eventKey="7" href="sendinvitation" data-navigo>  
+                {t('sendInvitation')}
+              </NavItem>
+            }
+            </Nav>
+            <Button  bsStyle="success" href="login" data-navigo> 
+              {t('login')} 
+            </Button>
+           
+            <Button bsStyle="info" onClick={this.handleLangChange}>
+              {this.state.language}
+            </Button>
+            
+           <br/><br/>
+           <div>
+             {this.state.component}
+          </div>
       </div>
-
-    )
+    ); 
   }
 }
 

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { FormControl, FormGroup, ControlLabel, Checkbox, Button } from "react-bootstrap";
+import { FormControl, FormGroup, ControlLabel, Checkbox, Button, Popover } from "react-bootstrap";
 import * as moment from 'moment';
 import * as Datetime from 'react-datetime';
 import * as API from "../services/api";
@@ -7,7 +7,7 @@ import Select = require('react-select');
 import update = require('react-addons-update');
 
 export interface CreatePresentationProps {
-
+    
 }
 export interface CreatePresentationState {
     presentation: API.Presentation;
@@ -25,33 +25,22 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
                 abstract: "",
             }
         };
+
+        API.defaultHeaders["Authorization"] = "Bearer " + localStorage.token;
+        
         this.handleChanged = this.handleChanged.bind(this);
         this.handleSelectChanged = this.handleSelectChanged.bind(this);
         this.handleDateChanged = this.handleDateChanged.bind(this);
         this.submit = this.submit.bind(this);
-
-        //get token for api calls
-        this.loginPromise = API.UsercontrollerApiFp.loginUsingPOST({creds: {"email": "adrian.ehrsam@students.fhnw.ch",
-                "password": "oij" }})()
-            .then((json) => {
-                API.defaultHeaders["Authorization"] = "Bearer " + json.token;
-                return json.token;
-            })
-            .catch(() => {
-                console.log("No login access granted");
-            }) as Promise<string>;
     }
     inputStyle = {
         borderColor: 'red',
     }
     presentationAPI = new API.PresentationcontrollerApi();
     userAPI = new API.UsercontrollerApi();
-    loginPromise: Promise<String>;
     date = new Date();
     getSpeakerList = (input: any) => {
-        return this.loginPromise.then(token => {
-            return this.userAPI.getAllUsingGET(input);
-        })
+        return this.userAPI.getAllUsingGET(input)
         .then((response) => {
             let speakers: any = response.map((s) => {
                 return { label: s.email, value: s.userId };
@@ -152,8 +141,8 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
 
                 <Button type="submit" bsStyle="primary" onClick={this.submit}>
                     Senden
-                </Button>
-            </form>
+                </Button> 
+            </form>        
         );
     }
 }

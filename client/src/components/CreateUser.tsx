@@ -5,7 +5,7 @@ import * as API from "../services/api";
 import update = require("react-addons-update");
 
 export interface CreateUserProps {
-
+    
 }
 
 export interface CreateUserState {
@@ -20,10 +20,10 @@ export class CreateUser extends React.Component<CreateUserProps,CreateUserState>
                 email:"",
                 passwordEnc:"",
                 tempToken:"",
-                tempTokenExpiresAt:"",
                 userId: 0,
             }
         }
+        API.defaultHeaders["Authorization"] = "Bearer " + localStorage.token;
         this.handleChanged = this.handleChanged.bind(this);
         this.submit = this.submit.bind(this);
     }
@@ -34,6 +34,9 @@ export class CreateUser extends React.Component<CreateUserProps,CreateUserState>
             user: update(this.state.user,{
                 [e.target.name]: {$set: val}
             })
+        });
+        this.userAPI.getUsingGET().then((res) => {
+            //res.authorities for reference only
         });
     }
     submit() {

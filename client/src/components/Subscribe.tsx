@@ -1,45 +1,61 @@
 import * as React from "react";
-
 import { FormControl,FormGroup,ControlLabel,Checkbox,Button } from "react-bootstrap";
-
 import * as API from "../services/api";
 
 export interface SubscribeProps {  
-  presentation: API.Presentation;
+  presentationId: number;
 }
 export interface SubscribeState {
-  presentation: string; email:string; sandwich_type:string; drink:boolean;
+  subscription:API.Subscription,
+  presentation:API.Presentation;
 }
 
 export class Subscribe extends React.Component<SubscribeProps, SubscribeState> {
   constructor(props: SubscribeProps){
     super(props);
     this.state = {
-      presentation:"",
-      email:"",
-      sandwich_type:"",
-      drink: false
-    };
-    this.handleChanged = this.handleChanged.bind(this);
-  }
-  userAPI = new API.UsercontrollerApi()
-  handleChanged(e:any) {
-    this.setState({[e.target.name]: e.target.value});
-  }
-  submit(){
-    /*fetch()
-    .then((res)=> {
-      if(res.ok){
-        this.setState({
-          presentation:"",
-          email:"",
-          sandwich_type:"",
-          drink: false
-        });
-      }else {
+      subscription: {
+        presentationId:0,
+        user:undefined,
+        sandwichType:"v",
+        drink: ""
+      },
+      presentation: {
 
       }
-    });*/
+     
+    };
+    API.defaultHeaders["Authorization"] = "Bearer " + localStorage.token;
+    this.handleChanged = this.handleChanged.bind(this);
+  }
+  userAPI = new API.UsercontrollerApi();
+  subscriptionAPI = new API.SubscriptioncontrollerApi();
+  handleChanged(e:any) {
+    this.setState({
+      subscription: {
+        [e.target.name]: e.target.value
+      }
+    });
+  }
+  componentDidMount() {
+    let presentationAPI = new API.PresentationcontrollerApi();
+    presentationAPI.getSingleUsingGET({"id":this.props.presentationId})
+    .then((response: API.Presentation) => {
+      console.log(response);
+      this.setState({
+        presentation: response
+      });
+    }).catch((err) => {
+      console.log("No Presentation found");
+    });
+  }
+  submit(){
+   let presentationId = this.state.presentation.presentationId || -1; 
+   this.subscriptionAPI.addSubscriptionUsingPOST(
+     {presentationId, subscription: this.state.subscription})
+     .catch((err) => {
+     console.log("Submitting Subscription failed with error: "+err);
+   });
   }
   render() {
     return (
@@ -47,8 +63,8 @@ export class Subscribe extends React.Component<SubscribeProps, SubscribeState> {
         <FormGroup controlId="formControlsPresentation">
           <ControlLabel>Präsentation</ControlLabel>
           <br/>
-          <h2>{this.props.presentation.title}</h2>
-          <FormControl type="hidden" name="presentationID" value={this.props.presentation.presentationId} />
+          <h2>{this.state.presentation.title}</h2>
+          <FormControl type="hidden" name="presentationID" value={this.state.presentation.presentationId} />
         </FormGroup>
 
         <FormGroup controlId="formControlsEmail">
@@ -66,9 +82,7 @@ export class Subscribe extends React.Component<SubscribeProps, SubscribeState> {
           </FormControl>
         </FormGroup>
         <FormGroup controlId="formControlsDrink">
-          <Checkbox name="drink" onChange={this.handleChanged}>
-            Getränk
-          </Checkbox>
+          <FormControl type="text" name="drink" placeholder="Getränk" onChange={this.handleChanged} required/>
         </FormGroup>
         <Button type="submit" bsStyle="primary" onClick={this.submit}>
           Einschreiben
