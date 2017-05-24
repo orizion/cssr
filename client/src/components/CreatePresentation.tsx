@@ -5,6 +5,7 @@ import * as Datetime from 'react-datetime';
 import * as API from "../services/api";
 import Select = require('react-select');
 import update = require('react-addons-update');
+import { translate } from 'react-i18next';
 
 export interface CreatePresentationProps {
     
@@ -13,7 +14,8 @@ export interface CreatePresentationState {
     presentation: API.Presentation;
 }
 
-export class CreatePresentation extends React.Component<CreatePresentationProps, CreatePresentationState> {
+@translate(['createPresentation', 'common'], { wait: true })
+export class CreatePresentation extends React.Component<any, CreatePresentationState> {
     constructor(props: CreatePresentationProps) {
         super(props);
         this.state = {
@@ -94,10 +96,11 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
             });
     }
     render() {
+        let t = this.props.t;    
         return (
             <form>
                 <FormGroup controlId="formControlsTitle">
-                    <ControlLabel>Titel</ControlLabel>
+                    <ControlLabel>{t('title')}</ControlLabel>
                     <br />
                     <FormControl type="text" name="title" placeholder="" value={this.state.presentation.title}
                         onChange={this.handleChanged} required />
@@ -112,7 +115,7 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
                 </FormGroup>
 
                 <FormGroup controlId="formControlsDateTime">
-                    <ControlLabel>Datum</ControlLabel>
+                    <ControlLabel>{t('date')}</ControlLabel>
                     <br />
                     
                     <Datetime input={true} locale="de" value={this.state.presentation.dateTime}
@@ -120,14 +123,14 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
                 </FormGroup>
 
                 <FormGroup controlId="formControlsLocation">
-                    <ControlLabel>Raum</ControlLabel>
+                    <ControlLabel>{t('room')}</ControlLabel>
                     <br />
                     <FormControl type="text" name="location" placeholder="" value={this.state.presentation.location}
                         onChange={this.handleChanged} required />
                 </FormGroup>
 
                 <FormGroup controlId="formControlsSpeakerEmail">
-                    <ControlLabel>Email Referent</ControlLabel>
+                    <ControlLabel>{t('email_speaker')}</ControlLabel>
                     <br />
                     <Select.Async
                         name="speakerId"
@@ -140,7 +143,7 @@ export class CreatePresentation extends React.Component<CreatePresentationProps,
                 </FormGroup>
 
                 <Button type="submit" bsStyle="primary" onClick={this.submit}>
-                    Senden
+                    {t('send')}
                 </Button> 
             </form>        
         );

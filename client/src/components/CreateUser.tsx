@@ -9,7 +9,7 @@ export interface CreateUserProps {
 }
 
 export interface CreateUserState {
-    user: API.User;
+    user: API.UserAddMeta;
 }
 export class CreateUser extends React.Component<CreateUserProps,CreateUserState> {
     constructor(props:CreateUserProps) {
@@ -18,9 +18,6 @@ export class CreateUser extends React.Component<CreateUserProps,CreateUserState>
             user : {
                 displayName:"",
                 email:"",
-                passwordEnc:"",
-                tempToken:"",
-                userId: 0,
             }
         }
         API.defaultHeaders["Authorization"] = "Bearer " + localStorage.token;
@@ -28,6 +25,7 @@ export class CreateUser extends React.Component<CreateUserProps,CreateUserState>
         this.submit = this.submit.bind(this);
     }
     userAPI = new API.UsercontrollerApi();
+    userAdminAPI = new API.UseradmincontrollerApi();
     handleChanged(e:any) {
         let val:any = e.target.value;
         this.setState({
@@ -39,8 +37,16 @@ export class CreateUser extends React.Component<CreateUserProps,CreateUserState>
             //res.authorities for reference only
         });
     }
-    submit() {
-        
+    submit(e:any) {
+        e.preventDefault();
+        this.userAdminAPI.addUserUsingPOST({"newUserData": this.state.user})
+        .then(() =>{
+            console.log("CreateUser: successfully created user");
+        })
+        .catch((err)=>{
+            console.log("CreateUser: failed to create the new user");
+            console.log(err);
+        });
     }
     render(){
         return (

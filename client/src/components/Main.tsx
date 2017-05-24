@@ -19,7 +19,7 @@ export interface MainState {
   component: JSX.Element,
   userMeta: API.UserMeta,
   activeKey: any;
-  language: String;
+  language: string;
 }
 
 @translate(['main', 'common'], { wait: true })
@@ -27,12 +27,12 @@ export class Main extends React.Component<any,MainState> {
   constructor(props: any){
     super(props);
     this.state = {
-      component: <Login  userMetaFunction={this.setUserInformation}/>,
+      component: <br />,
       activeKey: "1",
       userMeta : "",
-      language:  "en"
+      language:  (localStorage.lang != null ? localStorage.lang : "en")
     }
-    this.i18n.changeLanguage("en");
+    this.i18n.changeLanguage(this.state.language);
     this.handleNavigate = this.handleNavigate.bind(this);
     this.handleLangChange = this.handleLangChange.bind(this);
     this.setUserInformation = this.setUserInformation.bind(this);
@@ -48,15 +48,19 @@ export class Main extends React.Component<any,MainState> {
   }
 
   handleLangChange() {
-    console.log(this.state.language);
+    console.log("Old lang:"+this.state.language);
     if(this.state.language == "en") {
       this.i18n.changeLanguage("de");
-      this.setState({language: "de"});
+      this.setState({language: "de"}, () =>{
+        localStorage.setItem("lang",this.state.language);
+      });
+      
     }else {
       this.i18n.changeLanguage("en");
-      this.setState({language: "en"});
+      this.setState({language: "en"}, () =>{
+        localStorage.setItem("lang",this.state.language);
+      });
     }
-    
   }
   componentDidMount() {
     let router:any  = new Navigo(null , false);
@@ -86,7 +90,7 @@ export class Main extends React.Component<any,MainState> {
       })
       .on('/editpresentation', () => {
          self.setState(
-           {component:<EditPresentation />}
+           {component:<EditPresentation userMeta={this.state.userMeta}/>}
          );
       })
       .on('/createuser',() => {
@@ -99,9 +103,9 @@ export class Main extends React.Component<any,MainState> {
            {component:<SubscribeOverview  />}
          );
       })
-      .on('/sendinvitation',() => {
+      .on('/sendinvitation/:id',(params:any,query:string) => {
          self.setState(
-           {component:<SendInvitation  />}
+           {component:<SendInvitation  presentationId={params.id} />}
          );
       })
       .resolve();
@@ -134,7 +138,7 @@ export class Main extends React.Component<any,MainState> {
               <NavItem eventKey="6" href="subscribe" data-navigo>               
                 {t('subscribe')}
               </NavItem>
-            { authorities.indexOf("Role_Coord")  != -1 || authorities.indexOf("Role_SGL")  != -1 && 
+            { authorities.indexOf("Role_Coord")  != -1 || authorities.indexOf("Role_SGL")  != -1 || authorities.indexOf("Role_Admin")  != -1 && 
               <NavItem eventKey="7" href="sendinvitation" data-navigo>  
                 {t('sendInvitation')}
               </NavItem>
@@ -149,9 +153,9 @@ export class Main extends React.Component<any,MainState> {
             </Button>
             
            <br/><br/>
-           <div>
-             {this.state.component}
-          </div>
+           
+           {this.state.component}
+          
       </div>
     ); 
   }

@@ -10,6 +10,12 @@ i18next.init({
         "login":"log in",
         "overview":"Overview"
       },
+      createPresentation:{
+        "send": "Send",
+        "room": "Room",
+        "date": "Date",
+        "email_speaker": "Email Speaker",
+      },
       common:{
         actions: {
             toggleToGerman: 'Deutsch',
@@ -23,6 +29,12 @@ i18next.init({
         "createPresentation": "Präsentation erstellen",
         "login": "Einloggen",
         "overview":"Übersicht"
+      },
+      createPresentation:{
+        "send": "Senden",
+        "room": "Raum",
+        "date": "Datum",
+        "email_speaker": "Email Referent",
       },
       common: {
         actions: {

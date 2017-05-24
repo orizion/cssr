@@ -12,7 +12,7 @@ export interface EditPresentationState {
   files: API.PresentationFileMeta[],
 }
 
-export class EditPresentation extends React.Component<EditPresentationProps, EditPresentationState> {
+export class EditPresentation extends React.Component<any, EditPresentationState> {
   constructor(props: EditPresentationProps){
     super(props);
     this.state = {
@@ -57,13 +57,15 @@ export class EditPresentation extends React.Component<EditPresentationProps, Edi
     });*/
   }
   render() {
+    let authorities:Array<String> = this.props.userMeta.authorities || new Array<String>();
     return (
       <form>
         <FormGroup controlId="formControlsTitle">
           <ControlLabel>Titel</ControlLabel>
           <br/>
           <FormControl type="text" name="title" placeholder=""
-              onChange={this.handleChanged} required/>
+              onChange={this.handleChanged} value={this.state.presentation.title}      
+              required/>
         </FormGroup>
 
         <FormGroup controlId="formControlsAbstract">
@@ -86,11 +88,19 @@ export class EditPresentation extends React.Component<EditPresentationProps, Edi
           <Row>
             <Col xs={6} md={6}>
               <FormControl type="date" name="datetime" placeholder="yyyy.mm.dd"
-                          onChange={this.handleChanged} readOnly/>
+                          onChange={this.handleChanged} 
+                          readOnly={
+                            authorities.indexOf("Role_Coord") == -1 
+                            && authorities.indexOf("Role_SGL") == -1 
+                            && authorities.indexOf("Role_Admin") == -1}/>
             </Col>
             <Col xs={6} md={6}>
               <FormControl type="text" name="location" placeholder=""
-                          onChange={this.handleChanged} readOnly/>
+                          onChange={this.handleChanged} 
+                          readOnly={
+                            authorities.indexOf("Role_Coord") == -1 
+                            && authorities.indexOf("Role_SGL") == -1 
+                            && authorities.indexOf("Role_Admin") == -1}/>
             </Col>
           </Row>
           <br/>
