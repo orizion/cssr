@@ -91,7 +91,21 @@ public class TokenAuthenticationService {
         ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(res.getWriter(), getJwtTokenResult(authorities, username));
     }
-
+    
+    private static Authentication getTempTokenAuthentication(String tempToken, 
+            UserRepository userRepository) {
+        User us = userRepository.findByTempToken(tempToken);
+        if (us == null) {
+            return null;
+        }
+        if (us.getTempTokenExpiresAt().compareTo(LocalDateTime.now()) < 0) {
+            return null;
+        }
+        CustomUserDetails dt = new CustomUserDetails(us);
+        return new UsernamePasswordAuthenticationToken(dt.getUsername(), null,
+                dt.getAuthorities()); 
+    }
+    
     static Authentication getAuthentication(HttpServletRequest request,
             UserRepository userRepository) {
         String token = request.getHeader(HEADER_STRING);
@@ -114,16 +128,7 @@ public class TokenAuthenticationService {
         String tempToken = request.getMethod().equals("GET") ? request.getParameter("tempToken")
                 : null;
         if (tempToken != null) {
-            User us = userRepository.findByTempToken(tempToken);
-            if (us == null) {
-                return null;
-            }
-            if (us.getTempTokenExpiresAt().compareTo(LocalDateTime.now()) < 0) {
-                return null;
-            }
-            CustomUserDetails dt = new CustomUserDetails(us);
-            return new UsernamePasswordAuthenticationToken(dt.getUsername(), null,
-                    dt.getAuthorities()); 
+            return getTempTokenAuthentication(tempToken, userRepository);
         }
         if (request.getCookies() != null && request.getCookies().length > 0) {
             // TODO: We should validate the cookies here and accept a cookie from the AAI Proxy

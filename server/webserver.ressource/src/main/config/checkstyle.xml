@@ -214,5 +214,8 @@
             <property name="exceptionVariableName" value="expected" />
         </module>
         <module name="CommentsIndentation" />
+        <module name="CyclomaticComplexity">
+            <property name="max" value="9" />
+        </module>
     </module>
 </module>
