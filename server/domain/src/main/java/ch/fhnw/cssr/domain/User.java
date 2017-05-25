@@ -17,7 +17,8 @@ public class User implements Serializable {
     private static final long serialVersionUID = 10023987L;
 
     public static final String FHNW_DOMAIN = "fhnw.ch";
-    public static final String ACTIVE_DIRECTORY_LOOKUP_PREFIX = "ACTIVE_DIRECTORY_LOOKUP_HACK_PREFIX:::::";
+    public static final String ACTIVE_DIRECTORY_LOOKUP_PREFIX 
+        = "ACTIVE_DIRECTORY_LOOKUP_HACK_PREFIX:::::";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -47,7 +48,10 @@ public class User implements Serializable {
     }
 
     /**
-     * This is a constructor for students or other AD Users only
+     * This is a constructor for students or other AD Users only.
+     * @param userId The id of the user.
+     * @param email The email of the user.
+     * @param userName The userName.
      */
     public User(long userId, String email, String userName) {
         this.email = email;
@@ -58,6 +62,14 @@ public class User implements Serializable {
         }
     }
 
+    /**
+     * Creates a new user. 
+     * @param email The email.
+     * @param displayName The name to be displayed. 
+     * @param passwordEnc The password, encoded using Argon2.
+     * @param tempToken A temporary token, or null.
+     * @param tempTokenExpiresAt If tempToken is not null, then a time when it expires.
+     */
     public User(String email, String displayName, String passwordEnc, String tempToken,
             LocalDateTime tempTokenExpiresAt) {
         this.email = email;
@@ -67,9 +79,14 @@ public class User implements Serializable {
         this.tempTokenExpiresAt = tempTokenExpiresAt;
     }
 
+    /**
+     * Creates a new user based on an existing one.
+     * @param copyUser The user to be copied.
+     */
     protected User(User copyUser) {
-        if (copyUser == null)
+        if (copyUser == null) {
             throw new NullPointerException("copyUser");
+        }
         this.userId = new Long(0).equals(copyUser.userId) ? null : copyUser.userId;
         this.email = copyUser.email;
         this.passwordEnc = copyUser.passwordEnc;
@@ -84,8 +101,8 @@ public class User implements Serializable {
     }
 
     public static boolean isFhnwEmail(String email) {
-        return email.endsWith("@" + FHNW_DOMAIN) || email.endsWith("." + FHNW_DOMAIN); // A
-                                                                                       // subdomain
+        //@fhnw.ch or a subdomain
+        return email.endsWith("@" + FHNW_DOMAIN) || email.endsWith("." + FHNW_DOMAIN); 
     }
 
     public boolean isExtern() {
@@ -131,6 +148,11 @@ public class User implements Serializable {
         return tempToken;
     }
 
+    /**
+     * Sets a temporary token. Either both or no parameter has to be null.
+     * @param tempToken The temporary token.
+     * @param expiresAt A time when the token expires.
+     */
     public void setTempToken(String tempToken, LocalDateTime expiresAt) {
 
         this.tempToken = tempToken;

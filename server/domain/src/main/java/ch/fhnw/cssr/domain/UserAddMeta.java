@@ -9,6 +9,11 @@ public class UserAddMeta {
 
     }
 
+    /** 
+     * Creates the meta data.
+     * @param email The email
+     * @param displayName The name to be displayed
+     */
     public UserAddMeta(String email, String displayName) {
         super();
         this.email = email;

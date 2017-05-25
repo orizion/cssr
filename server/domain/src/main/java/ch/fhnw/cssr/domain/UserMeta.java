@@ -6,6 +6,13 @@ public class UserMeta {
     private final boolean isExtern;
     private final Long userId;
 
+    /**
+     * Creates a new user meta class.
+     * @param isExtern The is Extern Flag
+     * @param email The email
+     * @param authorities The roles (should be one only, currently)
+     * @param userId The id of the user.
+     */
     public UserMeta(boolean isExtern, String email, String[] authorities, Long userId) {
         this.isExtern = isExtern;
         this.email = email;
