@@ -41,12 +41,11 @@ export class Subscribe extends React.Component<SubscribeProps, SubscribeState> {
     let presentationAPI = new API.PresentationcontrollerApi();
     presentationAPI.getSingleUsingGET({"id":this.props.presentationId})
     .then((response: API.Presentation) => {
-      console.log(response);
       this.setState({
         presentation: response
       });
     }).catch((err) => {
-      console.log("No Presentation found");
+      console.log(err);
     });
   }
   submit(){
@@ -64,6 +63,9 @@ export class Subscribe extends React.Component<SubscribeProps, SubscribeState> {
           <ControlLabel>Präsentation</ControlLabel>
           <br/>
           <h2>{this.state.presentation.title}</h2>
+          <p>
+            {this.state.presentation.abstract}
+          </p>
           <FormControl type="hidden" name="presentationID" value={this.state.presentation.presentationId} />
         </FormGroup>
 

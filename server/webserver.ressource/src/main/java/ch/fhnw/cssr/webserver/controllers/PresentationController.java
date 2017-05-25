@@ -79,7 +79,7 @@ public class PresentationController {
             logger.warn("Presentation not found");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<Presentation>(resp, HttpStatus.FOUND);
+        return new ResponseEntity<Presentation>(resp, HttpStatus.OK);
     }
 
     /**
