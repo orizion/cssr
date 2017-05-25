@@ -7,12 +7,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommandLiner implements CommandLineRunner {
 
-	@Autowired
-	private MailSender sender;
-	
-	public void run(String... args) throws Exception {
-		System.out.println(args);
-		sender.sendAll();
-	}
+    @Autowired
+    private MailSender sender;
+
+    public void run(String... args) throws Exception {
+        System.out.println(args);
+        sender.sendAll();
+    }
 
 }
