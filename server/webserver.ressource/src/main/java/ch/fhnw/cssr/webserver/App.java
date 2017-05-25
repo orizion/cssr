@@ -6,6 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import ch.fhnw.cssr.domain.repository.UserRepository;
 import ch.fhnw.cssr.security.CustomPasswordEncoder;
 import ch.fhnw.cssr.security.EwsAuthenticator;
@@ -45,9 +47,10 @@ public class App {
             @Value("${cssr.jwt.algorithm}")
             String algorithm,
             @Value("${cssr.jwt.secret}")
-        String secret
+            String secret,
+            ObjectMapper mapper 
     ) {
-        return new AuthenticationFilter(repo, algorithm, secret);
+        return new AuthenticationFilter(repo, algorithm, secret, mapper);
     }
 
 }
