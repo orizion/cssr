@@ -10,5 +10,5 @@ import ch.fhnw.cssr.domain.Subscription;
 @Repository
 public interface SubscriptionRepository extends CrudRepository<Subscription, Long> {
 
-	public List<Subscription> findByPresentationId(int presentationId);
+    public List<Subscription> findByPresentationId(int presentationId);
 }

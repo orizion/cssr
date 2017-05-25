@@ -92,7 +92,6 @@ public class User implements Serializable {
         return !isFhnwEmail(email);
     }
 
-
     public Long getUserId() {
         return userId;
     }
@@ -113,7 +112,6 @@ public class User implements Serializable {
         this.userRoleId = roleId;
     }
 
-    
     public String getPasswordEnc() {
         if (isFhnwEmail(email)) {
             return ACTIVE_DIRECTORY_LOOKUP_PREFIX + email;
@@ -134,7 +132,7 @@ public class User implements Serializable {
     }
 
     public void setTempToken(String tempToken, LocalDateTime expiresAt) {
-        
+
         this.tempToken = tempToken;
         this.tempTokenExpiresAt = expiresAt;
     }
@@ -143,5 +141,4 @@ public class User implements Serializable {
         return tempTokenExpiresAt;
     }
 
-    
 }

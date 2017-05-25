@@ -29,9 +29,7 @@ public class PresentationFileMeta implements Serializable {
     }
 
     public PresentationFileMeta(long presentationFileId, int presentationId, String type,
-            String contentLink,
-            String displayName,
-            String contentType) {
+            String contentLink, String displayName, String contentType) {
         this.presentationFileId = presentationFileId;
         this.presentationId = presentationId;
         this.type = type;
@@ -52,12 +50,10 @@ public class PresentationFileMeta implements Serializable {
     public String getContentLink() {
         return contentLink;
     }
-    
 
     public String getDisplayName() {
         return displayName;
     }
-    
 
     public String getContentType() {
         return contentType;

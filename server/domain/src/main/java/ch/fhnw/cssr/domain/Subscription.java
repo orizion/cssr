@@ -44,7 +44,6 @@ public class Subscription implements Serializable {
         this.presentationId = presentationId;
     }
 
-
     public void setUser(User user) {
         this.user = user;
     }

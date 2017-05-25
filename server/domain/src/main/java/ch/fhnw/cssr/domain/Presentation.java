@@ -42,14 +42,12 @@ public class Presentation implements Serializable {
     }
 
     public LocalDateTime getDeadline() {
-        if(deadLine == null) {
-            if(dateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
+        if (deadLine == null) {
+            if (dateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
                 deadLine = dateTime.plusDays(-3);
-            }
-            else if(dateTime.getDayOfWeek() == DayOfWeek.TUESDAY) {
+            } else if (dateTime.getDayOfWeek() == DayOfWeek.TUESDAY) {
                 deadLine = dateTime.plusDays(-4);
-            }
-            else {
+            } else {
                 deadLine = dateTime.plusDays(-2);
             }
         }
@@ -57,7 +55,7 @@ public class Presentation implements Serializable {
     }
 
     public void setDeadline(LocalDateTime dateTime) {
-        
+
         this.deadLine = dateTime;
     }
 

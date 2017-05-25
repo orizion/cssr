@@ -13,57 +13,55 @@ import io.swagger.annotations.ApiModelProperty;
 @Entity
 @Table(name = "presentationfile")
 public class PresentationFile implements Serializable {
-	private static final long serialVersionUID = 10013001L;
+    private static final long serialVersionUID = 10013001L;
 
-	public static final String TYPE_PRESENTATION = "f";
-	public static final String TYPE_RESSOURCEN = "r";
+    public static final String TYPE_PRESENTATION = "f";
+    public static final String TYPE_RESSOURCEN = "r";
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long presentationFileId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long presentationFileId;
 
-	private int presentationId;
+    private int presentationId;
 
-	private String type;
+    private String type;
 
-	private byte[] content;
+    private byte[] content;
 
-	private String contentLink;
-	
-	private String displayName;
-	
-	private String contentType;
+    private String contentLink;
 
-	public PresentationFile() {
-		// Not used currently, but here for spring :)
-	}
+    private String displayName;
 
-	public PresentationFile(int presentationId, String type, String contentLink,
-	        String displayName) {
-		this.presentationId = presentationId;
-		this.type = type;
-		this.contentLink = contentLink;
-		this.displayName = displayName;
-	}
-	
-	public PresentationFile(int presentationId, String type, byte[] content,
-	        String displayName,
-	        String contentType) {
-		this.presentationId = presentationId;
-		this.type = type;
-		this.content = content;
-		this.contentType = contentType;
-		this.displayName = displayName;
-	}
+    private String contentType;
 
-	public int getPresentationId() {
-		return presentationId;
-	}
+    public PresentationFile() {
+        // Not used currently, but here for spring :)
+    }
 
-	public void setPresentationId(int presentationId) {
-		this.presentationId = presentationId;
-	}
-	
+    public PresentationFile(int presentationId, String type, String contentLink,
+            String displayName) {
+        this.presentationId = presentationId;
+        this.type = type;
+        this.contentLink = contentLink;
+        this.displayName = displayName;
+    }
+
+    public PresentationFile(int presentationId, String type, byte[] content, String displayName,
+            String contentType) {
+        this.presentationId = presentationId;
+        this.type = type;
+        this.content = content;
+        this.contentType = contentType;
+        this.displayName = displayName;
+    }
+
+    public int getPresentationId() {
+        return presentationId;
+    }
+
+    public void setPresentationId(int presentationId) {
+        this.presentationId = presentationId;
+    }
 
     public String getContentType() {
         return contentType;
@@ -72,7 +70,7 @@ public class PresentationFile implements Serializable {
     public void setContentType(String contentType) {
         this.contentType = contentType;
     }
-    
+
     public String getDisplayName() {
         return displayName;
     }
@@ -80,43 +78,44 @@ public class PresentationFile implements Serializable {
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
-    
-	@ApiModelProperty(value = "The type of the file. f for Presentation, r for Ressource", allowableValues = "f,r")
-	public String getType() {
-		return type;
-	}
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    @ApiModelProperty(value = "The type of the file. f for Presentation, r for Ressource", allowableValues = "f,r")
+    public String getType() {
+        return type;
+    }
 
-	public byte[] getContent() {
-		return content;
-	}
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	public void setContent(byte[] content) {
-		this.content = content;
-		if (content != null) {
-			this.contentLink = null;
-		}
-	}
+    public byte[] getContent() {
+        return content;
+    }
 
-	public String getContentLink() {
-		return contentLink;
-	}
+    public void setContent(byte[] content) {
+        this.content = content;
+        if (content != null) {
+            this.contentLink = null;
+        }
+    }
 
-	public void setContentLink(String contentLink) {
-		this.contentLink = contentLink;
-		if (contentLink != null) {
-			this.content = null;
-		}
-	}
+    public String getContentLink() {
+        return contentLink;
+    }
 
-	public long getPresentationFileId() {
-		return presentationFileId;
-	}
-	
-	public PresentationFileMeta getAsMeta(){
-		return new PresentationFileMeta(presentationFileId, presentationId, type, contentLink, displayName, contentType);
-	}
+    public void setContentLink(String contentLink) {
+        this.contentLink = contentLink;
+        if (contentLink != null) {
+            this.content = null;
+        }
+    }
+
+    public long getPresentationFileId() {
+        return presentationFileId;
+    }
+
+    public PresentationFileMeta getAsMeta() {
+        return new PresentationFileMeta(presentationFileId, presentationId, type, contentLink,
+                displayName, contentType);
+    }
 }

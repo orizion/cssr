@@ -1,6 +1,6 @@
 package ch.fhnw.cssr.domain;
 
-/** 
+/**
  * A class for email that just represents the editable part of an email.
  *
  */
@@ -11,12 +11,10 @@ public class EmailView {
     String cc;
     String subject;
     String body;
-    
+
     public EmailView() {
-        
+
     }
-    
-    
 
     public String getTo() {
         return to;

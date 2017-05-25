@@ -9,11 +9,11 @@ import ch.fhnw.cssr.domain.User;
 
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
-	public User findByEmail(String email);
-	
-	public User findByTempToken(String tempToken);
+    public User findByEmail(String email);
 
-	@Query("SELECT c FROM User AS c WHERE c.displayName LIKE CONCAT('%', :searchString, '%') OR c.email LIKE CONCAT('%', :searchString, '%')")
+    public User findByTempToken(String tempToken);
+
+    @Query("SELECT c FROM User AS c WHERE c.displayName LIKE CONCAT('%', :searchString, '%') OR c.email LIKE CONCAT('%', :searchString, '%')")
     public Iterable<User> findByEmailOrDisplayName(@Param("searchString") String searchString);
 
 }
