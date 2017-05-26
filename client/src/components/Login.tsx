@@ -39,9 +39,13 @@ export class Login extends React.Component<LoginProps, any> {
         }
         localStorage.setItem("token",token);
         API.defaultHeaders["Authorization"] = "Bearer " + localStorage.token;
-        this.props.userMetaFunction(API.UsercontrollerApiFp.getUsingGET());
+        let api = new API.UsercontrollerApi();
+        api.getUsingGET()
+        .then((response) =>{
+          this.props.userMetaFunction(response);    
+          window.location.href="/overview";
+        });
         
-        window.location.href="/overview";
     })
     .catch(() => {
         console.log("No login access granted");

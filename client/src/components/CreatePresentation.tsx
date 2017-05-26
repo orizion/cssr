@@ -8,7 +8,7 @@ import update = require('react-addons-update');
 import { translate } from 'react-i18next';
 
 export interface CreatePresentationProps {
-    
+    t:any
 }
 export interface CreatePresentationState {
     presentation: API.Presentation;

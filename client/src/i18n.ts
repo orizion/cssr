@@ -8,15 +8,28 @@ i18next.init({
         "subscribe": "Subscribe",
         "createPresentation": "Create Presentation",
         "login":"log in",
-        "overview":"Overview"
+        "overview":"Overview",
+        "logout": "Log out"
       },
       createPresentation:{
         "send": "Send",
-        "room": "Room",
         "date": "Date",
         "email_speaker": "Email Speaker",
+        "title": "Title",
+        "room": "Room",
+      },
+      subscribe: {
+        "meat": "Meat",
+        "vegetarian": "Vegetarian"
+      },
+      overview:{
+        "edit": "Edit",
+        "subscribe": "Subscribe",
+        "time" : "Time",
+        "sendInvitation": "Send Invitation"
       },
       common:{
+        "room": "Room",
         actions: {
             toggleToGerman: 'Deutsch',
             toggleToEnglish: 'English'
@@ -28,15 +41,26 @@ i18next.init({
         "subscribe": "Anmelden",
         "createPresentation": "Präsentation erstellen",
         "login": "Einloggen",
-        "overview":"Übersicht"
+        "overview":"Übersicht",
+        "logout": "Ausloggen"
       },
       createPresentation:{
         "send": "Senden",
-        "room": "Raum",
         "date": "Datum",
         "email_speaker": "Email Referent",
       },
+      subscribe: {
+        "meat": "Fleisch",
+        "vegetarian": "Vegi"
+      },
+      overview:{
+        "edit": "Bearbeiten",
+        "subscribe": "Anmelden",
+        "time" : "Zeit",
+        "sendInvitation" : "Einladung senden"
+      },
       common: {
+        "room": "Raum",
         actions: {
             toggleToGerman: 'Deutsch',
             toggleToEnglish: 'English'

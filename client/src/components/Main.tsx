@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { FormControl,FormGroup,ControlLabel,Checkbox,Button,Nav,NavItem,Popover } from "react-bootstrap";
+import { FormControl,FormGroup,ControlLabel,Checkbox,Button,Nav,NavItem,Popover, Row, Col } from "react-bootstrap";
 import  Navigo  = require("navigo");
 import { translate } from 'react-i18next';
 
@@ -28,8 +28,8 @@ export class Main extends React.Component<any,MainState> {
     super(props);
     this.state = {
       component: <br />,
-      activeKey: "1",
-      userMeta : "",
+      activeKey: "4",
+      userMeta : {},
       language:  (localStorage.lang != null ? localStorage.lang : "en")
     }
     this.i18n.changeLanguage(this.state.language);
@@ -46,21 +46,45 @@ export class Main extends React.Component<any,MainState> {
       userMeta: _userMeta
     });
   }
-
+  authorities:Array<String> = [];
   handleLangChange() {
-    console.log("Old lang:"+this.state.language);
+    console.log(this.authorities);
     if(this.state.language == "en") {
       this.i18n.changeLanguage("de");
       this.setState({language: "de"}, () =>{
         localStorage.setItem("lang",this.state.language);
       });
-      
     }else {
       this.i18n.changeLanguage("en");
       this.setState({language: "en"}, () =>{
         localStorage.setItem("lang",this.state.language);
       });
     }
+  }
+  isAuthorized(authorizedRoles:Array<string>):boolean {
+    let authorities = this.state.userMeta.authorities || new Array<string>();
+    for (var i = 0; i < authorizedRoles.length; i++) {
+      if(authorities.indexOf(authorizedRoles[i]) != -1) {
+        return true;
+      }
+    }
+    return false;
+  }
+  renderOrReturn(_component:any,allowedRoles:Array<string>,key:string) {
+    this.setState(
+      {
+        component:_component,
+        activeKey: key
+      }
+    );
+    return true; /*
+    if(this.isAuthorized(allowedRoles)){
+      this.setState(
+        {component:_component}
+      );
+    }else {
+      window.location.href="login";
+    }*/
   }
   componentDidMount() {
     let router:any  = new Navigo(null , false);
@@ -73,24 +97,15 @@ export class Main extends React.Component<any,MainState> {
       })
       .on('/subscribe/:id',(params:any,query:string) => {       
          self.setState(
-           {component:<Subscribe presentationId={params.id} />}
+           {component:<Subscribe presentationId={params.id} t={this.props.t}/>}
          );
-      })//Only for testing
-      .on('/subscribe',() => {
-        self.setState(
-           {
-            component:<Subscribe presentationId={1} />
-          }
-        );
       })
       .on('/createpresentation',() => {
-         self.setState(
-           {component:<CreatePresentation  />}
-         );
+        this.renderOrReturn(<CreatePresentation  />,["Role_Coord"],"1");
       })
-      .on('/editpresentation', () => {
+      .on('/editpresentation/:id', (params:any,query:string) => {
          self.setState(
-           {component:<EditPresentation userMeta={this.state.userMeta}/>}
+           {component:<EditPresentation  presentationId={params.id} authorities={this.state.userMeta.authorities}/>}
          );
       })
       .on('/createuser',() => {
@@ -100,7 +115,7 @@ export class Main extends React.Component<any,MainState> {
       })
       .on('/overview',() => {
          self.setState(
-           {component:<SubscribeOverview  />}
+           {component:<SubscribeOverview  t={this.props.t}/>}
          );
       })
       .on('/sendinvitation/:id',(params:any,query:string) => {
@@ -117,46 +132,67 @@ export class Main extends React.Component<any,MainState> {
     });
   }
   render() {
-    let t = this.props.t;    
-    let authorities:Array<String> = this.state.userMeta.authorities || new Array<String>();
-    return (
+    let t = this.props.t;       
+    return (      
          <div>
-            <Nav bsStyle="tabs" activeKey={this.state.activeKey} onSelect={this.handleNavigate}>        
-            {  authorities.indexOf("Role_Coord") !=-1 &&
-               <NavItem eventKey="2" href="createpresentation" data-navigo> 
-                {t('createPresentation')}  
-              </NavItem> 
+
+            <Row>
+              <Col xs={6} md={6}>
+                <img src="../logo.png" className="" width={150}/>
+              </Col>
+              
+              <Col  md={2} mdPush={4} >
+                { localStorage.token ?
+                  <Button  bsStyle="info" href="logout"  className="btn-block" data-navigo> 
+                    {t('logout')}
+                  </Button>
+                  :
+                  <Button  bsStyle="info" href="login"  className="btn-block" data-navigo> 
+                    {t('login')}
+                  </Button>   
+                } 
+                  
+                <Button bsStyle="info" className="btn-block" onClick={this.handleLangChange}>
+                  { this.state.language == "en" ?
+                    t('common:actions.toggleToGerman') :
+                    t('common:actions.toggleToEnglish')
+                  }
+                </Button>
+              </Col>
+            </Row>
+
+            {  true && 
+              <Nav bsStyle="tabs" activeKey={this.state.activeKey} onSelect={this.handleNavigate}>        
+              {  this.isAuthorized(["Role_Coord"]) || true &&
+                <NavItem eventKey="1" href="createpresentation" data-navigo> 
+                  {t('createPresentation')}  
+                </NavItem> 
+              }
+              
+              { this.isAuthorized(["Role_Coord"]) && 
+                <NavItem eventKey="2" href="editpresentation" data-navigo> Edit Presentation </NavItem>
+              }
+              { this.isAuthorized(["Role_Admin"]) && 
+                <NavItem eventKey="3" href="createuser" data-navigo> Create User </NavItem>
+              }
+
+                <NavItem eventKey="4" href="overview" data-navigo> Overview </NavItem>
+
+
+              { this.isAuthorized(["Role_Coord","Role_SGL","Role_Admin"]) && 
+                <NavItem eventKey="5" href="sendinvitation" data-navigo>  
+                  {t('sendInvitation')}
+                </NavItem>
+              }
+              </Nav>
             }
+
             
-            { authorities.indexOf("Role_Coord")  != -1 && 
-              <NavItem eventKey="3" href="editpresentation" data-navigo> Edit Presentation </NavItem>
-            }
-            { authorities.indexOf("Role_Admin")  != -1 && 
-              <NavItem eventKey="4" href="createuser" data-navigo> Create User </NavItem>
-            }
-              <NavItem eventKey="5" href="overview" data-navigo> Overview </NavItem>
-              <NavItem eventKey="6" href="subscribe" data-navigo>               
-                {t('subscribe')}
-              </NavItem>
-            { authorities.indexOf("Role_Coord")  != -1 || authorities.indexOf("Role_SGL")  != -1 || authorities.indexOf("Role_Admin")  != -1 && 
-              <NavItem eventKey="7" href="sendinvitation" data-navigo>  
-                {t('sendInvitation')}
-              </NavItem>
-            }
-            </Nav>
-            <Button  bsStyle="success" href="login" data-navigo> 
-              {t('login')} 
-            </Button>
-           
-            <Button bsStyle="info" onClick={this.handleLangChange}>
-              {this.state.language}
-            </Button>
             
-           <br/><br/>
+           <br/>
            
-           {this.state.component}
-          
-      </div>
+           {this.state.component}         
+        </div>
     ); 
   }
 }

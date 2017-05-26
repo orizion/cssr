@@ -33,9 +33,6 @@ export class CreateUser extends React.Component<CreateUserProps,CreateUserState>
                 [e.target.name]: {$set: val}
             })
         });
-        this.userAPI.getUsingGET().then((res) => {
-            //res.authorities for reference only
-        });
     }
     submit(e:any) {
         e.preventDefault();
@@ -48,7 +45,7 @@ export class CreateUser extends React.Component<CreateUserProps,CreateUserState>
             console.log(err);
         });
     }
-    render(){
+    render() {
         return (
             <form>
                 <FormGroup controlId="formControlsDisplayName">

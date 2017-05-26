@@ -6,13 +6,15 @@ import * as API from "../services/api";
 import { FormControl,FormGroup,ControlLabel,Checkbox,Button, Row, Col, } from "react-bootstrap";
 
 export interface EditPresentationProps {
+  presentationId: number,
+  authorities: Array<string> | undefined;
 }
 export interface EditPresentationState {
   presentation:API.Presentation,
   files: API.PresentationFileMeta[],
 }
 
-export class EditPresentation extends React.Component<any, EditPresentationState> {
+export class EditPresentation extends React.Component<EditPresentationProps, EditPresentationState> {
   constructor(props: EditPresentationProps){
     super(props);
     this.state = {
@@ -22,8 +24,19 @@ export class EditPresentation extends React.Component<any, EditPresentationState
       files: []
     };
     API.defaultHeaders["Authorization"] = "Bearer " + localStorage.token;
+
+    this.presentationAPI = new API.PresentationcontrollerApi();
+    this.presentationAPI.getSingleUsingGET({  "id": this.props.presentationId })
+    .then((response)=>{
+      this.setState({
+        presentation: response
+      });
+    });
+
+    //this.authorities = this.props.userMeta.authorities || new Array<String>();
     this.handleChanged = this.handleChanged.bind(this);
   }
+  presentationAPI: API.PresentationcontrollerApi;
   handleChanged(e:any) {
     this.setState({[e.target.name]: e.target.value});
     console.log(this.state);
@@ -43,21 +56,23 @@ export class EditPresentation extends React.Component<any, EditPresentationState
             })
         });
   }
-  submit(){
-    /*fetch(this.props.apiUrl)
-    .then((res)=> {
-      if(res.ok){
-        this.setState({
-          title:"",
-          abstract:"",
-        });
-      }else {
-
+  isAuthorized(authorizedRoles:Array<string>):boolean {
+    let authorities = this.props.authorities || new Array<string>();
+    for (var i = 0; i < authorizedRoles.length; i++) {
+      if(authorities.indexOf(authorizedRoles[i]) != -1) {
+        return true;
       }
-    });*/
+    }
+    return false;
+  }
+  submit(){
+    this.presentationAPI.modifyPresentationUsingPUT({  "pres": this.state.presentation })
+    .then(()=>{
+
+    });
   }
   render() {
-    let authorities:Array<String> = this.props.userMeta.authorities || new Array<String>();
+    let authorities:Array<String> = this.props.authorities || new Array<String>();
     return (
       <form>
         <FormGroup controlId="formControlsTitle">
@@ -89,18 +104,12 @@ export class EditPresentation extends React.Component<any, EditPresentationState
             <Col xs={6} md={6}>
               <FormControl type="date" name="datetime" placeholder="yyyy.mm.dd"
                           onChange={this.handleChanged} 
-                          readOnly={
-                            authorities.indexOf("Role_Coord") == -1 
-                            && authorities.indexOf("Role_SGL") == -1 
-                            && authorities.indexOf("Role_Admin") == -1}/>
+                          readOnly={this.isAuthorized(["Role_Coord","Role_SGL","Role_Admin"])}/>
             </Col>
             <Col xs={6} md={6}>
               <FormControl type="text" name="location" placeholder=""
                           onChange={this.handleChanged} 
-                          readOnly={
-                            authorities.indexOf("Role_Coord") == -1 
-                            && authorities.indexOf("Role_SGL") == -1 
-                            && authorities.indexOf("Role_Admin") == -1}/>
+                          readOnly={this.isAuthorized(["Role_Coord","Role_SGL","Role_Admin"])}/>
             </Col>
           </Row>
           <br/>
