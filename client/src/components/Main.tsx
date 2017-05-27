@@ -95,17 +95,27 @@ export class Main extends React.Component<any,MainState> {
            {component:<Login  userMetaFunction={this.setUserInformation}/>}
         );
       })
-      .on('/subscribe/:id',(params:any,query:string) => {       
+      .on('/logout',()=> {
+        localStorage.setItem("token","");
+        this.setState({
+          component: <br />,
+          activeKey: "4",
+          userMeta : {},
+          language:  (localStorage.lang != null ? localStorage.lang : "en")
+        });
+      })
+      .on('/presentation/:id/subscribe',(params:any,query:string) => {       
          self.setState(
            {component:<Subscribe presentationId={params.id} t={this.props.t}/>}
          );
       })
-      .on('/createpresentation',() => {
+      .on('/presentation/create',() => {
         this.renderOrReturn(<CreatePresentation  />,["Role_Coord"],"1");
       })
-      .on('/editpresentation/:id', (params:any,query:string) => {
+      .on('/presentation/:id/edit', (params:any,query:string) => {
          self.setState(
-           {component:<EditPresentation  presentationId={params.id} authorities={this.state.userMeta.authorities}/>}
+           {component:<EditPresentation  presentationId={params.id} 
+              authorities={this.state.userMeta.authorities} t={this.props.t}/>}
          );
       })
       .on('/createuser',() => {
@@ -113,7 +123,7 @@ export class Main extends React.Component<any,MainState> {
            {component:<CreateUser />}
          );
       })
-      .on('/overview',() => {
+      .on('/presentation',() => {
          self.setState(
            {component:<SubscribeOverview  t={this.props.t}/>}
          );
@@ -138,10 +148,10 @@ export class Main extends React.Component<any,MainState> {
 
             <Row>
               <Col xs={6} md={6}>
-                <img src="../logo.png" className="" width={150}/>
+                <img src="/logo_text.png" className="" width={150}/>
               </Col>
               
-              <Col  md={2} mdPush={4} >
+              <Col  xs={2} md={2} mdPush={4} xsPush={4}>
                 { localStorage.token ?
                   <Button  bsStyle="info" href="logout"  className="btn-block" data-navigo> 
                     {t('logout')}
@@ -164,26 +174,14 @@ export class Main extends React.Component<any,MainState> {
             {  true && 
               <Nav bsStyle="tabs" activeKey={this.state.activeKey} onSelect={this.handleNavigate}>        
               {  this.isAuthorized(["Role_Coord"]) || true &&
-                <NavItem eventKey="1" href="createpresentation" data-navigo> 
+                <NavItem eventKey="1" href="/presentation/create" data-navigo> 
                   {t('createPresentation')}  
                 </NavItem> 
               }
-              
-              { this.isAuthorized(["Role_Coord"]) && 
-                <NavItem eventKey="2" href="editpresentation" data-navigo> Edit Presentation </NavItem>
-              }
               { this.isAuthorized(["Role_Admin"]) && 
-                <NavItem eventKey="3" href="createuser" data-navigo> Create User </NavItem>
+                <NavItem eventKey="3" href="/createuser" data-navigo>{t('createUser')}</NavItem>
               }
-
-                <NavItem eventKey="4" href="overview" data-navigo> Overview </NavItem>
-
-
-              { this.isAuthorized(["Role_Coord","Role_SGL","Role_Admin"]) && 
-                <NavItem eventKey="5" href="sendinvitation" data-navigo>  
-                  {t('sendInvitation')}
-                </NavItem>
-              }
+                <NavItem eventKey="4" href="/presentation" data-navigo>{t('overview')} </NavItem>
               </Nav>
             }
 

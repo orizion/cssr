@@ -100,14 +100,14 @@ export class CreatePresentation extends React.Component<any, CreatePresentationS
         return (
             <form>
                 <FormGroup controlId="formControlsTitle">
-                    <ControlLabel>{t('title')}</ControlLabel>
+                    <ControlLabel>{t('common:title')}</ControlLabel>
                     <br />
                     <FormControl type="text" name="title" placeholder="" value={this.state.presentation.title}
                         onChange={this.handleChanged} required />
                 </FormGroup>
 
                 <FormGroup controlId="formControlsAbstract">
-                    <ControlLabel>Abstract</ControlLabel>
+                    <ControlLabel>{t('common:abstract')}</ControlLabel>
                     <br />
                     <FormControl componentClass="textarea" name="abstract" placeholder=""
                         value={this.state.presentation.abstract}
@@ -115,7 +115,7 @@ export class CreatePresentation extends React.Component<any, CreatePresentationS
                 </FormGroup>
 
                 <FormGroup controlId="formControlsDateTime">
-                    <ControlLabel>{t('date')}</ControlLabel>
+                    <ControlLabel>{t('common:date')}</ControlLabel>
                     <br />
                     
                     <Datetime input={true} locale="de" value={this.state.presentation.dateTime}
@@ -123,14 +123,14 @@ export class CreatePresentation extends React.Component<any, CreatePresentationS
                 </FormGroup>
 
                 <FormGroup controlId="formControlsLocation">
-                    <ControlLabel>{t('room')}</ControlLabel>
+                    <ControlLabel>{t('common:room')}</ControlLabel>
                     <br />
                     <FormControl type="text" name="location" placeholder="" value={this.state.presentation.location}
                         onChange={this.handleChanged} required />
                 </FormGroup>
 
                 <FormGroup controlId="formControlsSpeakerEmail">
-                    <ControlLabel>{t('email_speaker')}</ControlLabel>
+                    <ControlLabel>{t('common:email_speaker')}</ControlLabel>
                     <br />
                     <Select.Async
                         name="speakerId"
@@ -143,7 +143,7 @@ export class CreatePresentation extends React.Component<any, CreatePresentationS
                 </FormGroup>
 
                 <Button type="submit" bsStyle="primary" onClick={this.submit}>
-                    {t('send')}
+                    {t('common:save')}
                 </Button> 
             </form>        
         );

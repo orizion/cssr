@@ -9,14 +9,10 @@ i18next.init({
         "createPresentation": "Create Presentation",
         "login":"log in",
         "overview":"Overview",
-        "logout": "Log out"
+        "logout": "Log out",
+        "createUser" : "Create User1",
       },
       createPresentation:{
-        "send": "Send",
-        "date": "Date",
-        "email_speaker": "Email Speaker",
-        "title": "Title",
-        "room": "Room",
       },
       subscribe: {
         "meat": "Meat",
@@ -25,11 +21,16 @@ i18next.init({
       overview:{
         "edit": "Edit",
         "subscribe": "Subscribe",
-        "time" : "Time",
         "sendInvitation": "Send Invitation"
       },
       common:{
         "room": "Room",
+        "title" : "Title",
+        "email_speaker": "Email Speaker",
+        "time" : "Time",
+        "date": "Date",
+        "abstract": "Abstract",
+        "save": "Save",
         actions: {
             toggleToGerman: 'Deutsch',
             toggleToEnglish: 'English'
@@ -42,12 +43,11 @@ i18next.init({
         "createPresentation": "Präsentation erstellen",
         "login": "Einloggen",
         "overview":"Übersicht",
-        "logout": "Ausloggen"
+        "logout": "Ausloggen",
+        "createUser" : "Benutzer erstellen",
       },
       createPresentation:{
-        "send": "Senden",
-        "date": "Datum",
-        "email_speaker": "Email Referent",
+        
       },
       subscribe: {
         "meat": "Fleisch",
@@ -56,11 +56,16 @@ i18next.init({
       overview:{
         "edit": "Bearbeiten",
         "subscribe": "Anmelden",
-        "time" : "Zeit",
         "sendInvitation" : "Einladung senden"
       },
       common: {
         "room": "Raum",
+        "title" : "Titel",
+        "email_speaker": "Email Referent",
+        "time" : "Zeit",
+        "date": "Datum",
+        "abstract": "Abstract",
+        "save": "Speichern",
         actions: {
             toggleToGerman: 'Deutsch',
             toggleToEnglish: 'English'

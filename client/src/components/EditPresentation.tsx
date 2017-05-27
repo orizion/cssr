@@ -2,30 +2,36 @@ import * as React from "react";
 import Select = require('react-select');
 import update = require('react-addons-update');
 import * as API from "../services/api";
+import {translate } from "react-i18next";
 
 import { FormControl,FormGroup,ControlLabel,Checkbox,Button, Row, Col, } from "react-bootstrap";
+import {PresentationFileUpload} from "./PresentationFileUpload";
 
 export interface EditPresentationProps {
   presentationId: number,
-  authorities: Array<string> | undefined;
+  authorities: Array<string> | undefined,
+  t: any;
+
 }
 export interface EditPresentationState {
   presentation:API.Presentation,
   files: API.PresentationFileMeta[],
+  fileUploads:JSX.Element[];
 }
 
+@translate(['editPresentation', 'common'], { wait: true })
 export class EditPresentation extends React.Component<EditPresentationProps, EditPresentationState> {
   constructor(props: EditPresentationProps){
     super(props);
     this.state = {
-      presentation: {
-
-      },
-      files: []
+      presentation: {},
+      files: [],
+      fileUploads:[]
     };
     API.defaultHeaders["Authorization"] = "Bearer " + localStorage.token;
 
     this.presentationAPI = new API.PresentationcontrollerApi();
+    this.presentationFileAPI = new API.PresentationfilecontrollerApi();
     this.presentationAPI.getSingleUsingGET({  "id": this.props.presentationId })
     .then((response)=>{
       this.setState({
@@ -37,6 +43,7 @@ export class EditPresentation extends React.Component<EditPresentationProps, Edi
     this.handleChanged = this.handleChanged.bind(this);
   }
   presentationAPI: API.PresentationcontrollerApi;
+  presentationFileAPI: API.PresentationfilecontrollerApi;
   handleChanged(e:any) {
     this.setState({[e.target.name]: e.target.value});
     console.log(this.state);
@@ -49,6 +56,7 @@ export class EditPresentation extends React.Component<EditPresentationProps, Edi
     {value:"f",label:"Datei"},
     {value:"l",label:"Link"}
   ];
+  
   handleSelectChanged(e: any) {
         this.setState({
             files: update(this.state.files, {
@@ -65,14 +73,46 @@ export class EditPresentation extends React.Component<EditPresentationProps, Edi
     }
     return false;
   }
+  handleAddUploadComponent(e:any) {
+    let newIndex = this.state.fileUploads.length+1;
+    this.setState({
+      fileUploads : update(this.state.fileUploads,{
+        fileUploads : {
+          $push:  <PresentationFileUpload t={this.props.t}  key={newIndex}/>
+        }
+      })
+    });
+      
+    
+  }
+  presentationFileControl(props:any) {
+
+    
+  }
   submit(){
     this.presentationAPI.modifyPresentationUsingPUT({  "pres": this.state.presentation })
     .then(()=>{
+
+    })
+    .catch((err) =>{
+      console.log("Error while updating Presentation: ");
+      console.log(err);
+    });
+    this.presentationFileAPI.addFileBinaryUsingPOST(
+    {
+      "presentationId": this.props.presentationId,"content": "",
+      "type":"","displayName": "test","contentType": "test"
+    })
+    .then((response)=>{
+
+    })
+    .catch((error)=>{
 
     });
   }
   render() {
     let authorities:Array<String> = this.props.authorities || new Array<String>();
+    let t = this.props.t;
     return (
       <form>
         <FormGroup controlId="formControlsTitle">
@@ -116,20 +156,19 @@ export class EditPresentation extends React.Component<EditPresentationProps, Edi
         </FormGroup>
 
         <FormGroup controlId="formControlsSpeakerEmail">
-          <ControlLabel>Email Referent</ControlLabel>
+          <ControlLabel>{t('common:email_speaker')}</ControlLabel>
           <br/>
           <FormControl type="email" name="speaker_email"
               onChange={this.handleChanged} readOnly/>
         </FormGroup>
 
-        <FormGroup controlId="formControlsType">
+                <FormGroup controlId="formControlsType">
           <Row>
             <Col xs={6} md={6}>
-              <ControlLabel>Datei ablegen als </ControlLabel>
+              <ControlLabel>{t('saveFileAs')}</ControlLabel>
             </Col>
-
             <Col xs={6} md={6}>
-                <ControlLabel>Dateityp</ControlLabel>
+                <ControlLabel>{t('dataType')}</ControlLabel>
             </Col>
           </Row>
           <Row>
@@ -141,7 +180,6 @@ export class EditPresentation extends React.Component<EditPresentationProps, Edi
                   clearable={false}
               />
             </Col>
-
             <Col xs={6} md={6}>
               <Select name="fileType"     
                   value="f"          
@@ -150,28 +188,14 @@ export class EditPresentation extends React.Component<EditPresentationProps, Edi
                   clearable={false}
               />
             </Col>
+            {this.state.fileUploads}
           </Row>                   
         </FormGroup>
 
-        {true &&
-          <FormGroup controlId="formControlsAbstract">
-            <ControlLabel>Test</ControlLabel>
-            <br/>
-            <FormControl componentClass="textarea" name="abstract" placeholder=""
-                onChange={this.handleChanged} required/>
-          </FormGroup>
-        }
-        { true &&
-          <FormGroup controlId="formControlsAbstract">
-            <ControlLabel>Abstract</ControlLabel>
-            <br/>
-            <FormControl componentClass="textarea" name="abstract" placeholder=""
-               onChange={this.handleChanged} required/>
-          </FormGroup>
-        }
+        
 
         <Button type="submit" bsStyle="primary" onClick={this.submit}>
-          Senden
+          {t('common:save')}
         </Button>
       </form>
     );
