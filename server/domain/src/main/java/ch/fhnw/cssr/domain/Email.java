@@ -133,7 +133,7 @@ public class Email implements Serializable {
 
     /**
      * Checks if all email addresses in a list do have an @ in the address You can pass an empty
-     * address
+     * address.
      * 
      * @param address
      *            One or more (;-separated) addresses
@@ -148,7 +148,8 @@ public class Email implements Serializable {
                 this.primitiveEmailAddressCheck(addr);
             }
         }
-        if (!address.contains("@"))
+        if (!address.contains("@")) {
             throw new IllegalArgumentException("address");
+        }
     }
 }

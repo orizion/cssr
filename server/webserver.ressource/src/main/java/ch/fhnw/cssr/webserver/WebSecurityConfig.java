@@ -38,6 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/login").permitAll()
                 .antMatchers(HttpMethod.PUT, "/user/me/password").permitAll()
+                .antMatchers("/aai").permitAll()
                 // Preflight request for cors
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll() 
                 .antMatchers(HttpMethod.GET, "/v2/api-docs").permitAll() // Swagger

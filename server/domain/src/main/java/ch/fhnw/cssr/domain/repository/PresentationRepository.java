@@ -11,6 +11,7 @@ import ch.fhnw.cssr.domain.Presentation;
 @Repository
 public interface PresentationRepository extends CrudRepository<Presentation, Integer> {
 
-    @Query("SELECT c FROM Presentation AS c WHERE c.dateTime > CURRENT_TIMESTAMP()")
+    @Query("SELECT c FROM Presentation AS c " + 
+            "WHERE c.dateTime > CURRENT_TIMESTAMP()")
     public List<Presentation> getAllFuture();
 }

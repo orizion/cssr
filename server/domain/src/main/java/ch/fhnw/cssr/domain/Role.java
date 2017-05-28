@@ -43,8 +43,8 @@ public class Role implements Serializable {
     /**
      * This return the names for all roles that can be used by spring security.
      * 
-     * @param id
-     * @return
+     * @param id The id (1, 2 or 3)
+     * @return The role name as string, or null
      */
     public static String getDefaultRoleName(int id) {
         if (id == ROLE_ADMIN) {

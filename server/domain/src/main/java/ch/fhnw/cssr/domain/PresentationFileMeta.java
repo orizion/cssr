@@ -28,7 +28,17 @@ public class PresentationFileMeta implements Serializable {
 
     }
 
-    public PresentationFileMeta(long presentationFileId, int presentationId, String type,
+    /**
+     * Creates a presentation file meta.
+     * @param presentationFileId The file id.
+     * @param presentationId The presentation id.
+     * @param type The type (r or f).
+     * @param contentLink The link to the file.
+     * @param displayName The dispay name.
+     * @param contentType The type of the binary content in case of a binary file.
+     */
+    public PresentationFileMeta(long presentationFileId,
+            int presentationId, String type,
             String contentLink, String displayName, String contentType) {
         this.presentationFileId = presentationFileId;
         this.presentationId = presentationId;
@@ -42,7 +52,8 @@ public class PresentationFileMeta implements Serializable {
         return presentationId;
     }
 
-    @ApiModelProperty(value = "The type of the file. f for Presentation, r for Ressource", allowableValues = "f,r")
+    @ApiModelProperty(value = "The type of the file. f for Presentation, r for Ressource",
+            allowableValues = "f,r")
     public String getType() {
         return type;
     }

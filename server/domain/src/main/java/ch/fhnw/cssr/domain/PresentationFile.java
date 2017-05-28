@@ -38,6 +38,13 @@ public class PresentationFile implements Serializable {
         // Not used currently, but here for spring :)
     }
 
+    /**
+     * Creates a new presentation file.
+     * @param presentationId The id of the presentation
+     * @param type The type, either "f" (Presentation) or "r" (Ressourcen)
+     * @param contentLink The link to the content
+     * @param displayName The name to be displayed
+     */
     public PresentationFile(int presentationId, String type, String contentLink,
             String displayName) {
         this.presentationId = presentationId;
@@ -46,6 +53,14 @@ public class PresentationFile implements Serializable {
         this.displayName = displayName;
     }
 
+    /**
+     * Creates a new presentation file.
+     * @param presentationId The id of the presentation
+     * @param type  The type, either "f" (Presentation) or "r" (Ressourcen)
+     * @param content  The binary Content
+     * @param displayName The name to be displayed.
+     * @param contentType The mime type of the passed content
+     */
     public PresentationFile(int presentationId, String type, byte[] content, String displayName,
             String contentType) {
         this.presentationId = presentationId;
@@ -79,7 +94,12 @@ public class PresentationFile implements Serializable {
         this.displayName = displayName;
     }
 
-    @ApiModelProperty(value = "The type of the file. f for Presentation, r for Ressource", allowableValues = "f,r")
+    /**
+     * The type of the file. f for Presentation, r for Ressource
+     * @return r or f
+     */
+    @ApiModelProperty(value = "The type of the file. f for Presentation, r for Ressource",
+            allowableValues = "f,r")
     public String getType() {
         return type;
     }
@@ -92,6 +112,10 @@ public class PresentationFile implements Serializable {
         return content;
     }
 
+    /**
+     * Sets the content. Will delete the "contentlink" if it was set.
+     * @param content The binary content
+     */
     public void setContent(byte[] content) {
         this.content = content;
         if (content != null) {
@@ -103,6 +127,10 @@ public class PresentationFile implements Serializable {
         return contentLink;
     }
 
+    /**
+     * Sets the contentlink. Will delete the "content" property.
+     * @param contentLink The link
+     */
     public void setContentLink(String contentLink) {
         this.contentLink = contentLink;
         if (contentLink != null) {

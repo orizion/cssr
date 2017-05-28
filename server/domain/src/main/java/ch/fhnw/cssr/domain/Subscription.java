@@ -48,7 +48,8 @@ public class Subscription implements Serializable {
         this.user = user;
     }
 
-    @ApiModelProperty(value = "The type of the sandwich. v for Vegi, f for Meat", allowableValues = "v,f", dataType = "String")
+    @ApiModelProperty(value = "The type of the sandwich. v for Vegi, f for Meat",
+            allowableValues = "v,f", dataType = "String")
     public String getSandwichType() {
         return sandwichType.toString();
     }

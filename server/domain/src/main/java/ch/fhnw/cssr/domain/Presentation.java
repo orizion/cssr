@@ -31,7 +31,7 @@ public class Presentation implements Serializable {
     private String title;
 
     @Column(name = "abstract")
-    private String _abstract;
+    private String abstractText; // Can not name it abstract...
 
     public LocalDateTime getDateTime() {
         return dateTime;
@@ -41,6 +41,10 @@ public class Presentation implements Serializable {
         this.dateTime = dateTime;
     }
 
+    /**
+     * Gets the deadline. if no deadline is given, 2 weekdays before are assumed.
+     * @return The deadline
+     */
     public LocalDateTime getDeadline() {
         if (deadLine == null) {
             if (dateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
@@ -84,11 +88,11 @@ public class Presentation implements Serializable {
     }
 
     public String getAbstract() {
-        return _abstract;
+        return abstractText;
     }
 
-    public void setAbstract(String _abstract) {
-        this._abstract = _abstract;
+    public void setAbstract(String abstractText) {
+        this.abstractText = abstractText;
     }
 
     public Integer getPresentationId() {

@@ -129,6 +129,10 @@ public class User implements Serializable {
         this.userRoleId = roleId;
     }
 
+    /**
+     * Gets the password (encrypted). In case of an fhnw adress, it's a dummy password.
+     * @return The password (encrypted)
+     */
     public String getPasswordEnc() {
         if (isFhnwEmail(email)) {
             return ACTIVE_DIRECTORY_LOOKUP_PREFIX + email;
