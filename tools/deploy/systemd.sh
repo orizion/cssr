@@ -18,9 +18,12 @@ else
 fi
 
 cp -f ./cssr/server/webserver.ressource/target/webserver.*.jar $appdir/webserver.ressource.jar
+cp -f ./cssr/tools/deploy/start.sh $appdir/start.sh
 chown -R $appuser $appdir
 chgrp -R $appuser $appdir
 chmod -R 0400 $appdir # The user can only read
+chmod 755 $appdir/start.sh # The user can only read
+chmod 755 $appdir/webserver.ressource.jar # The user can only read
 
 # Enable Systemd service
 systemctl enable cssr.service

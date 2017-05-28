@@ -4,8 +4,9 @@ After=syslog.target
 
 [Service]
 User=cssr
-ExecStart=/var/cssr/web/webserver.ressource.jar
-SuccessExitStatus=143
+ExecStart=/var/cssr/web/start.sh
+# SuccessExitStatus=143
+WorkingDirectory=/var/cssr/web/
 
 [Install]
 WantedBy=multi-user.target
