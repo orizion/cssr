@@ -1,8 +1,8 @@
 set -e
 
 cd ../client
-cp -r dist /var/www/html
-cp index.html /var/www/html
+sudo cp -r dist /var/www/html
+sudo cp index.html /var/www/html
 cd ../server/domain
 mvn install
 cd ../mailer
