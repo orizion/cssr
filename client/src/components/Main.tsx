@@ -32,19 +32,30 @@ export class Main extends React.Component<any,MainState> {
       userMeta : {},
       language:  (localStorage.lang != null ? localStorage.lang : "en")
     }
+    if(localStorage.token){
+      API.defaultHeaders["Authorization"] = "Bearer " + localStorage.token;
+      this.userAPI = new API.UsercontrollerApi();
+        this.userAPI.getUsingGET()
+        .then((_userMeta) =>{
+          this.setState({
+            userMeta: _userMeta
+          });
+        });
+    }
     this.i18n.changeLanguage(this.state.language);
     this.handleNavigate = this.handleNavigate.bind(this);
     this.handleLangChange = this.handleLangChange.bind(this);
     this.setUserInformation = this.setUserInformation.bind(this);
   }
   i18n=this.props.i18n;
-  userAPI = new API.UsercontrollerApi();
+  userAPI:API.UsercontrollerApi;
   
   setUserInformation(_userMeta:API.UserMeta) {
     API.defaultHeaders["Authorization"] = "Bearer " + localStorage.token;
     this.setState({
       userMeta: _userMeta
     });
+    this.router.navigate('/presentation');
   }
   authorities:Array<String> = [];
   handleLangChange() {
@@ -83,13 +94,14 @@ export class Main extends React.Component<any,MainState> {
         {component:_component}
       );
     }else {
-      window.location.href="login";
+      this.router.navigate('/login');
     }*/
   }
+  router : any;
   componentDidMount() {
-    let router:any  = new Navigo(null , false);
+    this.router = new Navigo(null , false);
     let self:Main = this;
-      router
+      this.router
       .on('/login',() => {
         self.setState(
            {component:<Login  userMetaFunction={this.setUserInformation}/>}
@@ -103,6 +115,7 @@ export class Main extends React.Component<any,MainState> {
           userMeta : {},
           language:  (localStorage.lang != null ? localStorage.lang : "en")
         });
+        this.router.navigate('/login');
       })
       .on('/presentation/:id/subscribe',(params:any,query:string) => {       
          self.setState(
@@ -125,16 +138,16 @@ export class Main extends React.Component<any,MainState> {
       })
       .on('/presentation',() => {
          self.setState(
-           {component:<SubscribeOverview  t={this.props.t}/>}
+           {component:<SubscribeOverview  t={this.props.t} userMeta={this.state.userMeta} />}
          );
       })
-      .on('/sendinvitation/:id',(params:any,query:string) => {
+      .on('/presentation/:id/sendinvitation',(params:any,query:string) => {
          self.setState(
            {component:<SendInvitation  presentationId={params.id} />}
          );
       })
       .resolve();
-      router.resolve();
+      this.router.resolve();
   }
   handleNavigate(key: any) {
     this.setState({

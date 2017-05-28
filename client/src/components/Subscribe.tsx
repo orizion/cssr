@@ -24,7 +24,7 @@ export class Subscribe extends React.Component<SubscribeProps, SubscribeState> {
         presentationId:0,
         user:undefined,
         sandwichType:"v",
-        drink: ""
+        drink: "",
       },
       presentation: {
         abstract:"",
@@ -38,8 +38,24 @@ export class Subscribe extends React.Component<SubscribeProps, SubscribeState> {
      
     };
     API.defaultHeaders["Authorization"] = "Bearer " + localStorage.token;
+
+    let presentationAPI = new API.PresentationcontrollerApi();
+    presentationAPI.getSingleUsingGET({"id":this.props.presentationId})
+    .then((response: API.Presentation) => {
+      this.setState({
+        subscription: update(this.state.subscription, {
+            presentationId : { $set: response.presentationId }
+        }),
+        presentation: response
+      });
+    }).catch((err) => {
+      console.log(err);
+    });
+    
+
     this.handleChanged = this.handleChanged.bind(this);
     this.handleSelectChanged = this.handleSelectChanged.bind(this);
+    this.handleCheckBoxChanged = this.handleCheckBoxChanged.bind(this);
     this.submit = this.submit.bind(this);
   }
   userAPI = new API.UsercontrollerApi();
@@ -56,40 +72,31 @@ export class Subscribe extends React.Component<SubscribeProps, SubscribeState> {
       }),
       presentation: this.state.presentation
     });
-    console.log(this.state);
+  }
+  handleCheckBoxChanged(e: any) {
+    if(e.target.value) {
+      this.setState({
+          subscription: update(this.state.subscription, {
+                drink : { $set: "1" }
+          }),
+      });
+    }else {
+      this.setState({
+          subscription: update(this.state.subscription, {
+                drink : { $set: "" }
+          }),
+      });
+    }
   }
   handleSelectChanged(e: any) {
-    console.log(e);
-        this.setState({
-            subscription: update(this.state.subscription, {
-                 sandwichType : { $set: e.value }
-            }),
-        });
-        console.log(this.state);
-        console.log(this.state.subscription);
+      this.setState({
+          subscription: update(this.state.subscription, {
+                sandwichType : { $set: e.value }
+          }),
+      });
   }
   componentDidMount() {
-    let presentationAPI = new API.PresentationcontrollerApi();
-    presentationAPI.getSingleUsingGET({"id":this.props.presentationId})
-    .then((response: API.Presentation) => {
-      this.setState({
-        subscription: update(this.state.subscription, {
-            presentationId : { $set: response.presentationId }
-        }),
-        presentation: response
-      });
-      console.log(this.state);
-    }).catch((err) => {
-      console.log(err);
-    });
-    this.userAPI.getUsingGET()
-    .then((_user)=>{
-      
-    })
-    .catch((err)=>{
-      console.log("Getting info of current user failed");
-      console.log(err);
-    });
+    
   }
   submit(e:any) {
     e.preventDefault();
@@ -98,7 +105,7 @@ export class Subscribe extends React.Component<SubscribeProps, SubscribeState> {
       "presentationId": presentationId, 
       "subscription": this.state.subscription
     };
-    console.log(this.state.subscription);
+    console.log(JSON.stringify(params["subscription"] || {}));
 
 
     this.subscriptionAPI.addSubscriptionUsingPOST(params)
@@ -111,10 +118,11 @@ export class Subscribe extends React.Component<SubscribeProps, SubscribeState> {
    });
   }
   render() {
+    let t = this.props.t;
     return (
       <form>
         <FormGroup controlId="formControlsPresentation">
-          <ControlLabel>Präsentation</ControlLabel>
+          <ControlLabel>{t('common:presentation')}</ControlLabel>
           <br/>
           <h2>{this.state.presentation.title}</h2>
           <p>
@@ -124,12 +132,12 @@ export class Subscribe extends React.Component<SubscribeProps, SubscribeState> {
         </FormGroup>
 
         <FormGroup controlId="formControlsEmail">
-          <ControlLabel>Email</ControlLabel>
+          <ControlLabel>{t('common:email_speaker')}</ControlLabel>
           <br/>
           <FormControl type="email" name="email" placeholder="Emailadresse" onChange={this.handleChanged} required/>
         </FormGroup>
         <FormGroup controlId="formControlsSandwichType">
-          <ControlLabel>Sandwichtyp</ControlLabel>
+          <ControlLabel>{t('sandwichType')}</ControlLabel>
           <br/>
           <Select name="fileType"     
                   value={this.state.subscription.sandwichType}
@@ -139,10 +147,14 @@ export class Subscribe extends React.Component<SubscribeProps, SubscribeState> {
               />
         </FormGroup>
         <FormGroup controlId="formControlsDrink">
-          <FormControl type="text" name="drink" placeholder="Getränk" onChange={this.handleChanged} required/>
+          
+
+          <Checkbox name="drink" onChange={this.handleCheckBoxChanged}>
+            {t('drink')}
+          </Checkbox>
         </FormGroup>
         <Button type="submit" bsStyle="primary" onClick={this.submit}>
-          Einschreiben
+          {t('subscribe')}
         </Button>
       </form>
     );

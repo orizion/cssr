@@ -3,6 +3,8 @@ package ch.fhnw.cssr.domain;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -12,6 +14,7 @@ public class PresentationFileMeta implements Serializable {
     private static final long serialVersionUID = 10013002L;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //testing this out
     private long presentationFileId;
 
     private int presentationId;

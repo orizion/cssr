@@ -14,14 +14,22 @@ i18next.init({
       },
       createPresentation:{
       },
+      editPresentation: {
+        "addFiles": "Add more files"
+      },
       subscribe: {
         "meat": "Meat",
-        "vegetarian": "Vegetarian"
+        "vegetarian": "Vegetarian",
+        "subscribe": "Subscribe",
+        "sandwichType" : "Sandwich Type",
       },
       overview:{
         "edit": "Edit",
         "subscribe": "Subscribe",
         "sendInvitation": "Send Invitation"
+      },
+      presentationFileUpload: {
+        "presentationFile" : "Files for the Presentation",
       },
       common:{
         "room": "Room",
@@ -31,6 +39,7 @@ i18next.init({
         "date": "Date",
         "abstract": "Abstract",
         "save": "Save",
+        "presentation" : "Presentation",
         actions: {
             toggleToGerman: 'Deutsch',
             toggleToEnglish: 'English'
@@ -49,14 +58,22 @@ i18next.init({
       createPresentation:{
         
       },
+      editPresentation: {
+        "addFiles": "Weitere Datein hinzufügen"
+      },
       subscribe: {
         "meat": "Fleisch",
-        "vegetarian": "Vegi"
+        "vegetarian": "Vegi",
+        "subscribe": "Einschreiben",
+        "sandwichType" : "Sandwich Sorte",
       },
       overview:{
         "edit": "Bearbeiten",
         "subscribe": "Anmelden",
         "sendInvitation" : "Einladung senden"
+      },
+      presentationFileUpload: {
+        "presentationFile" : "Datei für die Präsentation",
       },
       common: {
         "room": "Raum",
@@ -66,6 +83,7 @@ i18next.init({
         "date": "Datum",
         "abstract": "Abstract",
         "save": "Speichern",
+        "presentation" : "Präsentation",
         actions: {
             toggleToGerman: 'Deutsch',
             toggleToEnglish: 'English'

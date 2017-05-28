@@ -43,7 +43,6 @@ export class Login extends React.Component<LoginProps, any> {
         api.getUsingGET()
         .then((response) =>{
           this.props.userMetaFunction(response);    
-          window.location.href="/overview";
         });
         
     })

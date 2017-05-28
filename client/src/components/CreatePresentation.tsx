@@ -57,6 +57,7 @@ export class CreatePresentation extends React.Component<any, CreatePresentationS
     }
     handleChanged(e: any) {
         let val: any = e.target.value;
+        console.log(this.state.presentation.dateTime);
         this.setState({
             presentation: update(this.state.presentation, {
                 [e.target.name]: { $set: val }
@@ -79,6 +80,7 @@ export class CreatePresentation extends React.Component<any, CreatePresentationS
     }
     submit(e: any) {
         e.preventDefault();     
+            console.log(this.state.presentation);
             return this.presentationAPI.addPresentationUsingPOST({ 'pres': this.state.presentation })      
             .then((response) => {
                 this.setState({
@@ -93,6 +95,8 @@ export class CreatePresentation extends React.Component<any, CreatePresentationS
                 console.log(response);
             }).catch((r) => {
                 console.log("Failed: " + r);
+                alert("Connection to server failed. Either your are disconnected"
+                +" \r\n or your sessions is expired. Please try to log in again");
             });
     }
     render() {
@@ -118,7 +122,7 @@ export class CreatePresentation extends React.Component<any, CreatePresentationS
                     <ControlLabel>{t('common:date')}</ControlLabel>
                     <br />
                     
-                    <Datetime input={true} locale="de" value={this.state.presentation.dateTime}
+                    <Datetime input={true} locale="de" value={this.state.presentation.dateTime} 
                         onChange={this.handleDateChanged} />
                 </FormGroup>
 
