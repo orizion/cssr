@@ -122,7 +122,7 @@ export class CreatePresentation extends React.Component<any, CreatePresentationS
                     <ControlLabel>{t('common:date')}</ControlLabel>
                     <br />
                     
-                    <Datetime input={true} locale="de" value={this.state.presentation.dateTime} 
+                    <Datetime input={true} locale="de" value={this.state.presentation.dateTime} utc={true}
                         onChange={this.handleDateChanged} />
                 </FormGroup>
 

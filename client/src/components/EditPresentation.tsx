@@ -232,7 +232,7 @@ export class EditPresentation extends React.Component<EditPresentationProps, Edi
               { auth ?
                 <FormControl type="text" name="datetime" placeholder="yyyy.mm.dd" value={date} readOnly/>
                 : 
-                <Datetime input={true} locale="de" value={this.state.presentation.dateTime} 
+                <Datetime input={true} locale="de" value={this.state.presentation.dateTime} utc={true}
                         onChange={this.handleDateChanged} />
               }
               
@@ -297,7 +297,7 @@ export class EditPresentation extends React.Component<EditPresentationProps, Edi
 
            
         </FormGroup>
- {this.state.fileUploads}
+        {this.state.fileUploads}
         
 
         <Button type="submit" bsStyle="primary" onClick={this.submit}>
