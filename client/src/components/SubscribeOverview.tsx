@@ -1,7 +1,7 @@
 import * as React from "react";
 import { FormControl, FormGroup, ControlLabel, Checkbox, Button, Grid, Row, Col, Well } from "react-bootstrap";
 import * as moment from 'moment';
-import * as API from "../services/api";
+import * as API from "../services/apiWrapper";
 import { translate } from 'react-i18next';
 
 import {SubscribeJumbo} from "./SubscribeJumbo";
@@ -23,7 +23,7 @@ export class SubscribeOverview extends React.Component<SubscribeOverviewProps,Su
             presentations: [],
             userMeta: {}
         }
-        API.defaultHeaders["Authorization"] = "Bearer " + localStorage.token;
+        
         this.presentationAPI.findAllUsingGET({"futureOnly":true})
         .then((pres) => { 
             this.rows = pres.map((pres) =>

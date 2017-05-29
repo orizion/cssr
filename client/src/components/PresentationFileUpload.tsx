@@ -1,7 +1,7 @@
 import * as React from "react";
 import Select = require('react-select');
 import update = require('react-addons-update');
-import * as API from "../services/api";
+import * as API from "../services/apiWrapper";
 import {translate } from "react-i18next";
 
 import { FormControl,FormGroup,ControlLabel,Checkbox,Button, Row, Col, } from "react-bootstrap";
@@ -27,7 +27,6 @@ export class PresentationFileUpload extends React.Component<PresentationFileUplo
         fileMeta:{},
         file: {}
     };
-    API.defaultHeaders["Authorization"] = "Bearer " + localStorage.token;
     this.handleChanged = this.handleChanged.bind(this);
   }
   handleChanged(e:any) {

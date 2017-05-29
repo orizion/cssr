@@ -2,7 +2,7 @@ import * as React from "react";
 import { FormControl, FormGroup, ControlLabel, Checkbox, Button, Popover } from "react-bootstrap";
 import * as moment from 'moment';
 import * as Datetime from 'react-datetime';
-import * as API from "../services/api";
+import * as API from "../services/apiWrapper";
 import Select = require('react-select');
 import update = require('react-addons-update');
 import { translate } from 'react-i18next';
@@ -28,8 +28,6 @@ export class CreatePresentation extends React.Component<any, CreatePresentationS
             }
         };
 
-        API.defaultHeaders["Authorization"] = "Bearer " + localStorage.token;
-        
         this.handleChanged = this.handleChanged.bind(this);
         this.handleSelectChanged = this.handleSelectChanged.bind(this);
         this.handleDateChanged = this.handleDateChanged.bind(this);

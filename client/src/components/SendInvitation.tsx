@@ -2,7 +2,8 @@ import * as React from "react";
 import { FormControl, FormGroup, ControlLabel, Checkbox, Button } from "react-bootstrap";
 import * as moment from 'moment';
 import * as Datetime from 'react-datetime';
-import * as API from "../services/api";
+import * as API from "../services/apiWrapper";
+
 import Select = require('react-select');
 import update = require('react-addons-update');
 
@@ -25,7 +26,6 @@ export class SendInvitation extends React.Component<SendInvitationProps, SendInv
                 to:""
             }
         };
-        API.defaultHeaders["Authorization"] = "Bearer " + localStorage.token;
         this.handleChanged = this.handleChanged.bind(this)
         this.submit = this.submit.bind(this);
     }

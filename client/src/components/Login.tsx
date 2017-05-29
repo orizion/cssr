@@ -1,7 +1,7 @@
 import * as React from "react";
 import Select = require('react-select');
 import update = require('react-addons-update');
-import * as API from "../services/api";
+import * as API from "../services/apiWrapper";
 
 import { FormControl,FormGroup,ControlLabel,Checkbox,Button, Row, Col, } from "react-bootstrap";
 
@@ -28,18 +28,17 @@ export class Login extends React.Component<LoginProps, any> {
   }
   submit(e:any) {
     e.preventDefault();
-    
-    API.UsercontrollerApiFp.loginUsingPOST({creds: 
+    let api = new API.UsercontrollerApi();
+    api.loginUsingPOST({creds: 
         {"email": this.state.username,
-        "password": this.state.password }})()
+        "password": this.state.password }})
     .then((json) => {
         let token:string = "";
         if(json.token != undefined){
             token = json.token;
         }
-        localStorage.setItem("token",token);
-        API.defaultHeaders["Authorization"] = "Bearer " + localStorage.token;
-        let api = new API.UsercontrollerApi();
+        API.setToken(token);
+        
         api.getUsingGET()
         .then((response) =>{
           this.props.userMetaFunction(response);    

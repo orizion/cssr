@@ -4,7 +4,7 @@ import update = require('react-addons-update');
 import Select = require('react-select');
 import { translate } from 'react-i18next';
 
-import * as API from "../services/api";
+import * as API from "../services/apiWrapper";
 
 export interface SubscribeProps {  
   presentationId: number,
@@ -37,8 +37,7 @@ export class Subscribe extends React.Component<SubscribeProps, SubscribeState> {
       }
      
     };
-    API.defaultHeaders["Authorization"] = "Bearer " + localStorage.token;
-
+    
     let presentationAPI = new API.PresentationcontrollerApi();
     presentationAPI.getSingleUsingGET({"id":this.props.presentationId})
     .then((response: API.Presentation) => {

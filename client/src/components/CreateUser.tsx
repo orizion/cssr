@@ -1,6 +1,6 @@
 import * as React from "react";
 import { FormControl, FormGroup, ControlLabel, Checkbox, Button } from "react-bootstrap";
-import * as API from "../services/api";
+import * as API from "../services/apiWrapper";
 
 import update = require("react-addons-update");
 
@@ -20,7 +20,6 @@ export class CreateUser extends React.Component<CreateUserProps,CreateUserState>
                 email:"",
             }
         }
-        API.defaultHeaders["Authorization"] = "Bearer " + localStorage.token;
         this.handleChanged = this.handleChanged.bind(this);
         this.submit = this.submit.bind(this);
     }
