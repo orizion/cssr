@@ -37,6 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable().authorizeRequests().antMatchers("/").permitAll()
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/user/resetpassword").permitAll()
                 .antMatchers(HttpMethod.PUT, "/user/me/password").permitAll()
                 .antMatchers("/aai").permitAll()
                 // Preflight request for cors

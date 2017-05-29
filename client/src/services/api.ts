@@ -138,6 +138,341 @@ export interface UserMeta {
 
 
 /**
+ * AaicontrollerApi - fetch parameter creator
+ */
+export const AaicontrollerApiFetchParamCreator = {
+    /** 
+     * loginAAI
+     */
+    loginAAIUsingDELETE(options?: any): FetchArgs {
+        const baseUrl = `/aai`;
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "DELETE" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
+     * loginAAI
+     */
+    loginAAIUsingGET(options?: any): FetchArgs {
+        const baseUrl = `/aai`;
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "GET" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
+     * loginAAI
+     */
+    loginAAIUsingHEAD(options?: any): FetchArgs {
+        const baseUrl = `/aai`;
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "HEAD" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
+     * loginAAI
+     */
+    loginAAIUsingOPTIONS(options?: any): FetchArgs {
+        const baseUrl = `/aai`;
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "OPTIONS" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
+     * loginAAI
+     */
+    loginAAIUsingPATCH(options?: any): FetchArgs {
+        const baseUrl = `/aai`;
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "PATCH" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
+     * loginAAI
+     */
+    loginAAIUsingPOST(options?: any): FetchArgs {
+        const baseUrl = `/aai`;
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "POST" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
+     * loginAAI
+     */
+    loginAAIUsingPUT(options?: any): FetchArgs {
+        const baseUrl = `/aai`;
+        let urlObj = url.parse(baseUrl, true);
+        let fetchOptions: RequestInit = Object.assign({}, { method: "PUT" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+};
+
+/**
+ * AaicontrollerApi - functional programming interface
+ */
+export const AaicontrollerApiFp = {
+    /** 
+     * loginAAI
+     */
+    loginAAIUsingDELETE(options?: any): (basePath?: string) => Promise<string> {
+        const fetchArgs = AaicontrollerApiFetchParamCreator.loginAAIUsingDELETE(options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<string>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
+     * loginAAI
+     */
+    loginAAIUsingGET(options?: any): (basePath?: string) => Promise<string> {
+        const fetchArgs = AaicontrollerApiFetchParamCreator.loginAAIUsingGET(options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<string>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
+     * loginAAI
+     */
+    loginAAIUsingHEAD(options?: any): (basePath?: string) => Promise<string> {
+        const fetchArgs = AaicontrollerApiFetchParamCreator.loginAAIUsingHEAD(options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<string>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
+     * loginAAI
+     */
+    loginAAIUsingOPTIONS(options?: any): (basePath?: string) => Promise<string> {
+        const fetchArgs = AaicontrollerApiFetchParamCreator.loginAAIUsingOPTIONS(options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<string>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
+     * loginAAI
+     */
+    loginAAIUsingPATCH(options?: any): (basePath?: string) => Promise<string> {
+        const fetchArgs = AaicontrollerApiFetchParamCreator.loginAAIUsingPATCH(options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<string>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
+     * loginAAI
+     */
+    loginAAIUsingPOST(options?: any): (basePath?: string) => Promise<string> {
+        const fetchArgs = AaicontrollerApiFetchParamCreator.loginAAIUsingPOST(options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<string>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
+     * loginAAI
+     */
+    loginAAIUsingPUT(options?: any): (basePath?: string) => Promise<string> {
+        const fetchArgs = AaicontrollerApiFetchParamCreator.loginAAIUsingPUT(options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<string>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+};
+
+/**
+ * AaicontrollerApi - object-oriented interface
+ */
+export class AaicontrollerApi extends BaseAPI {
+    /** 
+     * loginAAI
+     */
+    loginAAIUsingDELETE(options?: any) {
+        return AaicontrollerApiFp.loginAAIUsingDELETE(options)(this.basePath);
+    }
+    /** 
+     * loginAAI
+     */
+    loginAAIUsingGET(options?: any) {
+        return AaicontrollerApiFp.loginAAIUsingGET(options)(this.basePath);
+    }
+    /** 
+     * loginAAI
+     */
+    loginAAIUsingHEAD(options?: any) {
+        return AaicontrollerApiFp.loginAAIUsingHEAD(options)(this.basePath);
+    }
+    /** 
+     * loginAAI
+     */
+    loginAAIUsingOPTIONS(options?: any) {
+        return AaicontrollerApiFp.loginAAIUsingOPTIONS(options)(this.basePath);
+    }
+    /** 
+     * loginAAI
+     */
+    loginAAIUsingPATCH(options?: any) {
+        return AaicontrollerApiFp.loginAAIUsingPATCH(options)(this.basePath);
+    }
+    /** 
+     * loginAAI
+     */
+    loginAAIUsingPOST(options?: any) {
+        return AaicontrollerApiFp.loginAAIUsingPOST(options)(this.basePath);
+    }
+    /** 
+     * loginAAI
+     */
+    loginAAIUsingPUT(options?: any) {
+        return AaicontrollerApiFp.loginAAIUsingPUT(options)(this.basePath);
+    }
+};
+
+/**
+ * AaicontrollerApi - factory interface
+ */
+export const AaicontrollerApiFactory = function (basePath?: string) {
+    return {
+        /** 
+         * loginAAI
+         */
+        loginAAIUsingDELETE(options?: any) {
+            return AaicontrollerApiFp.loginAAIUsingDELETE(options)(basePath);
+        },
+        /** 
+         * loginAAI
+         */
+        loginAAIUsingGET(options?: any) {
+            return AaicontrollerApiFp.loginAAIUsingGET(options)(basePath);
+        },
+        /** 
+         * loginAAI
+         */
+        loginAAIUsingHEAD(options?: any) {
+            return AaicontrollerApiFp.loginAAIUsingHEAD(options)(basePath);
+        },
+        /** 
+         * loginAAI
+         */
+        loginAAIUsingOPTIONS(options?: any) {
+            return AaicontrollerApiFp.loginAAIUsingOPTIONS(options)(basePath);
+        },
+        /** 
+         * loginAAI
+         */
+        loginAAIUsingPATCH(options?: any) {
+            return AaicontrollerApiFp.loginAAIUsingPATCH(options)(basePath);
+        },
+        /** 
+         * loginAAI
+         */
+        loginAAIUsingPOST(options?: any) {
+            return AaicontrollerApiFp.loginAAIUsingPOST(options)(basePath);
+        },
+        /** 
+         * loginAAI
+         */
+        loginAAIUsingPUT(options?: any) {
+            return AaicontrollerApiFp.loginAAIUsingPUT(options)(basePath);
+        },
+    };
+};
+
+
+/**
  * PresentationcontrollerApi - fetch parameter creator
  */
 export const PresentationcontrollerApiFetchParamCreator = {
@@ -1580,10 +1915,14 @@ export const UsercontrollerApiFetchParamCreator = {
     },
     /** 
      * sendResetPasswordMail
+     * @param email email
      */
-    sendResetPasswordMailUsingPOST(options?: any): FetchArgs {
-        const baseUrl = `/user/me/sendResetPassword`;
+    sendResetPasswordMailUsingPOST(params: {  "email"?: string; }, options?: any): FetchArgs {
+        const baseUrl = `/user/resetpassword`;
         let urlObj = url.parse(baseUrl, true);
+        urlObj.query = Object.assign({}, urlObj.query, {
+            "email": params["email"],
+        });
         let fetchOptions: RequestInit = Object.assign({}, { method: "POST" }, options);
 
         let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
@@ -1681,9 +2020,10 @@ export const UsercontrollerApiFp = {
     },
     /** 
      * sendResetPasswordMail
+     * @param email email
      */
-    sendResetPasswordMailUsingPOST(options?: any): (basePath?: string) => Promise<string> {
-        const fetchArgs = UsercontrollerApiFetchParamCreator.sendResetPasswordMailUsingPOST(options);
+    sendResetPasswordMailUsingPOST(params: { "email"?: string;  }, options?: any): (basePath?: string) => Promise<string> {
+        const fetchArgs = UsercontrollerApiFetchParamCreator.sendResetPasswordMailUsingPOST(params, options);
         return (basePath: string = BASE_PATH) => {
             return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
                 if (response.status >= 200 && response.status < 300) {
@@ -1735,9 +2075,10 @@ export class UsercontrollerApi extends BaseAPI {
     }
     /** 
      * sendResetPasswordMail
+     * @param email email
      */
-    sendResetPasswordMailUsingPOST(options?: any) {
-        return UsercontrollerApiFp.sendResetPasswordMailUsingPOST(options)(this.basePath);
+    sendResetPasswordMailUsingPOST(params: {  "email"?: string; }, options?: any) {
+        return UsercontrollerApiFp.sendResetPasswordMailUsingPOST(params, options)(this.basePath);
     }
 };
 
@@ -1781,9 +2122,10 @@ export const UsercontrollerApiFactory = function (basePath?: string) {
         },
         /** 
          * sendResetPasswordMail
+         * @param email email
          */
-        sendResetPasswordMailUsingPOST(options?: any) {
-            return UsercontrollerApiFp.sendResetPasswordMailUsingPOST(options)(basePath);
+        sendResetPasswordMailUsingPOST(params: {  "email"?: string; }, options?: any) {
+            return UsercontrollerApiFp.sendResetPasswordMailUsingPOST(params, options)(basePath);
         },
     };
 };
