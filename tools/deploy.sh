@@ -4,7 +4,7 @@ set -e
 
 cd ../client
 yarn install
-./node_modules/bin/webpack
+npm run build
 sudo cp -r node_modules/react* /var/www/html/node_modules
 sudo cp -r style /var/www/html
 sudo cp -r dist /var/www/html
