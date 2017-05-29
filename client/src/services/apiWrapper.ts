@@ -15,7 +15,7 @@ function getApplicationBasePath() {
 
 
 if(["localhost", "127.0.0.1", "::1"].indexOf(window.location.hostname) === -1) {
-    realBasePath = "/backend"; // Live
+    realBasePath = getApplicationBasePath().replace("/index.html/", "") + "/backend"; // Live
 }
 if(window.location.hash) {
     const valueMap = window.location.hash.substring(1).split('&').map(s=><[string, string]> s.split('='));
