@@ -39,9 +39,9 @@ export class SubscribeJumbo extends React.Component<SubscribeJumboProps,Subscrib
     render() {
         let presentation = this.props.presentation;
         let t = this.props.t;
-        let subscribeUrl = `/presentation/${presentation.presentationId}/subscribe`;
-        let editUrl = `/presentation/${presentation.presentationId}/edit`;
-        let sendUrl = `/presentation/${presentation.presentationId}/sendinvitation`;
+        let subscribeUrl = `/index.html/presentation/${presentation.presentationId}/subscribe`;
+        let editUrl = `/index.html/presentation/${presentation.presentationId}/edit`;
+        let sendUrl = `/index.html/presentation/${presentation.presentationId}/sendinvitation`;
         return(
             <Well>
                 <h3>{presentation.title}</h3>
