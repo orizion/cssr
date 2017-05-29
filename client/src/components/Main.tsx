@@ -182,7 +182,7 @@ export class Main extends React.Component<any,MainState> {
 
             <Row>
               <Col xs={6} md={6}>
-                <img src={ API.applicationBasePath + 'logo_text.png' } className="" width={150}/>
+                <img src={ API.applicatonFilesBase + 'logo_text.png' } className="" width={150}/>
               </Col>
               
               <Col  xs={2} md={2} mdPush={4} xsPush={4}>

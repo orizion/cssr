@@ -15,9 +15,12 @@ function getApplicationBasePath() {
     return applicationBasePathT;
 }
 
+function getApplicationFilesBase() {
+    return getApplicationBasePath().replace("/index.html/", "");
+}
 
 if(["localhost", "127.0.0.1", "::1"].indexOf(window.location.hostname) === -1) {
-    realBasePath = getApplicationBasePath().replace("/index.html/", "") + "/backend"; // Live
+    realBasePath = getApplicationFilesBase() + "/backend"; // Live
 }
 if(window.location.hash) {
     const valueMap = window.location.hash.substring(1).split('&').map(s=><[string, string]> s.split('='));
@@ -74,3 +77,4 @@ export type Subscription = api.Subscription;
 export type EmailView = api.EmailView;
 
 export const applicationBasePath = getApplicationBasePath();
+export const applicatonFilesBase = getApplicationFilesBase();
