@@ -4,7 +4,7 @@ import * as api from './api';
 
 let realBasePath = api.BASE_PATH;
 
-if(["localhost", "127.0.0.1", "::1"].indexOf(window.location.hostname) !== -1) {
+if(["localhost", "127.0.0.1", "::1"].indexOf(window.location.hostname) === -1) {
     realBasePath = "/backend"; // Live
 }
 if(localStorage.getItem("token")) {
