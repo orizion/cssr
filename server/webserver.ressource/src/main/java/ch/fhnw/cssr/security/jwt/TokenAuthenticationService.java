@@ -91,8 +91,8 @@ public class TokenAuthenticationService {
         ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(res.getWriter(), getJwtTokenResult(authorities, username));
     }
-    
-    private static Authentication getTempTokenAuthentication(String tempToken, 
+
+    private static Authentication getTempTokenAuthentication(String tempToken,
             UserRepository userRepository) {
         User us = userRepository.findByTempToken(tempToken);
         if (us == null) {
@@ -102,17 +102,26 @@ public class TokenAuthenticationService {
             return null;
         }
         CustomUserDetails dt = new CustomUserDetails(us);
-        return new UsernamePasswordAuthenticationToken(dt.getUsername(), null,
-                dt.getAuthorities()); 
+        return new UsernamePasswordAuthenticationToken(dt.getUsername(), null, dt.getAuthorities());
     }
-    
+
     static Authentication getAuthentication(HttpServletRequest request,
             UserRepository userRepository) {
         String token = request.getHeader(HEADER_STRING);
+        String tempToken = request.getMethod().equals("GET") ? request.getParameter("tempToken")
+                : null;
+        if (tempToken != null) {
+            return getTempTokenAuthentication(tempToken, userRepository);
+        }
         if (token != null) {
             // parse the token.
-            Jws<Claims> claims = Jwts.parser().setSigningKey(Secret)
-                    .parseClaimsJws(JwtHeader + "." + token.replace(TOKEN_PREFIX, "").trim());
+            Jws<Claims> claims;
+            try {
+                claims = Jwts.parser().setSigningKey(Secret)
+                        .parseClaimsJws(JwtHeader + "." + token.replace(TOKEN_PREFIX, "").trim());
+            } catch (Exception err) {
+                return null;
+            }
             if (claims.getHeader().getAlgorithm().equals("none")) {
                 throw new IllegalArgumentException("Algorithm not valid");
             }
@@ -125,11 +134,7 @@ public class TokenAuthenticationService {
 
             return user != null ? new UsernamePasswordAuthenticationToken(user, null, roles) : null;
         }
-        String tempToken = request.getMethod().equals("GET") ? request.getParameter("tempToken")
-                : null;
-        if (tempToken != null) {
-            return getTempTokenAuthentication(tempToken, userRepository);
-        }
+
         if (request.getCookies() != null && request.getCookies().length > 0) {
             // TODO: We should validate the cookies here and accept a cookie from the AAI Proxy
         }
