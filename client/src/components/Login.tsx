@@ -26,10 +26,11 @@ export class Login extends React.Component<LoginProps, any> {
     });
     
   }
+  api = new API.UsercontrollerApi();
   submit(e:any) {
     e.preventDefault();
-    let api = new API.UsercontrollerApi();
-    api.loginUsingPOST({creds: 
+    
+    this.api.loginUsingPOST({creds: 
         {"email": this.state.username,
         "password": this.state.password }})
     .then((json) => {
@@ -39,7 +40,7 @@ export class Login extends React.Component<LoginProps, any> {
         }
         API.setToken(token);
         
-        api.getUsingGET()
+        this.api.getUsingGET()
         .then((response) =>{
           this.props.userMetaFunction(response);    
         });
@@ -69,6 +70,8 @@ export class Login extends React.Component<LoginProps, any> {
         <Button type="submit" bsStyle="primary" onClick={this.submit}>
           Login
         </Button>
+        <span> &nbsp; &nbsp; </span>
+        <a href="resetpasswordwithtoken" data-navigo>Passwort vergessen? </a>
       </form>
     );
   }

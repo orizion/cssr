@@ -10,7 +10,8 @@ i18next.init({
         "login":"log in",
         "overview":"Overview",
         "logout": "Log out",
-        "createUser" : "Create User1",
+        "createUser" : "Create User",
+        "passwordReset": "Reset Password"
       },
       createPresentation:{
       },
@@ -30,6 +31,11 @@ i18next.init({
       },
       presentationFileUpload: {
         "presentationFile" : "Files for the Presentation",
+      },
+      resetPassword: {
+        "resetPassword":"Reset Password",
+        "oldPassword" : "Old Password or  temporary token",
+        "newPassword" :"New Password"
       },
       common:{
         "room": "Room",
@@ -54,6 +60,7 @@ i18next.init({
         "overview":"Übersicht",
         "logout": "Ausloggen",
         "createUser" : "Benutzer erstellen",
+        "passwordReset": "Passwort reset"
       },
       createPresentation:{
         
@@ -74,6 +81,11 @@ i18next.init({
       },
       presentationFileUpload: {
         "presentationFile" : "Datei für die Präsentation",
+      },
+      resetPassword: {
+        "resetPassword":"Reset Passwort",
+        "oldPassword" : "Altes Passwort oder temporäres Token",
+        "newPassword" :"Neues Passwort"
       },
       common: {
         "room": "Raum",

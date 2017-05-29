@@ -167,18 +167,18 @@ public class UserController {
     /**
      * Resets the password of the current user by sending a temporary token by mail.
      * 
-     * @param email
+     * @param user
      *            The user
      * @return The mail of the user
      */
-    @RequestMapping(method = RequestMethod.POST, path = "resetpassword")
-    public ResponseEntity<String> sendResetPasswordMail(String email) {
+    @RequestMapping(method = RequestMethod.POST, path = "me/sendResetPassword")
+    public ResponseEntity<String> sendResetPasswordMail(Principal user) {
         logger.debug("Resetting password");
-        if (User.isFhnwEmail(email)) {
+        if (User.isFhnwEmail(user.getName())) {
             logger.warn("User cannot reset password. This has to be done in AD");
             return new ResponseEntity<String>(HttpStatus.PRECONDITION_FAILED);
         }
-        User dbuser = repo.findByEmail(email);
+        User dbuser = repo.findByEmail(user.getName());
         String tempToken = UUID.randomUUID().toString() + "." + UUID.randomUUID().toString();
         LocalDateTime expiresAt = LocalDateTime.now().plusHours(10);
         dbuser.setTempToken(tempToken, expiresAt);
@@ -187,7 +187,7 @@ public class UserController {
         values.put("u", dbuser);
         String mailBody = EmailTemplate.getValue("resetPassword", values);
         String mailSubject = EmailTemplate.getSubject("cssr.mail.resetpassword.subject",
-                resetPasswordSubject, dbuser);
+                resetPasswordSubject, user);
         EmailView v = new EmailView().setTo(dbuser.getEmail()).setSubject(mailSubject)
                 .setBody(mailBody);
         Email mail = new Email(v);
