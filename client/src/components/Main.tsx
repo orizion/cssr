@@ -136,7 +136,9 @@ export class Main extends React.Component<any,MainState> {
          );
       })
       .on('/presentation/create',() => {
-        this.renderOrReturn(<CreatePresentation  />,["Role_Coord"],"3");
+        self.setState(
+           {component:<CreatePresentation  />, activeKey:"3"} 
+        );    
       })
       .on('/presentation/:id/edit', (params:any,query:string) => {
          self.setState(
@@ -172,7 +174,9 @@ export class Main extends React.Component<any,MainState> {
   }
   render() {
     let t = this.props.t;       
-
+    setTimeout(()=>{
+      this.router.updatePageLinks(); 
+    }, 0)
     return (      
          <div>
 
@@ -208,12 +212,11 @@ export class Main extends React.Component<any,MainState> {
               <Nav bsStyle="tabs" activeKey={this.state.activeKey} onSelect={this.handleNavigate}>        
               
               {  this.isAuthorized(["ROLE_COORD"]) &&
-                <NavItem eventKey="3" href="/presentation/create" data-navigo> 
-                  {t('createPresentation')}  
-                </NavItem> 
+                <NavItem eventKey="3" href="/presentation/create" data-navigo> {t('createPresentation')} </NavItem> 
               }
               { this.isAuthorized(["ROLE_ADMIN"]) && 
                 <NavItem eventKey="2" href="/createuser" data-navigo>{t('createUser')}</NavItem>
+                
               }
                 <NavItem eventKey="1" href="/presentation" data-navigo>{t('overview')} </NavItem>
               </Nav>
