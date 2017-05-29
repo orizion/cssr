@@ -36,6 +36,9 @@ public class MailSender {
 
     @Value("${cssr.mail.password}")
     private String emailPassword;
+    
+    @Value("${cssr.mail.ssl}")
+    private Boolean ssl;
 
     @Autowired
     private EmailRepository emailRepo;
@@ -83,7 +86,7 @@ public class MailSender {
         Properties properties = new Properties();
         if (host.contains(":")) {
             properties.put("mail.smtp.host", host.substring(0, host.indexOf(":")));
-            properties.put("mail.smtp.port", host.substring(host.indexOf(":" + 1)));
+            properties.put("mail.smtp.port", host.substring(host.indexOf(":") +1));
         } else {
             properties.setProperty("mail.smtp.host", host);
         }
@@ -91,7 +94,10 @@ public class MailSender {
             properties.put("mail.smtp.auth", "true");
         }
         properties.put("mail.transport.protocol", "smtp");
-
+        if(ssl) {
+            properties.put("mail.smtp.socketFactory.class",
+                    "javax.net.ssl.SSLSocketFactory");
+        }
         // Get the default Session object.
         Session session = Session.getInstance(properties,
                 emailPassword == null ? null : new javax.mail.Authenticator() {

@@ -1,19 +1,22 @@
-{
-	"properties": [
-		{
-			"name": "cssr.mail.password",
-			"type": "java.lang.String",
-			"description": "The password to be used for the mail server"
-		},
-		{
-			"name": "cssr.mail.from",
-			"type": "java.lang.String",
-			"description": "The user to be used for the mail server"
-		},
-		{
-			"name": "cssr.mail.host",
-			"type": "java.lang.String",
-			"description": "The host of the mail server"
-		}
-	]
-}
+{"properties": [
+  {
+    "name": "cssr.mail.password",
+    "type": "java.lang.String",
+    "description": "The password to be used for the mail server"
+  },
+  {
+    "name": "cssr.mail.from",
+    "type": "java.lang.String",
+    "description": "The user to be used for the mail server"
+  },
+  {
+    "name": "cssr.mail.host",
+    "type": "java.lang.String",
+    "description": "The host of the mail server"
+  },
+  {
+    "name": "cssr.mail.ssl",
+    "type": "java.lang.String",
+    "description": "True for using ssl"
+  }
+]}
