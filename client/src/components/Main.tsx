@@ -14,11 +14,11 @@ import { Subscribe } from "./Subscribe";
 import { SubscribeOverview } from "./SubscribeOverview";
 
 import PropTypes from 'prop-types';
-
+export type keyType = "1"|"2"|"3"|"4";
 export interface MainState {
   component: JSX.Element,
   userMeta: API.UserMeta,
-  activeKey: any;
+  activeKey: keyType;
   language: string;
 }
 
@@ -78,7 +78,7 @@ export class Main extends React.Component<any,MainState> {
     }
     return false;
   }
-  renderOrReturn(_component:any,allowedRoles:Array<string>,key:string) {
+  renderOrReturn(_component:any,allowedRoles:Array<string>,key:keyType) {
     this.setState(
       {
         component:_component,
@@ -135,7 +135,7 @@ export class Main extends React.Component<any,MainState> {
       })
       .on('/presentation',() => {
          self.setState(
-           {component:<SubscribeOverview  t={this.props.t} userMeta={this.state.userMeta} />}
+           {component:<SubscribeOverview  t={this.props.t} userMeta={this.state.userMeta} />, activeKey: "1"}
          );
       })
       .on('/presentation/:id/sendinvitation',(params:any,query:string) => {
