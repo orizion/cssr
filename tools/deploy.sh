@@ -19,3 +19,4 @@ mvn package
 cd ../../../
 
 sudo ./cssr/tools/deploy/systemd.sh
+sudo ./cssr/tools/deploy/addcronmailer.sh
