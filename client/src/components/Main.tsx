@@ -187,13 +187,26 @@ export class Main extends React.Component<any,MainState> {
               
               <Col  xs={2} md={2} mdPush={4} xsPush={4}>
                 { localStorage.token ?
-                  <Button  bsStyle="info" href="logout"  className="btn-block" data-navigo> 
-                    {t('logout')}
-                  </Button>
+                  (
+                    <div>
+                      {this.state.userMeta ? this.state.userMeta.email: ""} <br />
+                      <Button  bsStyle="info" href="logout"  className="btn-block" data-navigo> 
+                        {t('logout')}                   
+                       </Button>
+                    </div>
+                  )
                   :
-                  <Button  bsStyle="info" href="login"  className="btn-block" data-navigo> 
-                    {t('login')}
-                  </Button>   
+                  (
+                    <div>
+                        <Button  bsStyle="info" href="login"  className="btn-block" data-navigo> 
+                          {t('login')}
+                        </Button>   
+                        <br />
+                        <Button  bsStyle="info" href="/wodss17-6-aai"  className="btn-block" > 
+                          {t('login_aai')}
+                        </Button>   
+                   </div>
+                  )
                 } 
                   
                 <Button bsStyle="info" className="btn-block" onClick={this.handleLangChange}>

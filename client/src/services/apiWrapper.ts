@@ -78,3 +78,4 @@ export type EmailView = api.EmailView;
 
 export const applicationBasePath = getApplicationBasePath();
 export const applicatonFilesBase = getApplicationFilesBase();
+export const backendPath = realBasePath;
