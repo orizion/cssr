@@ -17,13 +17,20 @@ function getApplicationBasePath() {
 if(["localhost", "127.0.0.1", "::1"].indexOf(window.location.hostname) === -1) {
     realBasePath = "/backend"; // Live
 }
-if(localStorage.getItem("token")) {
-    api.defaultHeaders["Authorization"] = "Bearer " + localStorage.getItem("token");
+if(window.location.hash) {
+    const valueMap = window.location.hash.substring(1).split('&').map(s=><[string, string]> s.split('='));
+    let tokenItem = valueMap.filter(s => s[0] ==='token')[0];
+    setToken(tokenItem[1]);
 }
 export function setToken(token: string) {
     localStorage.setItem("token", token);
     api.defaultHeaders["Authorization"] = "Bearer " + localStorage.getItem("token");
 }
+
+if(localStorage.getItem("token")) {
+    api.defaultHeaders["Authorization"] = "Bearer " + localStorage.getItem("token");
+}
+
 export const PresentationcontrollerApi = class extends api.PresentationcontrollerApi {
     constructor() {
         super(realBasePath);
