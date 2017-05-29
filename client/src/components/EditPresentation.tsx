@@ -159,6 +159,8 @@ export class EditPresentation extends React.Component<EditPresentationProps, Edi
           "presentationId": this.props.presentationId,"content": file.file,
           "type":file.meta.type || "f","displayName": file.meta.displayName || "",
           "contentType": file.meta.contentType || ""
+        },{
+          "ContentType": "application/octet-stream"
         })
         .then((response)=>{
 
