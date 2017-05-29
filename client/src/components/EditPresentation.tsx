@@ -91,7 +91,6 @@ export class EditPresentation extends React.Component<EditPresentationProps, Edi
     });
   }
   handleFileChanged(e: any) {
-    console.log(this.state);
     this.setState({
         type: e.value
     });

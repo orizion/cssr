@@ -16,7 +16,9 @@ i18next.init({
       createPresentation:{
       },
       editPresentation: {
-        "addFiles": "Add more files"
+        "addFiles": "Add more files",
+        "saveFileAs": "Save file as",
+        "dataType": "Datatype"
       },
       subscribe: {
         "meat": "Meat",
@@ -66,7 +68,9 @@ i18next.init({
         
       },
       editPresentation: {
-        "addFiles": "Weitere Datein hinzufügen"
+        "addFiles": "Weitere Datein hinzufügen",
+        "saveFileAs": "Speichere Datei als",
+        "dataType": "Datentyp"
       },
       subscribe: {
         "meat": "Fleisch",

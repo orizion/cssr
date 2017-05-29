@@ -47,7 +47,7 @@ export class SubscribeJumbo extends React.Component<SubscribeJumboProps,Subscrib
                 <h3>{presentation.title}</h3>
                 <p>
                     {t('common:room')}: {presentation.location} <br/>
-                    {t('time')}: {moment(presentation.dateTime).format("DD.MM.YY hh:mm")} <br/>
+                    {t('common:time')}: {moment(presentation.dateTime).format("DD.MM.YY hh:mm")} <br/>
                 </p>
                 <p>
                     {presentation.abstract}

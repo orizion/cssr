@@ -37,7 +37,6 @@ export class CreateUser extends React.Component<CreateUserProps,CreateUserState>
         e.preventDefault();
         this.userAdminAPI.addUserUsingPOST({"newUserData": this.state.user})
         .then((response) =>{
-            console.log("CreateUser: successfully created user");
         })
         .catch((err)=>{
             console.log("CreateUser: failed to create the new user");
