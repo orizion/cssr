@@ -1,5 +1,6 @@
 package ch.fhnw.cssr.webserver.controllers;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,16 +66,22 @@ public class AaiController {
      * 
      * @param request
      *            The request
-     * @return The tokenResult
+     * @param response
+     *            The response
+     * @throws IOException The exception if the URL is invalid (should not happen). 
      */
     @RequestMapping
-    public ResponseEntity<String> loginAai(HttpServletRequest request) {
-        if (request.getMethod().toUpperCase().equals("OPTIONS")) {
-            return new ResponseEntity<String>(HttpStatus.OK);
-        }
+    public void loginAai(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
         String email = request.getHeader("mail");
         String surname = request.getHeader("surname");
-        String givenname = request.getHeader("givennamae");
+        String givenname = request.getHeader("givenName");
+        String forwardedHost = request.getHeader("X-Forwarded-Host");
+        if (!forwardedHost.split(",")[0].equals("www.cs.technik.fhnw.ch")) {
+            response.setStatus(HttpStatus.PRECONDITION_FAILED.value());
+            return;
+        }
+        
         if (email != null && surname != null && givenname != null) {
             userUtils.assureCreated(email);
             User us = userRepo.findByEmail(email);
@@ -82,15 +90,10 @@ public class AaiController {
             UserDetails userD = userDetailsService.loadUserByUsername(email);
             String t = TokenAuthenticationService.getJwtTokenResult(userD.getAuthorities(), email)
                     .getToken();
-            return new ResponseEntity<String>(t, HttpStatus.OK);
+            response.sendRedirect("https://www.cs.technik.fhnw.ch/wodss17-6/index.html#token=" + t);
+        } else {
+            response.setStatus(HttpStatus.PRECONDITION_FAILED.value());
+            return;
         }
-
-        Enumeration<String> strs = request.getHeaderNames();
-        String output = "";
-        while (strs.hasMoreElements()) {
-            String h = strs.nextElement();
-            output += "\r\n" + h + ":    " + request.getHeader(h);
-        }
-        return new ResponseEntity<String>(output, HttpStatus.OK);
     }
 }
