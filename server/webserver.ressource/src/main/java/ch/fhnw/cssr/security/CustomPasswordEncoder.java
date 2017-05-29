@@ -42,11 +42,8 @@ public class CustomPasswordEncoder implements PasswordEncoder {
             return ewsAuthenticator.matchesPassword(email, rawPassword);
             
         }
-
-        String hash = argon2.hash(prmR, prmN, prmP, rawPassword.toString());
-
         // Verify password
-        return argon2.verify(hash, encodedPassword);
+        return argon2.verify(encodedPassword, rawPassword.toString());
     }
 
 }

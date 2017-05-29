@@ -9,6 +9,8 @@ function getApplicationBasePath() {
 
     if(applicationBasePathT.indexOf(".html") !== -1) {
         applicationBasePathT = applicationBasePathT.substring(0, applicationBasePathT.indexOf(".html")+5) + "/";
+    }else {
+        applicationBasePathT= "/";
     }
     return applicationBasePathT;
 }

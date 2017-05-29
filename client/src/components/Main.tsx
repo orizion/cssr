@@ -12,6 +12,7 @@ import { Login } from "./Login";
 import { SendInvitation } from "./SendInvitation";
 import { Subscribe } from "./Subscribe";
 import { SubscribeOverview } from "./SubscribeOverview";
+import { ResetPassword} from "./ResetPassword";
 
 import PropTypes from 'prop-types';
 export type keyType = "1"|"2"|"3"|"4";
@@ -30,7 +31,7 @@ export class Main extends React.Component<any,MainState> {
       component: <br />,
       activeKey: "4",
       userMeta : {},
-      language:  (localStorage.lang != null ? localStorage.lang : "en")
+      language:  (localStorage.lang != null ? localStorage.lang : "en"),
     }
     if(localStorage.token){      
       new API.UsercontrollerApi().getUsingGET()
@@ -50,7 +51,7 @@ export class Main extends React.Component<any,MainState> {
   
   setUserInformation(_userMeta:API.UserMeta) {
     this.setState({
-      userMeta: _userMeta
+      userMeta: _userMeta,      
     });
     this.router.navigate('/presentation');
   }
@@ -79,26 +80,41 @@ export class Main extends React.Component<any,MainState> {
     return false;
   }
   renderOrReturn(_component:any,allowedRoles:Array<string>,key:keyType) {
-    this.setState(
-      {
-        component:_component,
-        activeKey: key
-      }
-    );
-    return true; /*
     if(this.isAuthorized(allowedRoles)){
       this.setState(
-        {component:_component}
+        {component:_component, activeKey: key}
       );
     }else {
       this.router.navigate('/login');
-    }*/
+    }
   }
   router : any;
   componentDidMount() {
     this.router = new Navigo(null , false);
     let self:Main = this;
       this.router
+      .on('/resetpassword',(params:any,query:string) => {
+        
+        let token = window.location.hash
+        console.log(token);
+          self.setState(
+           {component:<ResetPassword  oldPassword={""} temptoken={false}/>}
+          );
+      }) 
+      .on('/resetpasswordwithtoken',(params:any,query:string) => {      
+        let token = window.location.hash
+        console.log(token);
+          self.setState(
+           {component:<ResetPassword  oldPassword={token} temptoken={true}/>}
+          );
+      })
+      .on('/invitemail',(params:any,query:string) => {
+        let token = window.location.hash
+        console.log(token);
+        self.setState(
+           {component:<ResetPassword  oldPassword={token} temptoken={true}/>}
+        );
+      }) 
       .on('/login',() => {
         self.setState(
            {component:<Login  userMetaFunction={this.setUserInformation}/>}
@@ -120,7 +136,7 @@ export class Main extends React.Component<any,MainState> {
          );
       })
       .on('/presentation/create',() => {
-        this.renderOrReturn(<CreatePresentation  />,["Role_Coord"],"1");
+        this.renderOrReturn(<CreatePresentation  />,["Role_Coord"],"3");
       })
       .on('/presentation/:id/edit', (params:any,query:string) => {
          self.setState(
@@ -130,7 +146,10 @@ export class Main extends React.Component<any,MainState> {
       })
       .on('/createuser',() => {
          self.setState(
-           {component:<CreateUser />}
+           {
+            component:<CreateUser />,
+            activeKey: "3"
+          },
          );
       })
       .on('/presentation',() => {
@@ -153,6 +172,7 @@ export class Main extends React.Component<any,MainState> {
   }
   render() {
     let t = this.props.t;       
+
     return (      
          <div>
 
@@ -178,27 +198,27 @@ export class Main extends React.Component<any,MainState> {
                     t('common:actions.toggleToEnglish')
                   }
                 </Button>
+                <Button  bsStyle="info" href="resetpassword"  className="btn-block" data-navigo> 
+                  {t('passwordReset')}
+                </Button>
               </Col>
             </Row>
 
             {  true && 
               <Nav bsStyle="tabs" activeKey={this.state.activeKey} onSelect={this.handleNavigate}>        
-              {  this.isAuthorized(["Role_Coord"]) || true &&
-                <NavItem eventKey="1" href="/presentation/create" data-navigo> 
+              
+              {  this.isAuthorized(["ROLE_COORD"]) &&
+                <NavItem eventKey="3" href="/presentation/create" data-navigo> 
                   {t('createPresentation')}  
                 </NavItem> 
               }
-              { this.isAuthorized(["Role_Admin"]) && 
-                <NavItem eventKey="3" href="/createuser" data-navigo>{t('createUser')}</NavItem>
+              { this.isAuthorized(["ROLE_ADMIN"]) && 
+                <NavItem eventKey="2" href="/createuser" data-navigo>{t('createUser')}</NavItem>
               }
-                <NavItem eventKey="4" href="/presentation" data-navigo>{t('overview')} </NavItem>
+                <NavItem eventKey="1" href="/presentation" data-navigo>{t('overview')} </NavItem>
               </Nav>
-            }
-
-            
-            
-           <br/>
-           
+            }                
+           <br/>           
            {this.state.component}         
         </div>
     ); 

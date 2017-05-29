@@ -51,7 +51,6 @@ export class SubscribeJumbo extends React.Component<SubscribeJumboProps,Subscrib
                 </p>
                 <p>
                     {presentation.abstract}
-                    {presentation.presentationId}
                 </p>
                 <p>
                     <Button bsStyle="primary" href={subscribeUrl} data-navigo>
