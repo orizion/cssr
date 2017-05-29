@@ -3,6 +3,7 @@ package ch.fhnw.cssr.webserver.controllers;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ch.fhnw.cssr.domain.Presentation;
 import ch.fhnw.cssr.domain.Role;
+import ch.fhnw.cssr.domain.Subscription;
 import ch.fhnw.cssr.domain.User;
 import ch.fhnw.cssr.domain.repository.PresentationRepository;
+import ch.fhnw.cssr.domain.repository.SubscriptionRepository;
+import ch.fhnw.cssr.domain.repository.UserRepository;
+import ch.fhnw.cssr.webserver.utils.UserUtils;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -35,6 +40,16 @@ public class PresentationController {
     @Autowired
     private PresentationRepository repo;
 
+    @Autowired
+    private SubscriptionRepository subscription;
+
+    @Autowired
+    private UserRepository userRepo;
+    
+    @Autowired
+    private UserUtils userUtils;
+    
+    
     @Autowired
     private UserDetailsService userDetails;
 
@@ -59,9 +74,27 @@ public class PresentationController {
         for (Presentation p : repo.findAll()) {
             presentations.add(p);
         }
+        
         return presentations;
     }
 
+    /**
+     * Gets all presentations of current user
+     * 
+     * @param user
+     *            The logged in user
+     * @return A List of presentations.
+     */
+    @RequestMapping(method = RequestMethod.GET, path = "me")
+    @ApiResponse(code = 200, message = "Gets all presentations of current user")
+    public List<Integer> findMine(Principal user) {
+        userUtils.assureCreated(user.getName());
+        User dbUser = userRepo.findByEmail(user.getName());
+        List<Subscription> subs = subscription.findByUser(dbUser);
+        return subs.stream().map(f -> f.getPresentationId()).collect(Collectors.toList());
+    }
+
+    
     /**
      * Gets a single presentation, without files or subscriptions.
      * 

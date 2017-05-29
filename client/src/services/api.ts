@@ -142,9 +142,9 @@ export interface UserMeta {
  */
 export const AaicontrollerApiFetchParamCreator = {
     /** 
-     * loginAAI
+     * loginAai
      */
-    loginAAIUsingDELETE(options?: any): FetchArgs {
+    loginAaiUsingDELETE(options?: any): FetchArgs {
         const baseUrl = `/aai`;
         let urlObj = url.parse(baseUrl, true);
         let fetchOptions: RequestInit = Object.assign({}, { method: "DELETE" }, options);
@@ -159,9 +159,9 @@ export const AaicontrollerApiFetchParamCreator = {
         };
     },
     /** 
-     * loginAAI
+     * loginAai
      */
-    loginAAIUsingGET(options?: any): FetchArgs {
+    loginAaiUsingGET(options?: any): FetchArgs {
         const baseUrl = `/aai`;
         let urlObj = url.parse(baseUrl, true);
         let fetchOptions: RequestInit = Object.assign({}, { method: "GET" }, options);
@@ -176,9 +176,9 @@ export const AaicontrollerApiFetchParamCreator = {
         };
     },
     /** 
-     * loginAAI
+     * loginAai
      */
-    loginAAIUsingHEAD(options?: any): FetchArgs {
+    loginAaiUsingHEAD(options?: any): FetchArgs {
         const baseUrl = `/aai`;
         let urlObj = url.parse(baseUrl, true);
         let fetchOptions: RequestInit = Object.assign({}, { method: "HEAD" }, options);
@@ -193,9 +193,9 @@ export const AaicontrollerApiFetchParamCreator = {
         };
     },
     /** 
-     * loginAAI
+     * loginAai
      */
-    loginAAIUsingOPTIONS(options?: any): FetchArgs {
+    loginAaiUsingOPTIONS(options?: any): FetchArgs {
         const baseUrl = `/aai`;
         let urlObj = url.parse(baseUrl, true);
         let fetchOptions: RequestInit = Object.assign({}, { method: "OPTIONS" }, options);
@@ -210,9 +210,9 @@ export const AaicontrollerApiFetchParamCreator = {
         };
     },
     /** 
-     * loginAAI
+     * loginAai
      */
-    loginAAIUsingPATCH(options?: any): FetchArgs {
+    loginAaiUsingPATCH(options?: any): FetchArgs {
         const baseUrl = `/aai`;
         let urlObj = url.parse(baseUrl, true);
         let fetchOptions: RequestInit = Object.assign({}, { method: "PATCH" }, options);
@@ -227,9 +227,9 @@ export const AaicontrollerApiFetchParamCreator = {
         };
     },
     /** 
-     * loginAAI
+     * loginAai
      */
-    loginAAIUsingPOST(options?: any): FetchArgs {
+    loginAaiUsingPOST(options?: any): FetchArgs {
         const baseUrl = `/aai`;
         let urlObj = url.parse(baseUrl, true);
         let fetchOptions: RequestInit = Object.assign({}, { method: "POST" }, options);
@@ -244,9 +244,9 @@ export const AaicontrollerApiFetchParamCreator = {
         };
     },
     /** 
-     * loginAAI
+     * loginAai
      */
-    loginAAIUsingPUT(options?: any): FetchArgs {
+    loginAaiUsingPUT(options?: any): FetchArgs {
         const baseUrl = `/aai`;
         let urlObj = url.parse(baseUrl, true);
         let fetchOptions: RequestInit = Object.assign({}, { method: "PUT" }, options);
@@ -267,14 +267,14 @@ export const AaicontrollerApiFetchParamCreator = {
  */
 export const AaicontrollerApiFp = {
     /** 
-     * loginAAI
+     * loginAai
      */
-    loginAAIUsingDELETE(options?: any): (basePath?: string) => Promise<string> {
-        const fetchArgs = AaicontrollerApiFetchParamCreator.loginAAIUsingDELETE(options);
+    loginAaiUsingDELETE(options?: any): (basePath?: string) => Promise<any> {
+        const fetchArgs = AaicontrollerApiFetchParamCreator.loginAaiUsingDELETE(options);
         return (basePath: string = BASE_PATH) => {
             return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
                 if (response.status >= 200 && response.status < 300) {
-                    return <Promise<string>>response.json();
+                    return response;
                 } else {
                     throw response;
                 }
@@ -282,14 +282,14 @@ export const AaicontrollerApiFp = {
         };
     },
     /** 
-     * loginAAI
+     * loginAai
      */
-    loginAAIUsingGET(options?: any): (basePath?: string) => Promise<string> {
-        const fetchArgs = AaicontrollerApiFetchParamCreator.loginAAIUsingGET(options);
+    loginAaiUsingGET(options?: any): (basePath?: string) => Promise<any> {
+        const fetchArgs = AaicontrollerApiFetchParamCreator.loginAaiUsingGET(options);
         return (basePath: string = BASE_PATH) => {
             return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
                 if (response.status >= 200 && response.status < 300) {
-                    return <Promise<string>>response.json();
+                    return response;
                 } else {
                     throw response;
                 }
@@ -297,14 +297,14 @@ export const AaicontrollerApiFp = {
         };
     },
     /** 
-     * loginAAI
+     * loginAai
      */
-    loginAAIUsingHEAD(options?: any): (basePath?: string) => Promise<string> {
-        const fetchArgs = AaicontrollerApiFetchParamCreator.loginAAIUsingHEAD(options);
+    loginAaiUsingHEAD(options?: any): (basePath?: string) => Promise<any> {
+        const fetchArgs = AaicontrollerApiFetchParamCreator.loginAaiUsingHEAD(options);
         return (basePath: string = BASE_PATH) => {
             return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
                 if (response.status >= 200 && response.status < 300) {
-                    return <Promise<string>>response.json();
+                    return response;
                 } else {
                     throw response;
                 }
@@ -312,14 +312,14 @@ export const AaicontrollerApiFp = {
         };
     },
     /** 
-     * loginAAI
+     * loginAai
      */
-    loginAAIUsingOPTIONS(options?: any): (basePath?: string) => Promise<string> {
-        const fetchArgs = AaicontrollerApiFetchParamCreator.loginAAIUsingOPTIONS(options);
+    loginAaiUsingOPTIONS(options?: any): (basePath?: string) => Promise<any> {
+        const fetchArgs = AaicontrollerApiFetchParamCreator.loginAaiUsingOPTIONS(options);
         return (basePath: string = BASE_PATH) => {
             return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
                 if (response.status >= 200 && response.status < 300) {
-                    return <Promise<string>>response.json();
+                    return response;
                 } else {
                     throw response;
                 }
@@ -327,14 +327,14 @@ export const AaicontrollerApiFp = {
         };
     },
     /** 
-     * loginAAI
+     * loginAai
      */
-    loginAAIUsingPATCH(options?: any): (basePath?: string) => Promise<string> {
-        const fetchArgs = AaicontrollerApiFetchParamCreator.loginAAIUsingPATCH(options);
+    loginAaiUsingPATCH(options?: any): (basePath?: string) => Promise<any> {
+        const fetchArgs = AaicontrollerApiFetchParamCreator.loginAaiUsingPATCH(options);
         return (basePath: string = BASE_PATH) => {
             return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
                 if (response.status >= 200 && response.status < 300) {
-                    return <Promise<string>>response.json();
+                    return response;
                 } else {
                     throw response;
                 }
@@ -342,14 +342,14 @@ export const AaicontrollerApiFp = {
         };
     },
     /** 
-     * loginAAI
+     * loginAai
      */
-    loginAAIUsingPOST(options?: any): (basePath?: string) => Promise<string> {
-        const fetchArgs = AaicontrollerApiFetchParamCreator.loginAAIUsingPOST(options);
+    loginAaiUsingPOST(options?: any): (basePath?: string) => Promise<any> {
+        const fetchArgs = AaicontrollerApiFetchParamCreator.loginAaiUsingPOST(options);
         return (basePath: string = BASE_PATH) => {
             return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
                 if (response.status >= 200 && response.status < 300) {
-                    return <Promise<string>>response.json();
+                    return response;
                 } else {
                     throw response;
                 }
@@ -357,14 +357,14 @@ export const AaicontrollerApiFp = {
         };
     },
     /** 
-     * loginAAI
+     * loginAai
      */
-    loginAAIUsingPUT(options?: any): (basePath?: string) => Promise<string> {
-        const fetchArgs = AaicontrollerApiFetchParamCreator.loginAAIUsingPUT(options);
+    loginAaiUsingPUT(options?: any): (basePath?: string) => Promise<any> {
+        const fetchArgs = AaicontrollerApiFetchParamCreator.loginAaiUsingPUT(options);
         return (basePath: string = BASE_PATH) => {
             return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
                 if (response.status >= 200 && response.status < 300) {
-                    return <Promise<string>>response.json();
+                    return response;
                 } else {
                     throw response;
                 }
@@ -378,46 +378,46 @@ export const AaicontrollerApiFp = {
  */
 export class AaicontrollerApi extends BaseAPI {
     /** 
-     * loginAAI
+     * loginAai
      */
-    loginAAIUsingDELETE(options?: any) {
-        return AaicontrollerApiFp.loginAAIUsingDELETE(options)(this.basePath);
+    loginAaiUsingDELETE(options?: any) {
+        return AaicontrollerApiFp.loginAaiUsingDELETE(options)(this.basePath);
     }
     /** 
-     * loginAAI
+     * loginAai
      */
-    loginAAIUsingGET(options?: any) {
-        return AaicontrollerApiFp.loginAAIUsingGET(options)(this.basePath);
+    loginAaiUsingGET(options?: any) {
+        return AaicontrollerApiFp.loginAaiUsingGET(options)(this.basePath);
     }
     /** 
-     * loginAAI
+     * loginAai
      */
-    loginAAIUsingHEAD(options?: any) {
-        return AaicontrollerApiFp.loginAAIUsingHEAD(options)(this.basePath);
+    loginAaiUsingHEAD(options?: any) {
+        return AaicontrollerApiFp.loginAaiUsingHEAD(options)(this.basePath);
     }
     /** 
-     * loginAAI
+     * loginAai
      */
-    loginAAIUsingOPTIONS(options?: any) {
-        return AaicontrollerApiFp.loginAAIUsingOPTIONS(options)(this.basePath);
+    loginAaiUsingOPTIONS(options?: any) {
+        return AaicontrollerApiFp.loginAaiUsingOPTIONS(options)(this.basePath);
     }
     /** 
-     * loginAAI
+     * loginAai
      */
-    loginAAIUsingPATCH(options?: any) {
-        return AaicontrollerApiFp.loginAAIUsingPATCH(options)(this.basePath);
+    loginAaiUsingPATCH(options?: any) {
+        return AaicontrollerApiFp.loginAaiUsingPATCH(options)(this.basePath);
     }
     /** 
-     * loginAAI
+     * loginAai
      */
-    loginAAIUsingPOST(options?: any) {
-        return AaicontrollerApiFp.loginAAIUsingPOST(options)(this.basePath);
+    loginAaiUsingPOST(options?: any) {
+        return AaicontrollerApiFp.loginAaiUsingPOST(options)(this.basePath);
     }
     /** 
-     * loginAAI
+     * loginAai
      */
-    loginAAIUsingPUT(options?: any) {
-        return AaicontrollerApiFp.loginAAIUsingPUT(options)(this.basePath);
+    loginAaiUsingPUT(options?: any) {
+        return AaicontrollerApiFp.loginAaiUsingPUT(options)(this.basePath);
     }
 };
 
@@ -427,46 +427,46 @@ export class AaicontrollerApi extends BaseAPI {
 export const AaicontrollerApiFactory = function (basePath?: string) {
     return {
         /** 
-         * loginAAI
+         * loginAai
          */
-        loginAAIUsingDELETE(options?: any) {
-            return AaicontrollerApiFp.loginAAIUsingDELETE(options)(basePath);
+        loginAaiUsingDELETE(options?: any) {
+            return AaicontrollerApiFp.loginAaiUsingDELETE(options)(basePath);
         },
         /** 
-         * loginAAI
+         * loginAai
          */
-        loginAAIUsingGET(options?: any) {
-            return AaicontrollerApiFp.loginAAIUsingGET(options)(basePath);
+        loginAaiUsingGET(options?: any) {
+            return AaicontrollerApiFp.loginAaiUsingGET(options)(basePath);
         },
         /** 
-         * loginAAI
+         * loginAai
          */
-        loginAAIUsingHEAD(options?: any) {
-            return AaicontrollerApiFp.loginAAIUsingHEAD(options)(basePath);
+        loginAaiUsingHEAD(options?: any) {
+            return AaicontrollerApiFp.loginAaiUsingHEAD(options)(basePath);
         },
         /** 
-         * loginAAI
+         * loginAai
          */
-        loginAAIUsingOPTIONS(options?: any) {
-            return AaicontrollerApiFp.loginAAIUsingOPTIONS(options)(basePath);
+        loginAaiUsingOPTIONS(options?: any) {
+            return AaicontrollerApiFp.loginAaiUsingOPTIONS(options)(basePath);
         },
         /** 
-         * loginAAI
+         * loginAai
          */
-        loginAAIUsingPATCH(options?: any) {
-            return AaicontrollerApiFp.loginAAIUsingPATCH(options)(basePath);
+        loginAaiUsingPATCH(options?: any) {
+            return AaicontrollerApiFp.loginAaiUsingPATCH(options)(basePath);
         },
         /** 
-         * loginAAI
+         * loginAai
          */
-        loginAAIUsingPOST(options?: any) {
-            return AaicontrollerApiFp.loginAAIUsingPOST(options)(basePath);
+        loginAaiUsingPOST(options?: any) {
+            return AaicontrollerApiFp.loginAaiUsingPOST(options)(basePath);
         },
         /** 
-         * loginAAI
+         * loginAai
          */
-        loginAAIUsingPUT(options?: any) {
-            return AaicontrollerApiFp.loginAAIUsingPUT(options)(basePath);
+        loginAaiUsingPUT(options?: any) {
+            return AaicontrollerApiFp.loginAaiUsingPUT(options)(basePath);
         },
     };
 };
@@ -516,6 +516,23 @@ export const PresentationcontrollerApiFetchParamCreator = {
         urlObj.query = Object.assign({}, urlObj.query, {
             "futureOnly": params["futureOnly"],
         });
+        let fetchOptions: RequestInit = Object.assign({}, { method: "GET" }, options);
+
+        let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
+        if (contentTypeHeader) {
+            fetchOptions.headers = contentTypeHeader;
+        }
+        return {
+            url: url.format(urlObj),
+            options: fetchOptions,
+        };
+    },
+    /** 
+     * findMine
+     */
+    findMineUsingGET(options?: any): FetchArgs {
+        const baseUrl = `/presentation/me`;
+        let urlObj = url.parse(baseUrl, true);
         let fetchOptions: RequestInit = Object.assign({}, { method: "GET" }, options);
 
         let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
@@ -615,6 +632,21 @@ export const PresentationcontrollerApiFp = {
         };
     },
     /** 
+     * findMine
+     */
+    findMineUsingGET(options?: any): (basePath?: string) => Promise<Array<number>> {
+        const fetchArgs = PresentationcontrollerApiFetchParamCreator.findMineUsingGET(options);
+        return (basePath: string = BASE_PATH) => {
+            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+                if (response.status >= 200 && response.status < 300) {
+                    return <Promise<Array<number>>>response.json();
+                } else {
+                    throw response;
+                }
+            });
+        };
+    },
+    /** 
      * getSingle
      * @param id id
      */
@@ -667,6 +699,12 @@ export class PresentationcontrollerApi extends BaseAPI {
         return PresentationcontrollerApiFp.findAllUsingGET(params, options)(this.basePath);
     }
     /** 
+     * findMine
+     */
+    findMineUsingGET(options?: any) {
+        return PresentationcontrollerApiFp.findMineUsingGET(options)(this.basePath);
+    }
+    /** 
      * getSingle
      * @param id id
      */
@@ -700,6 +738,12 @@ export const PresentationcontrollerApiFactory = function (basePath?: string) {
          */
         findAllUsingGET(params: {  "futureOnly": boolean; }, options?: any) {
             return PresentationcontrollerApiFp.findAllUsingGET(params, options)(basePath);
+        },
+        /** 
+         * findMine
+         */
+        findMineUsingGET(options?: any) {
+            return PresentationcontrollerApiFp.findMineUsingGET(options)(basePath);
         },
         /** 
          * getSingle
@@ -1915,14 +1959,10 @@ export const UsercontrollerApiFetchParamCreator = {
     },
     /** 
      * sendResetPasswordMail
-     * @param email email
      */
-    sendResetPasswordMailUsingPOST(params: {  "email"?: string; }, options?: any): FetchArgs {
-        const baseUrl = `/user/resetpassword`;
+    sendResetPasswordMailUsingPOST(options?: any): FetchArgs {
+        const baseUrl = `/user/me/sendResetPassword`;
         let urlObj = url.parse(baseUrl, true);
-        urlObj.query = Object.assign({}, urlObj.query, {
-            "email": params["email"],
-        });
         let fetchOptions: RequestInit = Object.assign({}, { method: "POST" }, options);
 
         let contentTypeHeader: Dictionary<string> = Object.assign({}, defaultHeaders);
@@ -2020,10 +2060,9 @@ export const UsercontrollerApiFp = {
     },
     /** 
      * sendResetPasswordMail
-     * @param email email
      */
-    sendResetPasswordMailUsingPOST(params: { "email"?: string;  }, options?: any): (basePath?: string) => Promise<string> {
-        const fetchArgs = UsercontrollerApiFetchParamCreator.sendResetPasswordMailUsingPOST(params, options);
+    sendResetPasswordMailUsingPOST(options?: any): (basePath?: string) => Promise<string> {
+        const fetchArgs = UsercontrollerApiFetchParamCreator.sendResetPasswordMailUsingPOST(options);
         return (basePath: string = BASE_PATH) => {
             return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
                 if (response.status >= 200 && response.status < 300) {
@@ -2075,10 +2114,9 @@ export class UsercontrollerApi extends BaseAPI {
     }
     /** 
      * sendResetPasswordMail
-     * @param email email
      */
-    sendResetPasswordMailUsingPOST(params: {  "email"?: string; }, options?: any) {
-        return UsercontrollerApiFp.sendResetPasswordMailUsingPOST(params, options)(this.basePath);
+    sendResetPasswordMailUsingPOST(options?: any) {
+        return UsercontrollerApiFp.sendResetPasswordMailUsingPOST(options)(this.basePath);
     }
 };
 
@@ -2122,10 +2160,9 @@ export const UsercontrollerApiFactory = function (basePath?: string) {
         },
         /** 
          * sendResetPasswordMail
-         * @param email email
          */
-        sendResetPasswordMailUsingPOST(params: {  "email"?: string; }, options?: any) {
-            return UsercontrollerApiFp.sendResetPasswordMailUsingPOST(params, options)(basePath);
+        sendResetPasswordMailUsingPOST(options?: any) {
+            return UsercontrollerApiFp.sendResetPasswordMailUsingPOST(options)(basePath);
         },
     };
 };
