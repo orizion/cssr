@@ -11,8 +11,8 @@ export interface SubscribeProps {
   t:any
 }
 export interface SubscribeState {
-  subscription:API.Subscription,
-  presentation:API.Presentation;
+  subscription: API.Subscription,
+  presentation: API.Presentation;
 }
 
 @translate(['subscribe', 'common'], { wait: true })
@@ -22,9 +22,9 @@ export class Subscribe extends React.Component<SubscribeProps, SubscribeState> {
     this.state = {
       subscription: {
         presentationId:0,
-        user:undefined,
         sandwichType:"v",
         drink: "",
+        user: undefined
       },
       presentation: {
         abstract:"",
@@ -128,12 +128,6 @@ export class Subscribe extends React.Component<SubscribeProps, SubscribeState> {
             {this.state.presentation.abstract}
           </p>
           <FormControl type="hidden" name="presentationID" value={this.state.presentation.presentationId} />
-        </FormGroup>
-
-        <FormGroup controlId="formControlsEmail">
-          <ControlLabel>{t('common:email_speaker')}</ControlLabel>
-          <br/>
-          <FormControl type="email" name="email" placeholder="Emailadresse" onChange={this.handleChanged} required/>
         </FormGroup>
         <FormGroup controlId="formControlsSandwichType">
           <ControlLabel>{t('sandwichType')}</ControlLabel>
