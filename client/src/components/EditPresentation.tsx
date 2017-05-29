@@ -1,7 +1,7 @@
 import * as React from "react";
 import Select = require('react-select');
 import update = require('react-addons-update');
-import * as API from "../services/api";
+import * as API from "../services/apiWrapper";
 import {translate } from "react-i18next";
 import * as Datetime from "react-datetime";
 import moment = require("moment");
@@ -35,12 +35,8 @@ export class EditPresentation extends React.Component<EditPresentationProps, Edi
       contentType:"f",
       type: "f"
     };
-    API.defaultHeaders["Authorization"] = "Bearer " + localStorage.token;
-
-    this.presentationAPI = new API.PresentationcontrollerApi();
-    this.presentationFileAPI = new API.PresentationfilecontrollerApi();
-    this.userAPI = new API.UsercontrollerApi();
-    this.presentationAPI.getSingleUsingGET({  "id": this.props.presentationId })
+    
+    new API.PresentationcontrollerApi().getSingleUsingGET({  "id": this.props.presentationId })
     .then((response)=>{
       this.setState({
         presentation: response
@@ -56,9 +52,9 @@ export class EditPresentation extends React.Component<EditPresentationProps, Edi
     this.handleAddFile = this.handleAddFile.bind(this);
     this.submit = this.submit.bind(this);
   }
-  presentationAPI: API.PresentationcontrollerApi;
-  presentationFileAPI: API.PresentationfilecontrollerApi;
-  userAPI: API.UsercontrollerApi;
+  presentationAPI = new API.PresentationcontrollerApi();
+  presentationFileAPI = new API.PresentationfilecontrollerApi();
+  userAPI = new API.UsercontrollerApi();
   handleChanged(e: any) {
     let val: any = e.target.value;
     this.setState({

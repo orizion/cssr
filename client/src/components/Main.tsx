@@ -4,7 +4,7 @@ import { FormControl,FormGroup,ControlLabel,Checkbox,Button,Nav,NavItem,Popover,
 import  Navigo  = require("navigo");
 import { translate } from 'react-i18next';
 
-import * as API from "../services/api";
+import * as API from "../services/apiWrapper";
 import { CreatePresentation } from "./CreatePresentation";
 import { CreateUser } from "./CreateUser";
 import { EditPresentation } from "./EditPresentation";
@@ -32,10 +32,8 @@ export class Main extends React.Component<any,MainState> {
       userMeta : {},
       language:  (localStorage.lang != null ? localStorage.lang : "en")
     }
-    if(localStorage.token){
-      API.defaultHeaders["Authorization"] = "Bearer " + localStorage.token;
-      this.userAPI = new API.UsercontrollerApi();
-        this.userAPI.getUsingGET()
+    if(localStorage.token){      
+      new API.UsercontrollerApi().getUsingGET()
         .then((_userMeta) =>{
           this.setState({
             userMeta: _userMeta
@@ -48,10 +46,9 @@ export class Main extends React.Component<any,MainState> {
     this.setUserInformation = this.setUserInformation.bind(this);
   }
   i18n=this.props.i18n;
-  userAPI:API.UsercontrollerApi;
+  userAPI = new API.UsercontrollerApi();
   
   setUserInformation(_userMeta:API.UserMeta) {
-    API.defaultHeaders["Authorization"] = "Bearer " + localStorage.token;
     this.setState({
       userMeta: _userMeta
     });
