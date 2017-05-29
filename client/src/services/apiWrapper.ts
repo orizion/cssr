@@ -4,6 +4,15 @@ import * as api from './api';
 
 let realBasePath = api.BASE_PATH;
 
+function getApplicationBasePath () {
+    let applicationBasePathT = window.location.pathname.toLowerCase();
+
+    if(applicationBasePathT.indexOf(".html") !== -1) {
+        applicationBasePathT = applicationBasePathT.substring(0, applicationBasePathT.indexOf(".html")+5) + "/";
+    }
+}
+
+
 if(["localhost", "127.0.0.1", "::1"].indexOf(window.location.hostname) === -1) {
     realBasePath = "/backend"; // Live
 }
@@ -53,3 +62,5 @@ export type Presentation = api.Presentation;
 export type PresentationFileMeta = api.PresentationFileMeta;
 export type Subscription = api.Subscription;
 export type EmailView = api.EmailView;
+
+export const applicationBasePath = getApplicationBasePath();
