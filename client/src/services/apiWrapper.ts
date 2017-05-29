@@ -4,12 +4,13 @@ import * as api from './api';
 
 let realBasePath = api.BASE_PATH;
 
-function getApplicationBasePath () {
+function getApplicationBasePath() {
     let applicationBasePathT = window.location.pathname.toLowerCase();
 
     if(applicationBasePathT.indexOf(".html") !== -1) {
         applicationBasePathT = applicationBasePathT.substring(0, applicationBasePathT.indexOf(".html")+5) + "/";
     }
+    return applicationBasePathT;
 }
 
 
