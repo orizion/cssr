@@ -46,7 +46,7 @@ import ch.fhnw.cssr.webserver.utils.UserUtils;
 
 @RestController
 @RequestMapping("/aai")
-public class AAIController {
+public class AaiController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -62,12 +62,12 @@ public class AAIController {
     /**
      * Use this method to login the user.
      * 
-     * @param creds
-     *            The credentials
+     * @param request
+     *            The request
      * @return The tokenResult
      */
     @RequestMapping
-    public ResponseEntity<String> loginAAI(HttpServletRequest request) {
+    public ResponseEntity<String> loginAai(HttpServletRequest request) {
         if (request.getMethod().toUpperCase().equals("OPTIONS")) {
             return new ResponseEntity<String>(HttpStatus.OK);
         }
@@ -80,7 +80,8 @@ public class AAIController {
             us.setDisplayName(surname + " " + givenname);
             userRepo.save(us);
             UserDetails userD = userDetailsService.loadUserByUsername(email);
-            String t = TokenAuthenticationService.getJwtTokenResult(userD.getAuthorities(), email).getToken();
+            String t = TokenAuthenticationService.getJwtTokenResult(userD.getAuthorities(), email)
+                    .getToken();
             return new ResponseEntity<String>(t, HttpStatus.OK);
         }
 
